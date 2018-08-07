@@ -13,7 +13,7 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use(bodyParser.urlencoded({extended: true}));//TODO cercare cosa significa extended
+app.use(bodyParser.urlencoded({ extended: true }));//TODO cercare cosa significa extended
 app.use(bodyParser.json());
 
 let routes = require('./routes/routes');
