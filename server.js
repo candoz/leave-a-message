@@ -16,8 +16,8 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended: true}));//TODO cercare cosa significa extended
 app.use(bodyParser.json());
 
-let dbRoutes = require('./routes/dbRoutes');
-app.use('/db', dbRoutes);
+let routes = require('./routes/routes');
+app.use(routes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

@@ -6,7 +6,7 @@ const saltRounds = 10;
 let dbPoolConnection;
 MongoClient.connect(url, {poolSize:10, useNewUrlParser: true} , function(err, db) {
   if (err) throw err;
-  dbPoolConnection = db.db(db.s.options.dbName);
+  dbPoolConnection = db.db(db.s.options.dbName);//TODO alternative???
 });
 
 module.exports = (function() {
@@ -25,7 +25,7 @@ module.exports = (function() {
                 }
                 
                 dbPoolConnection.collection("Users").insertOne(userData, function(err, dbRes) {
-                    if (err) {res.send(err);throw err;}
+                    if (err) {res.send(err);console.log(err);}
                     res.send(dbRes);
                 });
                 console.log("Registered new user: ");
@@ -39,11 +39,11 @@ module.exports = (function() {
         }
     });
 
-    dbRoutes.get("/login", function(req, res) {
-        if(req.headers.email && req.headers.password) {
-            dbPoolConnection.collection("Users").findOne({email : req.headers.email}, function(err, dbResult) {
-                if (err) {res.send(err);throw err;}
-                bcrypt.compare(req.headers.password, dbResult["password"], function(err, cryptResult) {
+    dbRoutes.post("/login", function(req, res) {
+        if(req.body.email && req.body.password) {
+            dbPoolConnection.collection("Users").findOne({email : req.body.email}, function(err, dbResult) {
+                if (err) {res.send(err);console.log(err);}
+                bcrypt.compare(req.body.password, dbResult["password"], function(err, cryptResult) {
                     if (cryptResult === true) {
                         req.session.userId=dbResult["_id"];
                         res.send("Ok");
@@ -55,6 +55,22 @@ module.exports = (function() {
         } else {
             res.status(400).send("Empty Fields");
         }
+    });
+
+    // dbRoutes.get("/testSession", function(req, res) {
+    //     console.log(req.session.userId);
+    // });
+
+    dbRoutes.post("/logout", function(req, res) {
+        if (req.session) {
+            req.session.destroy(function(err) {
+              if(err) {
+                console.log(err);
+              } else {
+                return res.redirect('/');//FIX
+              }
+            });
+          }
     });
 
     return dbRoutes;
