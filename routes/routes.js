@@ -85,10 +85,13 @@ module.exports = (function () {
                 text: req.body.text,
                 hashtags: req.body.text.match(/(#[a-z\d]+)/g).map(val => val.split("#")[1]),
             }
-            dbPoolConnection.collection("Users").find(ObjectId(req.session.userId), function(err, dbResult) {
-                console.log(dbResult);
-                messageData.long=dbResult["last_long"];
+            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function(err, dbResult) {
+                // console.log(dbResult);
+                // var id = dbResult["_id"];       
+                // var o_id = new ObjectId(id);
+                // db.test.find({_id:o_id})
                 messageData.lat=dbResult["last_lat"];
+                messageData.long=dbResult["last_long"];
                 console.log(messageData);
                 dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbRes) {
                     if (err) { res.send(err); console.log(err); }
