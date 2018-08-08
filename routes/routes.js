@@ -55,14 +55,15 @@ module.exports = (function () {
                             req.session.userId = dbResult["_id"];
                             if (req.body.lat && req.body.long) {
                                 const newValues = { $set: { last_lat: req.body.lat, last_long: req.body.long } };
-                                dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), newValues, function (err, dbRes) {
+                                dbPoolConnection.collection("Users").update({'_id':ObjectId(req.session.userId)}, newValues, function (err, dbRes) {
                                     if (err) {
-                                        res.send(err);
                                         console.log(err);
                                     }
+                                    res.send("Ok with pos");
                                 });
+                            } else {
+                                res.send("Ok");
                             }
-                            res.send("Ok");
                         } else {
                             res.send("Wrong password");
                         }
