@@ -132,21 +132,47 @@ module.exports = (function () {
     dbRoutes.get("/messages/full", function (req, res) {
         if (req.session.userId != null) {
             dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbUserDocumentResult) {
-                const userLat = dbUserDocumentResult["last_lat"];
-                const userLong = dbUserDocumentResult["last_long"];
-                const filter = {
-                    $and: [
-                        { lat: { $gt: userLat - 10 } }, { lat: { $lt: userLat + 10 } },
-                        { long: { $gt: userLong - 10 } }, { long: { $lt: userLong + 10 } }
-                    ]
-                };
+                const userLoc = dbUserDocumentResult["loc"];
+                // const userLat = dbUserDocumentResult["last_lat"];
+                // const userLong = dbUserDocumentResult["last_long"];
+                // const filter = {
+                    // $and: [
+                    //     { lat: { $gt: userLat - 10 } }, { lat: { $lt: userLat + 10 } },
+                    //     { long: { $gt: userLong - 10 } }, { long: { $lt: userLong + 10 } }
+                    // ]
+                // };
                 dbPoolConnection.collection("Messages")
-                    .find(filter)
+                    .find({loc: { $near: userLoc,  $maxDistance: 100000 }})
                     .toArray(function (err, dbMessagesAroundFullResult) {
                         console.log(dbMessagesAroundFullResult);
                         res.send(dbMessagesAroundFullResult);
                     });
             });
+        } else {
+            res.status(400).send("User not logged in.");
+        }
+    });
+
+    dbRoutes.get("/messages/limited", function (req, res) {
+        if (req.session.userId != null) {
+            const reqLat = Number(req.query.lat);
+            const reqLong = Number(req.query.long);
+            const filter = {
+                $and: [
+                    { lat: { $gt: reqLat - 10 } }, { lat: { $lt: reqLat + 10 } },
+                    { long: { $gt: reqLong - 10 } }, { long: { $lt: reqLong + 10 } }
+                ]
+            };
+            dbPoolConnection.collection("Messages")
+                .find(filter)
+                .toArray(function (err, dbMessagesAroundFullResult) {
+                    dbMessagesAroundFullResult.forEach(function(val){
+                        delete val.author_id;  //TODO si può anche mantenere e ricostruire l'oggetto
+                        delete val.text;
+                        delete val.comments_id;
+                    });
+                    res.send(dbMessagesAroundFullResult);
+                });
         } else {
             res.status(400).send("User not logged in.");
         }
