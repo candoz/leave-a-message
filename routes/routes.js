@@ -29,13 +29,13 @@ module.exports = (function () {
 
                 dbPoolConnection.collection("Users").insertOne(userData, function (err, dbRes) {
                     if (err) { res.send(err); console.log(err); }
+                    console.log("Registered new user: ");
+                    for (var property in userData) {
+                        console.log(property + " > " + userData[property]);
+                    }
+                    req.session.userId = userData["_id"];
                     res.send(dbRes);
                 });
-                console.log("Registered new user: ");
-                for (var property in userData) {
-                    console.log(property + " > " + userData[property]);
-                }
-                req.session.userId = userData["_id"];
             });
         } else {
             res.status(400).send("Empty Fields");
@@ -97,11 +97,17 @@ module.exports = (function () {
 
     dbRoutes.post("/messages", function (req, res) {
         if (req.session.userId != null) {
+            const regexp = /(#[a-zA-Z\d]+)/g;
             let messageData = {
                 author_id: req.session.userId,
                 text: req.body.text,
-                hashtags: req.body.text.match(/(#[a-z\d]+)/g).map(val => val.split("#")[1]),
             }
+            if (regexp.test(req.body.text)) {
+                messageData.hashtags = [...new Set(req.body.text.match(regexp).map(val => val.split("#")[1]))];  // Set to remove duplicates!
+            } else {
+                messageData.hashtags = [];
+            }
+
             dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResult) {
                 messageData.lat = dbResult["last_lat"];
                 messageData.long = dbResult["last_long"];
