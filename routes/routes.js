@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId; 
 const url = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -21,7 +22,9 @@ module.exports = (function () {
                 let userData = {
                     email: req.body.email,
                     nickname: req.body.nickname,
-                    password: hash
+                    password: hash,
+                    last_long: req.body.long,
+                    last_lat: req.body.lat
                 }
 
                 dbPoolConnection.collection("Users").insertOne(userData, function (err, dbRes) {
@@ -77,16 +80,20 @@ module.exports = (function () {
 
     dbRoutes.post("/messages", function (req, res) {
         if (req.session.userId != null) {
-            const messageData = {
+            let messageData = {
                 author_id: req.session.userId,
                 text: req.body.text,
                 hashtags: req.body.text.match(/(#[a-z\d]+)/g).map(val => val.split("#")[1]),
-                lat: req.body.lat,
-                long: req.body.long
             }
-            dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbRes) {
-                if (err) { res.send(err); console.log(err); }
-                res.send(dbRes);
+            dbPoolConnection.collection("Users").find(ObjectId(req.session.userId), function(err, dbResult) {
+                console.log(dbResult);
+                messageData.long=dbResult["last_long"];
+                messageData.lat=dbResult["last_lat"];
+                console.log(messageData);
+                dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbRes) {
+                    if (err) { res.send(err); console.log(err); }
+                    res.send(dbRes);
+                });
             });
             console.log("Published a new message: ");
             for (var property in messageData) {
@@ -99,3 +106,4 @@ module.exports = (function () {
 
     return dbRoutes;
 })();
+
