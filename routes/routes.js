@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const ObjectId = require('mongodb').ObjectId; 
+const ObjectId = require('mongodb').ObjectId;
 const url = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -45,15 +45,31 @@ module.exports = (function () {
     dbRoutes.post("/login", function (req, res) {
         if (req.body.email && req.body.password) {
             dbPoolConnection.collection("Users").findOne({ email: req.body.email }, function (err, dbResult) {
-                if (err) { res.send(err); console.log(err); }
-                bcrypt.compare(req.body.password, dbResult["password"], function (err, cryptResult) {
-                    if (cryptResult === true) {
-                        req.session.userId = dbResult["_id"];
-                        res.send("Ok");
-                    } else {
-                        res.send("Wrong password");
-                    }
-                });
+                if (err) {
+                    res.send(err);
+                    console.log(err);
+                }
+                if (dbResult) {
+                    bcrypt.compare(req.body.password, dbResult["password"], function (err, cryptResult) {
+                        if (cryptResult === true) {
+                            req.session.userId = dbResult["_id"];
+                            if (req.body.lat && req.body.long) {
+                                const newValues = { $set: { last_lat: req.body.lat, last_long: req.body.long } };
+                                dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), newValues, function (err, dbRes) {
+                                    if (err) {
+                                        res.send(err);
+                                        console.log(err);
+                                    }
+                                });
+                            }
+                            res.send("Ok");
+                        } else {
+                            res.send("Wrong password");
+                        }
+                    });
+                } else {
+                    res.send("Mail not found");
+                }
             });
         } else {
             res.status(400).send("Empty Fields");
@@ -85,13 +101,9 @@ module.exports = (function () {
                 text: req.body.text,
                 hashtags: req.body.text.match(/(#[a-z\d]+)/g).map(val => val.split("#")[1]),
             }
-            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function(err, dbResult) {
-                // console.log(dbResult);
-                // var id = dbResult["_id"];       
-                // var o_id = new ObjectId(id);
-                // db.test.find({_id:o_id})
-                messageData.lat=dbResult["last_lat"];
-                messageData.long=dbResult["last_long"];
+            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResult) {
+                messageData.lat = dbResult["last_lat"];
+                messageData.long = dbResult["last_long"];
                 console.log(messageData);
                 dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbRes) {
                     if (err) { res.send(err); console.log(err); }
