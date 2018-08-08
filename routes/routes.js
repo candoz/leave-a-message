@@ -23,8 +23,8 @@ module.exports = (function () {
                     email: req.body.email,
                     nickname: req.body.nickname,
                     password: hash,
-                    last_long: req.body.long,
-                    last_lat: req.body.lat
+                    last_long: Number(req.body.long),
+                    last_lat: Number(req.body.lat)
                 }
 
                 dbPoolConnection.collection("Users").insertOne(userData, function (err, dbRes) {
@@ -54,8 +54,11 @@ module.exports = (function () {
                         if (cryptResult === true) {
                             req.session.userId = dbResult["_id"];
                             if (req.body.lat && req.body.long) {
-                                const newValues = { $set: { last_lat: req.body.lat, last_long: req.body.long } };
-                                dbPoolConnection.collection("Users").update({'_id':ObjectId(req.session.userId)}, newValues, function (err, dbRes) {
+                                const newPosition = {
+                                    last_lat: Number(req.body.lat),
+                                    last_long: Number(req.body.long)
+                                }
+                                dbPoolConnection.collection("Users").update({ '_id': ObjectId(req.session.userId) }, { $set: newPosition }, function (err, dbRes) {
                                     if (err) {
                                         console.log(err);
                                     }
@@ -121,6 +124,29 @@ module.exports = (function () {
             for (var property in messageData) {
                 console.log(property + " > " + messageData[property]);
             }
+        } else {
+            res.status(400).send("User not logged in.");
+        }
+    });
+
+    dbRoutes.get("/messages/full", function (req, res) {
+        if (req.session.userId != null) {
+            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbUserDocumentResult) {
+                const userLat = dbUserDocumentResult["last_lat"];
+                const userLong = dbUserDocumentResult["last_long"];
+                const filter = {
+                    $and: [
+                        { lat: { $gt: userLat - 10 } }, { lat: { $lt: userLat + 10 } },
+                        { long: { $gt: userLong - 10 } }, { long: { $lt: userLong + 10 } }
+                    ]
+                };
+                dbPoolConnection.collection("Messages")
+                    .find(filter)
+                    .toArray(function (err, dbMessagesAroundFullResult) {
+                        console.log(dbMessagesAroundFullResult);
+                        res.send(dbMessagesAroundFullResult);
+                    });
+            });
         } else {
             res.status(400).send("User not logged in.");
         }
