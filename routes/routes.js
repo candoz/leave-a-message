@@ -2,7 +2,10 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const url = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
+const SALT_ROUNDS = 10;
+const MAX_DISTANCE_FULL_MESSAGES = 500;  // meters
+const MAX_DISTANCE_LIMITED_MESSAGES = 10000;  // meters
 
 let dbPoolConnection;
 MongoClient.connect(url, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
@@ -17,7 +20,7 @@ module.exports = (function () {
 
     dbRoutes.post('/users', function (req, res) {
         if (req.body.email && req.body.password && req.body.nickname) {
-            bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+            bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hash) {
                 if (err) console.log(err);
                 let userData = {
                     email: req.body.email,
@@ -80,12 +83,8 @@ module.exports = (function () {
         }
     });
 
-    // dbRoutes.get("/testSession", function(req, res) {
-    //     console.log(req.session.userId);
-    // });
-
     dbRoutes.post("/logout", function (req, res) {
-        if (req.session.userId != null) {
+        if (loginCheck(req, res)) {
             req.session.destroy(function (err) {
                 if (err) {
                     console.log(err);
@@ -93,13 +92,11 @@ module.exports = (function () {
                     return res.redirect('/');//FIX
                 }
             });
-        } else {
-            res.status(400).send("User not logged in.");
         }
     });
 
     dbRoutes.post("/messages", function (req, res) {
-        if (req.session.userId != null) {
+        if (loginCheck(req, res)) {
             const regexp = /(#[a-zA-Z\d]+)/g;
             let messageData = {
                 author_id: req.session.userId,
@@ -124,60 +121,71 @@ module.exports = (function () {
             for (var property in messageData) {
                 console.log(property + " > " + messageData[property]);
             }
-        } else {
-            res.status(400).send("User not logged in.");
         }
     });
 
     dbRoutes.get("/messages/full", function (req, res) {
-        if (req.session.userId != null) {
-            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbUserDocumentResult) {
-                const userLoc = dbUserDocumentResult["loc"];
-                // const userLat = dbUserDocumentResult["last_lat"];
-                // const userLong = dbUserDocumentResult["last_long"];
-                // const filter = {
-                    // $and: [
-                    //     { lat: { $gt: userLat - 10 } }, { lat: { $lt: userLat + 10 } },
-                    //     { long: { $gt: userLong - 10 } }, { long: { $lt: userLong + 10 } }
-                    // ]
-                // };
+        if (loginCheck(req, res)) {
+            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
                 dbPoolConnection.collection("Messages")
-                    .find({loc: { $near: userLoc,  $maxDistance: 100000 }})
+                    .find({
+                        "location": {
+                            $near: {
+                                $geometry: dbResUser["location"],
+                                $maxDistance: MAX_DISTANCE_FULL_MESSAGES
+                            }
+                        }
+                    })
                     .toArray(function (err, dbMessagesAroundFullResult) {
-                        console.log(dbMessagesAroundFullResult);
                         res.send(dbMessagesAroundFullResult);
                     });
             });
-        } else {
-            res.status(400).send("User not logged in.");
         }
     });
 
     dbRoutes.get("/messages/limited", function (req, res) {
-        if (req.session.userId != null) {
-            const reqLat = Number(req.query.lat);
-            const reqLong = Number(req.query.long);
-            const filter = {
-                $and: [
-                    { lat: { $gt: reqLat - 10 } }, { lat: { $lt: reqLat + 10 } },
-                    { long: { $gt: reqLong - 10 } }, { long: { $lt: reqLong + 10 } }
-                ]
-            };
+        if (loginCheck(req, res)) {
             dbPoolConnection.collection("Messages")
-                .find(filter)
+                .find({
+                    "location": {
+                        $near: {
+                            $geometry: {
+                                "type": "Point",
+                                "coordinates": [
+                                    Number(req.query.lng),
+                                    Number(req.query.lat)
+                                ]
+                            },
+                            $maxDistance: MAX_DISTANCE_LIMITED_MESSAGES
+                        }
+                    }
+                })
                 .toArray(function (err, dbMessagesAroundFullResult) {
-                    dbMessagesAroundFullResult.forEach(function(val){
+                    dbMessagesAroundFullResult.forEach(function (val) {
                         delete val.author_id;  //TODO si può anche mantenere e ricostruire l'oggetto
                         delete val.text;
                         delete val.comments_id;
                     });
                     res.send(dbMessagesAroundFullResult);
                 });
-        } else {
-            res.status(400).send("User not logged in.");
         }
     });
+
+    // dbRoutes.get("/testSession", function(req, res) {
+    //     console.log(req.session.userId);
+    // });
 
     return dbRoutes;
 })();
 
+function loginCheck(req, res) {
+    if (req.session.userId != null) {
+        return true;
+    } else {
+        res.status(400).send("User not logged in.");
+        return false;
+    }
+}
+
+
+    
