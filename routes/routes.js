@@ -1,15 +1,16 @@
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
-const url = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const bcrypt = require("bcrypt");
+const boom = require('boom');
 
+const URL = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const SALT_ROUNDS = 10;
 const MAX_DISTANCE_FULL_MESSAGES = 500; // 500 meters radius
 const MAX_DISTANCE_LIMITED_MESSAGES = 10000; // 10 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 
 let dbPoolConnection;
-MongoClient.connect(url, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
+MongoClient.connect(URL, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
     if (err) throw err;
     dbPoolConnection = db.db(db.s.options.dbName);  // TODO: alternative to "db.db.db..." ???
 });
@@ -18,6 +19,16 @@ module.exports = (function () {
 
     "use strict";
     let dbRoutes = require("express").Router();
+
+    // Error handling with Express (and Boom)
+    // dbRoutes.use((err, req, res, next) => {
+    //     if (err.isServer) {
+    //       // log the error...
+    //       // probably you don't want to log unauthorized access
+    //       // or do you?
+    //     }
+    //     return res.status(err.output.statusCode).json(err.output.payload);
+    // });
 
     dbRoutes.post("/users", function (req, res, next) {
         if (req.body.email && req.body.password && req.body.nickname) {
@@ -58,53 +69,54 @@ module.exports = (function () {
     });
 
     dbRoutes.post("/login", function (req, res, next) {
-        if (req.body.email && req.body.password) {
-            dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
+        if (!req.body.email || !req.body.password) {
+            console.log("User tried to login without specifying both email and password");
+            return next(boom.badRequest("Missing email and/or password"));
+        }
+        dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
+            if (err) {
+                console.log(err);
+                return next(boom.badImplementation(err));
+            }
+            if (!dbResUserWithThatEmail) {
+                console.log("User tried to login with a non-registered email: " + req.body.email);
+                return next(boom.badRequest("Email not found"));
+            }
+            bcrypt.compare(req.body.password, dbResUserWithThatEmail.password, function (err, cryptResult) {
                 if (err) {
-                    res.send(err);
                     console.log(err);
+                    return next(boom.badImplementation(err));
                 }
-                if (dbResUserWithThatEmail) {
-                    bcrypt.compare(req.body.password, dbResUserWithThatEmail.password, function (err, cryptResult) {
-                        if (cryptResult === true) {
-                            req.session.userId = dbResUserWithThatEmail._id;
-                            if (req.body.lat && req.body.long) {
-                                const newLocation = {
-                                    "type": "Point",
-                                    "coordinates": [
-                                        Number(req.body.lng),
-                                        Number(req.body.lat)
-                                    ]
-                                };
-                                dbPoolConnection.collection("Users")
-                                    .update({ "_id": ObjectId(req.session.userId) }, { $set: newLocation }, function (err, dbResUserWithUpdatedLocation) {
-                                        if (err) {
-                                            res.send(err);
-                                            console.log(err);
-                                        }
-                                        res.send("Ok with updated location");
-                                        console.log("User " + dbResUserWithUpdatedLocation.email + " logged-in updating his/her location:");
-                                        console.log("-> Lng: " + dbResUserWithUpdatedLocation.location.coordinates[0]);
-                                        console.log("-> Lat: " + dbResUserWithUpdatedLocation.location.coordinates[1]);
-                                    });
-                            } else {
-                                res.send("Ok");
-                                console.log("User " + dbResUserWithThatEmail.email + " logged-in");
+                if (cryptResult !== true) {
+                    console.log("User " + dbResUserWithThatEmail.email + " failed trying to login. Wrong password");
+                    return next(boom.badRequest("Wrong password"));
+                }
+                req.session.userId = dbResUserWithThatEmail._id;
+                if (req.body.lat && req.body.long) {
+                    const newLocation = {
+                        "type": "Point",
+                        "coordinates": [
+                            Number(req.body.lng),
+                            Number(req.body.lat)
+                        ]
+                    };
+                    dbPoolConnection.collection("Users")
+                        .update({ "_id": ObjectId(req.session.userId) }, { $set: newLocation }, function (err, dbResUserWithUpdatedLocation) {
+                            if (err) {
+                                res.send(err);
+                                console.log(err);
                             }
-                        } else {
-                            res.send("Wrong password");
-                            console.log("User " + dbResUserWithThatEmail.email + " failed trying to login. Wrong password");
-                        }
-                    });
+                            res.send("Ok with updated location");
+                            console.log("User " + dbResUserWithUpdatedLocation.email + " logged-in updating his/her location:");
+                            console.log("-> Lng: " + dbResUserWithUpdatedLocation.location.coordinates[0]);
+                            console.log("-> Lat: " + dbResUserWithUpdatedLocation.location.coordinates[1]);
+                        });
                 } else {
-                    res.send("Email not found");
-                    console.log("User tried to login with a non-registered email: " + req.body.email);
+                    res.send("Ok");
+                    console.log("User " + dbResUserWithThatEmail.email + " logged-in");
                 }
             });
-        } else {
-            res.status(400).send("Empty Fields");
-            console.log("User tried to login without specifying both email and password");
-        }
+        });
     });
 
     dbRoutes.post("/logout", function (req, res, next) {
