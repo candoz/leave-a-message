@@ -1,0 +1,61 @@
+<template>
+    <div class=map-component>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+        <h2>{{msg}}</h2>
+        <div id="map" class="map"></div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            msg: "Ciao sono il MapComponent",
+            map: null,
+            tileLayer: null,
+            layers: [
+                {
+                id: 0,
+                name: 'Restaurants',
+                active: false,
+                features: [],
+                },
+            ],
+        }
+    },
+    created() {
+        let recaptchaScript = document.createElement('script')
+        recaptchaScript.setAttribute('src', 'https://unpkg.com/leaflet@1.2.0/dist/leaflet.js')
+        document.head.appendChild(recaptchaScript)
+    },
+    mounted() {
+        this.initMap();
+        this.initLayers();
+    },
+    methods: {
+        initMap() {
+            this.map = L.map('map').setView([38.63, -90.23], 18);
+            this.tileLayer = L.tileLayer(
+            'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png',
+            {
+                maxZoom: 18,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
+            }
+            );
+            this.tileLayer.addTo(this.map);
+        }
+    }
+}
+</script>
+
+<style scoped>
+    .map-section {
+        width: 100%;
+    }
+    .map { 
+        width: 50%;
+        height: 600px;
+        margin: auto;
+        padding: 10px; 
+    }
+</style>
