@@ -1,5 +1,6 @@
 <template>
   <div id="lookAround">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
     <map-component></map-component>
@@ -8,9 +9,8 @@
 </template>
 
 <script type="text/javascript">
-
 import MapComponent from "@/components/child_components/MapComponent.vue";
-import MessagesListComponent from "@/components/child_components/MessagesListComponent.vue"
+import MessagesListComponent from "@/components/child_components/MessagesListComponent.vue";
 
 export default {
   // Do not forget this little guy
@@ -26,7 +26,11 @@ export default {
     fooBar: {}
   },
   // variables
-  data() {},
+  data() {
+    return {
+      msg: "Componente LookAround"
+    };
+  },
   computed: {},
   // when component uses other components
   components: { MapComponent, MessagesListComponent },
@@ -35,6 +39,7 @@ export default {
   methods: {},
   // component Lifecycle hooks
   beforeCreate() {},
+  created() {},
   mounted() {}
 };
 </script>
