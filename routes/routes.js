@@ -75,8 +75,10 @@ module.exports = (function () {
                     return next(boom.unauthorized("Wrong password"));
                 }
                 req.session.userId = dbResUserWithThatEmail._id;
-                if (req.body.lng && req.body.lat) {
-                    const toUpdate = {
+                const lng = req.body.lng;
+                const lat = req.body.lat;
+                if (lng && lng >= -180 && lng <= 180 && lat && lat >= -90 && lat <= 90) {
+                    const dataToUpdate = {
                         $set: {
                             "location": {
                                 "type": "Point",
@@ -88,7 +90,7 @@ module.exports = (function () {
                         }
                     };
                     dbPoolConnection.collection("Users")
-                        .updateOne({ "email": req.body.email }, toUpdate, function (err, dbResUserWithUpdatedLocation) {
+                        .updateOne({ "email": req.body.email }, dataToUpdate, function (err, dbResUserWithUpdatedLocation) {
                             if (err) { return next(boom.badImplementation(err)); }
                             res.send("Logged-in as " + req.body.email + " located in (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
                             if (LOG_SERVER_EVENTS) {
