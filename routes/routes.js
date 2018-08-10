@@ -6,7 +6,7 @@ const boom = require('boom');
 const URL = process.env.MONGODB_URI || "mongodb://heroku_sh9pbrkt:8u0np9l4apmmp6ur55t1o588p0@ds113452.mlab.com:13452/heroku_sh9pbrkt";
 const SALT_ROUNDS = 10;
 const MAX_DISTANCE_FULL_MESSAGES = 500; // 500 meters radius
-const MAX_DISTANCE_LIMITED_MESSAGES = 10000; // 10 Km radius
+const MAX_DISTANCE_STRIPPED_MESSAGES = 10000; // 10 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 const LOG_CLIENT_ERRORS = true;
 const LOG_SERVER_EVENTS = true;
@@ -121,7 +121,7 @@ module.exports = (function () {
     dbRoutes.post("/messages", function (req, res, next) {
         if (req.session.userId == null) {
             if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to post a message"); }
-            return next(boom.badRequest("Cannot post a message if not logged-in"));
+            return next(boom.unauthorized("Cannot post a message if not logged-in"));
         }
         let messageData = {
             author_id: req.session.userId,
@@ -139,40 +139,36 @@ module.exports = (function () {
             dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
                 if (err) { return next(boom.badImplementation(err)); }
                 res.send("Message succesfully published");
-                if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user " + req.session.userId); }
+                if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
             });
         });
     });
 
     dbRoutes.get("/messages/full", function (req, res, next) {
-        if (loginCheck(req, res)) {
-            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-                if (err) {
-                    res.send(err);
-                    console.log(err);
-                }
-                dbPoolConnection.collection("Messages")
-                    .find({
-                        "location": {
-                            $near: {
-                                $geometry: dbResLoggedUser.location,
-                                $maxDistance: MAX_DISTANCE_FULL_MESSAGES
-                            }
-                        }
-                    })
-                    .toArray(function (err, dbResMessagesFull) {
-                        if (err) {
-                            res.send(err);
-                            console.log(err);
-                        }
-                        res.send(dbResMessagesFull);
-                        console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email);
-                    });
-            });
+        if (req.session.userId == null) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to retrieve full messages around him"); }
+            return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
         }
+        dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
+            if (err) { return next(boom.badImplementation(err)); }
+            dbPoolConnection.collection("Messages")
+                .find({
+                    "location": {
+                        $near: {
+                            $geometry: dbResLoggedUser.location,
+                            $maxDistance: MAX_DISTANCE_FULL_MESSAGES
+                        }
+                    }
+                })
+                .toArray(function (err, dbResMessagesFull) {
+                    if (err) { return next(boom.badImplementation(err)); }
+                    res.send(dbResMessagesFull);
+                    if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
+                });
+        });
     });
 
-    dbRoutes.get("/messages/limited", function (req, res, next) {
+    dbRoutes.get("/messages/stripped", function (req, res, next) {
         dbPoolConnection.collection("Messages")
             .find({
                 "location": {
@@ -184,22 +180,19 @@ module.exports = (function () {
                                 Number(req.query.lat)
                             ]
                         },
-                        $maxDistance: MAX_DISTANCE_LIMITED_MESSAGES
+                        $maxDistance: MAX_DISTANCE_STRIPPED_MESSAGES
                     }
                 }
             })
-            .toArray(function (err, dbResMessagesLimited) {
-                if (err) {
-                    res.send(err);
-                    console.log(err);
-                }
-                dbResMessagesLimited.forEach(function (val) {
-                    delete val.author_id;  // TODO: si può anche costruire direttamente un nuovo oggetto
-                    delete val.text;       //       solamente con i campi che sono necessari.
+            .toArray(function (err, dbResMessagesStripped) {
+                if (err) { return next(boom.badImplementation(err)); }
+                dbResMessagesStripped.forEach(function (val) {
+                    delete val.author_id;  // ALTERNATIVE: si può anche costruire direttamente un nuovo oggetto
+                    delete val.text;       //              solamente con i campi che sono necessari.
                     delete val.comments_id;
                 });
-                res.send(dbResMessagesLimited);
-                console.log("Sent " + dbResMessagesLimited.length + " limited messages near (lng:" + req.query.lng + ",lat:" + req.query.lat + ")");
+                res.send(dbResMessagesStripped);
+                if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages near (lng:" + req.query.lng + ",lat:" + req.query.lat + ")"); }
             });
     });
 
