@@ -3,8 +3,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
-    <map-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages></map-component>
-    <messages-list-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages></messages-list-component>
+    <p>Messaggio attualmente selezionato: {{selectedMessage}}</p>
+    <map-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></map-component>
+    <messages-list-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></messages-list-component>
   </div>
 </template>
 
@@ -25,6 +26,7 @@ export default {
   data() {
     return {
       msg: "Componente LookAround",
+      selectedMessage: null,
       fullMessages: [
         {
           id: 0,
@@ -48,7 +50,11 @@ export default {
   components: { MapComponent, MessagesListComponent },
   // methods
   watch: {},
-  methods: {},
+  methods: {
+    updateSelectedMessage(msg) {
+      this.selectedMessage=msg;
+    }
+  },
   // component Lifecycle hooks
   beforeCreate() {},
   created() {},

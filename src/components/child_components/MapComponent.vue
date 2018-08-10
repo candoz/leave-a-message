@@ -11,6 +11,7 @@
         {{ layer.name }}
         </label>
         </div>
+        <!-- <button class="button" v-on:click="selectMsg">Select Message Full</button> QUI andrebbe aggiunto in qualche maniera l'handler degli eventi alla selezione di un marker--> 
     </div>
 </template>
 
@@ -48,13 +49,16 @@ export default {
       ]
     };
   },
-  props: ["strippedmsgs", "fullmsgs"],
+  props: ["strippedmsgs", "fullmsgs", "selectedmsg"],
   created() {},
   mounted() {
     this.initMap();
     this.initLayers();
   },
   methods: {
+    selectMsg() {
+      this.$emit('selectMessage', this.layers[0].features[0].name);
+    },
     initMap() {
       this.map = L.map("map").setView([38.63, -90.23], 18);
       this.tileLayer = L.tileLayer(
