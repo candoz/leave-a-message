@@ -23,41 +23,42 @@ module.exports = (function () {
     let dbRoutes = require("express").Router();
 
     dbRoutes.post("/users", function (req, res, next) {
-        if (req.body.email && req.body.password && req.body.nickname) {
-            bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hash) {
+        if (!req.body.email || !req.body.password || !req.body.nickname) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to register without specifying email, password or nickname"); }
+            return next(boom.badRequest("Missing email, password or nickname"));
+        }
+
+        // TODO: Controllo sull'esistenza della mail, almeno per tamponare l'errore che darebbe l'inserimento nel db
+
+        bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hash) {
+            if (err) { return next(err); }
+            let newUserData = {
+                "email": req.body.email,
+                "nickname": req.body.nickname,
+                "password": hash,
+                "position": {
+                    "type": "Point",
+                    "coordinates": [
+                        Number(req.body.lng),
+                        Number(req.body.lat)
+                    ]
+                }
+            }
+            dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
                 if (err) { return next(err); }
-                let newUserData = {
-                    "email": req.body.email,
-                    "nickname": req.body.nickname,
-                    "password": hash,
-                    "position": {
-                        "type": "Point",
-                        "coordinates": [
-                            Number(req.body.lng),
-                            Number(req.body.lat)
-                        ]
+                req.session.userId = dbResNewUser._id;
+                res.send(dbResNewUser);
+                if (LOG_SERVER_EVENTS) {
+                    console.log("New user successfully registered:");
+                    for (const property in dbResNewUser) {
+                        console.log(property + " > " + dbResNewUser[property]);
                     }
                 }
-                dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
-                    if (err) { return next(err); }
-                    req.session.userId = dbResNewUser._id;
-                    res.send(dbResNewUser);
-
-                    if (LOG_SERVER_EVENTS) {
-                        console.log("New user successfully registered:");
-                        for (const property in dbResNewUser) {
-                            console.log(property + " > " + dbResNewUser[property]);
-                        }
-                    }
-                });
             });
-        } else {
-            res.status(400).send("Empty Fields");
-            console.log("New user registration failed: email, password or nickname not specified!\n");
-        }
+        });
     });
 
-    dbRoutes.post("/login", function (req, res, next) {
+    dbRoutes.put("/login", function (req, res, next) {
         if (!req.body.email || !req.body.password) {
             if (LOG_CLIENT_ERRORS) { console.log("User tried to login without specifying both email and password"); }
             return next(boom.badRequest("Missing email and/or password"));
@@ -107,10 +108,10 @@ module.exports = (function () {
         });
     });
 
-    dbRoutes.post("/logout", function (req, res, next) {
+    dbRoutes.put("/logout", function (req, res, next) {
         const userId = req.session.userId;  // so it can be used in server log also after its destruction
         if (userId == null) {
-            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to logout"); }
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to logout without being logged-in"); }
             return next(boom.badRequest("Cannot logout if not logged-in"));
         }
         req.session.destroy(function (err) {
@@ -120,9 +121,48 @@ module.exports = (function () {
         });
     });
 
+    dbRoutes.put("/users/location", function (req, res, next) {
+        if (req.session.userId == null) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location without being logged-in"); }
+            return next(boom.unauthorized("Cannot update location if not logged-in"));
+        }
+        const lng = Number(req.body.lng);
+        const lat = Number(req.body.lat);
+        if (!lng || !lng) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location without sending both lng and lat"); }
+            return next(boom.badRequest("Cannot update location without both lng and lat"));
+        }
+        if (lng < -180 || lng > 180) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lng value: " + lng); }
+            return next(boom.badRequest("Cannot update location, invalid lng value: " + lng));
+        }
+        if (lat < -90 || lat > 90) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lat value: " + lat); }
+            return next(boom.badRequest("Cannot update location, invalid lat value: " + lat));
+        }
+        const dataToUpdate = {
+            $set: {
+                "location": {
+                    "type": "Point",
+                    "coordinates": [lng, lat]
+                }
+            }
+        };
+        dbPoolConnection.collection("Users")
+            .updateOne({ "_id": ObjectId(req.session.userId) }, dataToUpdate, function (err, dbResUpdatedLocation) {
+                if (err) { return next(boom.badImplementation(err)); }
+                res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
+                if (LOG_SERVER_EVENTS) {
+                    console.log("User with session id " + req.session.userId + " updated his/her location:");
+                    console.log("-> Lng: " + req.body.lng);
+                    console.log("-> Lat: " + req.body.lat);
+                }
+            });
+    });
+
     dbRoutes.post("/messages", function (req, res, next) {
         if (req.session.userId == null) {
-            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to post a message"); }
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a message without being logged-in"); }
             return next(boom.unauthorized("Cannot post a message if not logged-in"));
         }
         let messageData = {
@@ -148,7 +188,7 @@ module.exports = (function () {
 
     dbRoutes.get("/messages/full", function (req, res, next) {
         if (req.session.userId == null) {
-            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to retrieve full messages around him"); }
+            if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
             return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
         }
         dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
