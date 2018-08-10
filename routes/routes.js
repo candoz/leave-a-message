@@ -25,35 +25,28 @@ module.exports = (function () {
     dbRoutes.post("/users", function (req, res, next) {
         if (!req.body.email || !req.body.password || !req.body.nickname) {
             if (LOG_CLIENT_ERRORS) { console.log("Someone tried to register without specifying email, password or nickname"); }
-            return next(boom.badRequest("Missing email, password or nickname"));
+            return next(boom.badRequest("Cannot register new user: missing email, password or nickname"));
         }
-
-        // TODO: Controllo sull'esistenza della mail, almeno per tamponare l'errore che darebbe l'inserimento nel db
-
-        bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hash) {
-            if (err) { return next(err); }
-            let newUserData = {
-                "email": req.body.email,
-                "nickname": req.body.nickname,
-                "password": hash,
-                "position": {
-                    "type": "Point",
-                    "coordinates": [
-                        Number(req.body.lng),
-                        Number(req.body.lat)
-                    ]
-                }
+        dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
+            if (err) { return next(boom.badImplementation(err)); }
+            if (dbResUserWithThatEmail != null) {
+                if (LOG_CLIENT_ERRORS) { console.log(req.body.email + " tried to register again"); }
+                return next(boom.badRequest("Email " + req.body.email + " already registered"));
             }
-            dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
+            bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hashed) {
                 if (err) { return next(err); }
-                req.session.userId = dbResNewUser._id;
-                res.send(dbResNewUser);
-                if (LOG_SERVER_EVENTS) {
-                    console.log("New user successfully registered:");
-                    for (const property in dbResNewUser) {
-                        console.log(property + " > " + dbResNewUser[property]);
-                    }
+                let newUserData = {
+                    "email": req.body.email,
+                    "nickname": req.body.nickname,
+                    "password": hashed
                 }
+                dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
+                    if (err) { return next(err); }
+                    // uncomment next line if you want to login on registration:
+                    // req.session.userId = dbResNewUser._id;
+                    res.send("Registration succeeded with email " + req.body.email);
+                    if (LOG_SERVER_EVENTS) { console.log("Successfully registered new user " + req.body.email + " (" + req.body.nickname + ")"); }
+                });
             });
         });
     });
@@ -76,34 +69,8 @@ module.exports = (function () {
                     return next(boom.unauthorized("Wrong password"));
                 }
                 req.session.userId = dbResUserWithThatEmail._id;
-                const lng = req.body.lng;
-                const lat = req.body.lat;
-                if (lng && lng >= -180 && lng <= 180 && lat && lat >= -90 && lat <= 90) {
-                    const dataToUpdate = {
-                        $set: {
-                            "location": {
-                                "type": "Point",
-                                "coordinates": [
-                                    Number(req.body.lng),
-                                    Number(req.body.lat)
-                                ]
-                            }
-                        }
-                    };
-                    dbPoolConnection.collection("Users")
-                        .updateOne({ "email": req.body.email }, dataToUpdate, function (err, dbResUserWithUpdatedLocation) {
-                            if (err) { return next(boom.badImplementation(err)); }
-                            res.send("Logged-in as " + req.body.email + " located in (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
-                            if (LOG_SERVER_EVENTS) {
-                                console.log("User " + req.body.email + " logged-in updating his/her location:");
-                                console.log("-> Lng: " + req.body.lng);
-                                console.log("-> Lat: " + req.body.lat);
-                            }
-                        });
-                } else {
-                    res.send("Logged-in as " + req.body.email);
-                    if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.email + " logged-in"); }
-                }
+                res.send("Logged-in as " + req.body.email);
+                if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.email + " logged-in"); }
             });
         });
     });
@@ -128,7 +95,7 @@ module.exports = (function () {
         }
         const lng = Number(req.body.lng);
         const lat = Number(req.body.lat);
-        if (!lng || !lng) {
+        if (!lng || !lat) {
             if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location without sending both lng and lat"); }
             return next(boom.badRequest("Cannot update location without both lng and lat"));
         }
@@ -165,6 +132,7 @@ module.exports = (function () {
             if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a message without being logged-in"); }
             return next(boom.unauthorized("Cannot post a message if not logged-in"));
         }
+
         let messageData = {
             author_id: req.session.userId,
             text: req.body.text,
@@ -193,6 +161,10 @@ module.exports = (function () {
         }
         dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
             if (err) { return next(boom.badImplementation(err)); }
+            if (!dbResLoggedUser.location) {
+                if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
+                return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
+            }
             dbPoolConnection.collection("Messages")
                 .find({
                     "location": {
