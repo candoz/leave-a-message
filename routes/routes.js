@@ -90,15 +90,15 @@ module.exports = (function () {
                     dbPoolConnection.collection("Users")
                         .updateOne({ "email": req.body.email }, toUpdate, function (err, dbResUserWithUpdatedLocation) {
                             if (err) { return next(boom.badImplementation(err)); }
-                            res.send("Ok with updated location");
+                            res.send("Logged-in as " + req.body.email + " located in (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
                             if (LOG_SERVER_EVENTS) {
-                                console.log("User " + req.email + " logged-in updating his/her location:");
+                                console.log("User " + req.body.email + " logged-in updating his/her location:");
                                 console.log("-> Lng: " + req.body.lng);
                                 console.log("-> Lat: " + req.body.lat);
                             }
                         });
                 } else {
-                    res.send("Ok");
+                    res.send("Logged-in as " + req.body.email);
                     if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.email + " logged-in"); }
                 }
             });
@@ -106,48 +106,42 @@ module.exports = (function () {
     });
 
     dbRoutes.post("/logout", function (req, res, next) {
-        if (loginCheck(req, res)) {
-            req.session.destroy(function (err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    return res.redirect("/");  // TODO something else ?
-                }
-            });
+        const userId = req.session.userId;  // so it can be used in server log also after its destruction
+        if (userId == null) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to logout"); }
+            return next(boom.badRequest("Cannot logout if not logged-in"));
         }
+        req.session.destroy(function (err) {
+            if (err) { return next(boom.badImplementation(err)); }
+            if (LOG_SERVER_EVENTS) { console.log("User with session id " + userId + " logged-out"); }
+            res.send("Logged-out");
+        });
     });
 
     dbRoutes.post("/messages", function (req, res, next) {
-        if (loginCheck(req, res)) {
-            let messageData = {
-                author_id: req.session.userId,
-                text: req.body.text,
-            }
-            if (HASHTAG_REGEX.test(req.body.text)) {
-                messageData.hashtags = [...new Set(req.body.text.match(HASHTAG_REGEX).map(val => val.split("#")[1]))];  // Set to remove duplicates!
-            } else {
-                messageData.hashtags = [];
-            }
-
-            dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-                if (err) {
-                    res.send(err);
-                    console.log(err);
-                }
-                messageData.location = dbResLoggedUser.location;
-                dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
-                    if (err) {
-                        res.send(err);
-                        console.log(err);
-                    }
-                    res.send(dbResPublishedMessage);
-                    console.log("A new message has been published:");
-                    for (const property in dbResPublishedMessage) {
-                        console.log("-> " + property + ": " + dbResPublishedMessage[property]);
-                    }
-                });
-            });
+        if (req.session.userId == null) {
+            if (LOG_CLIENT_ERRORS) { console.log("Someone not logged-in tried to post a message"); }
+            return next(boom.badRequest("Cannot post a message if not logged-in"));
         }
+        let messageData = {
+            author_id: req.session.userId,
+            text: req.body.text,
+        }
+        if (HASHTAG_REGEX.test(req.body.text)) {
+            messageData.hashtags = [...new Set(req.body.text.match(HASHTAG_REGEX).map(val => val.split("#")[1]))];  // Set to remove duplicates!
+        } else {
+            messageData.hashtags = [];
+        }
+
+        dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
+            if (err) { return next(boom.badImplementation(err)); }
+            messageData.location = dbResLoggedUser.location;
+            dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
+                if (err) { return next(boom.badImplementation(err)); }
+                res.send("Message succesfully published");
+                if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user " + req.session.userId); }
+            });
+        });
     });
 
     dbRoutes.get("/messages/full", function (req, res, next) {
@@ -215,15 +209,3 @@ module.exports = (function () {
 
     return dbRoutes;
 })();
-
-function loginCheck(req, res) {
-    if (req.session.userId != null) {
-        return true;
-    } else {
-        res.status(400).send("User not logged in.");
-        return false;
-    }
-}
-
-
-
