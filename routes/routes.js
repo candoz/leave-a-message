@@ -8,6 +8,8 @@ const SALT_ROUNDS = 10;
 const MAX_DISTANCE_FULL_MESSAGES = 500; // 500 meters radius
 const MAX_DISTANCE_LIMITED_MESSAGES = 10000; // 10 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
+const LOG_CLIENT_ERRORS = true;
+const LOG_SERVER_EVENTS = true;
 
 let dbPoolConnection;
 MongoClient.connect(URL, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
@@ -20,23 +22,10 @@ module.exports = (function () {
     "use strict";
     let dbRoutes = require("express").Router();
 
-    // Error handling with Express (and Boom)
-    // dbRoutes.use((err, req, res, next) => {
-    //     if (err.isServer) {
-    //       // log the error...
-    //       // probably you don't want to log unauthorized access
-    //       // or do you?
-    //     }
-    //     return res.status(err.output.statusCode).json(err.output.payload);
-    // });
-
     dbRoutes.post("/users", function (req, res, next) {
         if (req.body.email && req.body.password && req.body.nickname) {
             bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hash) {
-                if (err) {
-                    console.log(err);
-                    next(err);
-                }
+                if (err) { return next(err); }
                 let newUserData = {
                     "email": req.body.email,
                     "nickname": req.body.nickname,
@@ -50,15 +39,15 @@ module.exports = (function () {
                     }
                 }
                 dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
-                    if (err) {
-                        console.log(err);
-                        next(err);
-                    }
+                    if (err) { return next(err); }
                     req.session.userId = dbResNewUser._id;
                     res.send(dbResNewUser);
-                    console.log("New user successfully registered:");
-                    for (const property in dbResNewUser) {
-                        console.log(property + " > " + dbResNewUser[property]);
+
+                    if (LOG_SERVER_EVENTS) {
+                        console.log("New user successfully registered:");
+                        for (const property in dbResNewUser) {
+                            console.log(property + " > " + dbResNewUser[property]);
+                        }
                     }
                 });
             });
@@ -70,50 +59,47 @@ module.exports = (function () {
 
     dbRoutes.post("/login", function (req, res, next) {
         if (!req.body.email || !req.body.password) {
-            console.log("User tried to login without specifying both email and password");
+            if (LOG_CLIENT_ERRORS) { console.log("User tried to login without specifying both email and password"); }
             return next(boom.badRequest("Missing email and/or password"));
         }
         dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
-            if (err) {
-                console.log(err);
-                return next(boom.badImplementation(err));
-            }
+            if (err) { return next(boom.badImplementation(err)); }
             if (!dbResUserWithThatEmail) {
-                console.log("User tried to login with a non-registered email: " + req.body.email);
-                return next(boom.badRequest("Email not found"));
+                if (LOG_CLIENT_ERRORS) { console.log("User tried to login with a non-registered email: " + req.body.email); }
+                return next(boom.badRequest("Email not registered"));
             }
             bcrypt.compare(req.body.password, dbResUserWithThatEmail.password, function (err, cryptResult) {
-                if (err) {
-                    console.log(err);
-                    return next(boom.badImplementation(err));
-                }
+                if (err) { return next(boom.badRequest(err)); }
                 if (cryptResult !== true) {
-                    console.log("User " + dbResUserWithThatEmail.email + " failed trying to login. Wrong password");
-                    return next(boom.badRequest("Wrong password"));
+                    if (LOG_CLIENT_ERRORS) { console.log("User " + dbResUserWithThatEmail.email + " failed trying to login. Wrong password"); }
+                    return next(boom.unauthorized("Wrong password"));
                 }
                 req.session.userId = dbResUserWithThatEmail._id;
-                if (req.body.lat && req.body.long) {
-                    const newLocation = {
-                        "type": "Point",
-                        "coordinates": [
-                            Number(req.body.lng),
-                            Number(req.body.lat)
-                        ]
+                if (req.body.lng && req.body.lat) {
+                    const toUpdate = {
+                        $set: {
+                            "location": {
+                                "type": "Point",
+                                "coordinates": [
+                                    Number(req.body.lng),
+                                    Number(req.body.lat)
+                                ]
+                            }
+                        }
                     };
                     dbPoolConnection.collection("Users")
-                        .update({ "_id": ObjectId(req.session.userId) }, { $set: newLocation }, function (err, dbResUserWithUpdatedLocation) {
-                            if (err) {
-                                res.send(err);
-                                console.log(err);
-                            }
+                        .updateOne({ "email": req.body.email }, toUpdate, function (err, dbResUserWithUpdatedLocation) {
+                            if (err) { return next(boom.badImplementation(err)); }
                             res.send("Ok with updated location");
-                            console.log("User " + dbResUserWithUpdatedLocation.email + " logged-in updating his/her location:");
-                            console.log("-> Lng: " + dbResUserWithUpdatedLocation.location.coordinates[0]);
-                            console.log("-> Lat: " + dbResUserWithUpdatedLocation.location.coordinates[1]);
+                            if (LOG_SERVER_EVENTS) {
+                                console.log("User " + req.email + " logged-in updating his/her location:");
+                                console.log("-> Lng: " + req.body.lng);
+                                console.log("-> Lat: " + req.body.lat);
+                            }
                         });
                 } else {
                     res.send("Ok");
-                    console.log("User " + dbResUserWithThatEmail.email + " logged-in");
+                    if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.email + " logged-in"); }
                 }
             });
         });
