@@ -6,7 +6,7 @@
             {{msg}}
         </li>
         <h3>Messaggi parziali:</h3>
-        <li v-for="msg in limitedMessages" v-bind:key=msg.id>
+        <li v-for="msg in strippedMessages" v-bind:key=msg.id>
             {{msg}}
         </li>
     </div>
@@ -16,11 +16,11 @@
 export default {
     data() {
         return {
-            limitedMessages: this.limitedmsgs,
+            strippedMessages: this.strippedmsgs,
             fullMessages: this.fullmsgs
         }
     },
-    props: ["limitedmsgs", "fullmsgs"]
+    props: ["strippedmsgs", "fullmsgs"]
 }
 </script>
 

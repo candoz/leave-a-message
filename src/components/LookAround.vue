@@ -3,8 +3,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
-    <map-component :limitedmsgs=limitedMessages :fullmsgs=fullMessages></map-component>
-    <messages-list-component :limitedmsgs=limitedMessages :fullmsgs=fullMessages></messages-list-component>
+    <map-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages></map-component>
+    <messages-list-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages></messages-list-component>
   </div>
 </template>
 
@@ -33,10 +33,10 @@ export default {
           coords: [38.6109607, -90.2050322]
         }
       ],
-      limitedMessages: [
+      strippedMessages: [
         {
           id: 1,
-          name: "Messaggio Limited 1",
+          name: "Messaggio Stipped 1",
           type: "marker",
           coords: [38.6109607, -90.5050322]
         }

@@ -41,14 +41,14 @@ export default {
         },
         {
           id: 1,
-          name: "LimitedMessages",
+          name: "StrippedMessages",
           active: false,
-          features: this.limitedmsgs
+          features: this.strippedmsgs
         }
       ]
     };
   },
-  props: ["limitedmsgs", "fullmsgs"],
+  props: ["strippedmsgs", "fullmsgs"],
   created() {},
   mounted() {
     this.initMap();
