@@ -6,12 +6,6 @@ const session = require('express-session');
 
 let app = express();
 
-var logger = function(req, res, next) {
-    console.log("GOT REQUEST !");    
-    next(); // Passing the request to the next handler in the stack.
-}
-app.use(logger); // Here you add your logger to the stack.
-
 app.use(serveStatic(__dirname + "/dist"));
 
 app.use(session({
