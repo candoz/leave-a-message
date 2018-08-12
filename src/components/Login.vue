@@ -1,7 +1,9 @@
 <template>
     <div id="login">
         <link href="//cdn.bootcss.com/pure/0.6.0/pure-min.css" rel="stylesheet">
-        <form class="pure-form pure-form-stacked" v-if="notLogged" v-on:submit.prevent="doLogin" id="form">
+        {{logged}}
+        <div v-if="logged==='false'" >
+        <form class="pure-form pure-form-stacked" v-on:submit.prevent="doLogin" id="form">
         <fieldset>
             <legend>Login Form</legend>
 
@@ -14,6 +16,7 @@
             <button type="submit" class="pure-button pure-button-primary">login</button>
         </fieldset>
         </form>
+        </div>
         <div v-else >
             <p>You are logged</p>
             <button class="pure-button pure-button-primary" v-on:click="doLogout">logout</button>
@@ -28,16 +31,16 @@
             return {
                 email: null,
                 password: null,
-                notLogged: true
+                logged: localStorage.logged
             }
         
         },
         methods: {
             doLogin(event) {
                 let self = this;
-                axios.put('http://localhost:5000/login', {email:this.email,password:this.password})
+                axios.put(localStorage.urlHost+'/login', {email:this.email,password:this.password})
                 .then(function (response) {
-                    self.notLogged=false;
+                    self.logged='true';
                     console.log(response);
                 })
                 .catch(function (error) {
@@ -59,14 +62,19 @@
             },
             doLogout(event) {
                 let self = this;
-                axios.put('http://localhost:5000/logout')
+                axios.put(localStorage.urlHost+'/logout')
                 .then(function (response) {
-                    self.notLogged=true;
+                    self.logged='false';
                     console.log(response);
                 })
                 .catch(function (error) {
                     console.log(error.config);
                 });
+            },
+        },
+        watch: {
+            logged(state) {
+                localStorage.logged = state;
             }
         }
     }

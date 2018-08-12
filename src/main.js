@@ -11,5 +11,9 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  created() {
+    localStorage.logged = 'false';
+    localStorage.urlHost = "http://localhost:5000";
+  }
 })
