@@ -13,7 +13,9 @@ new Vue({
   components: { App },
   template: '<App/>',
   created() {
-    localStorage.logged = 'false';
+    if(!localStorage.getItem('logged')) {
+      localStorage.logged = 'false';
+    } 
     localStorage.urlHost = "http://localhost:5000";
   }
 })
