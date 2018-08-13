@@ -17,5 +17,17 @@ new Vue({
       localStorage.logged = 'false';
     } 
     localStorage.urlHost = "http://localhost:5000";
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(this.setPosition);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+  },
+  methods: {
+    setPosition(position) {
+      localStorage.lat = position.coords.latitude;
+      localStorage.lng = position.coords.longitude;
+      console.log("Current position: " + position.coords.latitude + " - " + position.coords.longitude);
+    }
   }
 })
