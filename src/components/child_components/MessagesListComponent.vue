@@ -2,11 +2,11 @@
     <div class=messages-list-component>
         <p>Lista di messaggi</p>
         <h3>Messaggi completi:</h3>
-        <li v-for="msg in fullMessages" v-on:click="selectFullMsg(msg, $event)" v-bind:key=msg.id>
+        <li v-for="msg in fullMessages" v-on:click="selectFullMsg(msg, $event)" v-bind:key=msg._id>
             {{msg}}
         </li>
         <h3>Messaggi parziali:</h3>
-        <li v-for="msg in strippedMessages" v-on:click="selectStrippedMsg(msg, $event)" v-bind:key=msg.id>
+        <li v-for="msg in strippedMessages" v-on:click="selectStrippedMsg(msg, $event)" v-bind:key=msg._id>
             {{msg}}
         </li> 
     </div>
@@ -31,8 +31,7 @@ export default {
     props: ["strippedmsgs", "fullmsgs", "selectedmsg"],
     watch: {
         strippedmsgs: function(val) {
-            this.strippedMessages = this.strippedmsgs;
-            console.log(this.strippedMessages);
+            this.strippedMessages = this.strippedmsgs[0];
         }
     }
 }

@@ -31,15 +31,21 @@ export default {
       selectedMessage: null,
       fullMessages: [
         {
-          id: 0,
+          _id: 0,
           name: "Messaggio Full 2",
+          type: "marker",
+          coords: [38.6109607, -90.2050322]
+        },
+        {
+          _id: 1,
+          name: "Messaggio Full 4",
           type: "marker",
           coords: [38.6109607, -90.2050322]
         }
       ],
       strippedMessages: [
         {
-          id: 1,
+          _id: 1,
           name: "Messaggio Stipped 1",
           type: "marker",
           coords: [38.6109607, -90.5050322]
@@ -65,9 +71,7 @@ export default {
                 }
             })
         .then(function(response) {
-            self.strippedMessages = response.data.map(function(item){
-                return JSON.stringify(item);
-            });
+            self.strippedMessages = JSON.stringify(response.data);
         })
         .catch(function(err) {
             console.log(err);
