@@ -65,8 +65,9 @@ export default {
                 }
             })
         .then(function(response) {
-            console.log(response.data);
-            self.strippedMessages=response.data;
+            self.strippedMessages = response.data.map(function(item){
+                return JSON.stringify(item);
+            });
         })
         .catch(function(err) {
             console.log(err);

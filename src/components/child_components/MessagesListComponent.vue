@@ -8,7 +8,7 @@
         <h3>Messaggi parziali:</h3>
         <li v-for="msg in strippedMessages" v-on:click="selectStrippedMsg(msg, $event)" v-bind:key=msg.id>
             {{msg}}
-        </li>
+        </li> 
     </div>
 </template>
 
@@ -28,7 +28,13 @@ export default {
             this.$emit('selectMessage', this.strippedMessages[event.target.value].name);
         },
     },
-    props: ["strippedmsgs", "fullmsgs", "selectedmsg"]
+    props: ["strippedmsgs", "fullmsgs", "selectedmsg"],
+    watch: {
+        strippedmsgs: function(val) {
+            this.strippedMessages = this.strippedmsgs;
+            console.log(this.strippedMessages);
+        }
+    }
 }
 </script>
 
