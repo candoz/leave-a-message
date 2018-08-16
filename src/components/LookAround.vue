@@ -70,7 +70,7 @@ export default {
           lat:localStorage.lat
         }
       })
-      .then(response => self.strippedMessages = JSON.stringify(response.data))
+      .then(response => self.strippedMessages = response.data)
       .catch(err => console.log(err));
     }
   },

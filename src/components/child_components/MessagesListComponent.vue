@@ -6,7 +6,7 @@
             {{msg}}
         </li>
         <h3>Messaggi parziali:</h3>
-        <li v-for="msg in strippedMessages" v-on:click="selectStrippedMsg(msg, $event)" v-bind:key=msg._id>
+        <li v-for="msg in strippedmsgs" v-on:click="selectStrippedMsg(msg, $event)" v-bind:key=msg._id>
             {{msg}}
         </li> 
     </div>
@@ -16,8 +16,6 @@
 export default {
     data() {
         return {
-            strippedMessages: this.strippedmsgs,
-            fullMessages: this.fullmsgs
         }
     },
     methods: {
@@ -29,11 +27,7 @@ export default {
         },
     },
     props: ["strippedmsgs", "fullmsgs", "selectedmsg"],
-    watch: {
-        strippedmsgs: function(val) {
-            this.strippedMessages = this.strippedmsgs[0];
-        }
-    }
+    watch: {}
 }
 </script>
 
