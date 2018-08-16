@@ -1,9 +1,11 @@
 <template>
-    <div class=nav-bar>
-      <router-link :to="'/'">Look Around</router-link>
-      <router-link :to="'/login'">Login</router-link>
-      <router-link :to="'/profile'">My Profile</router-link>
-      <router-link :to="'/write'">Write a Message</router-link>
+    <div>
+      <nav>
+        <router-link :to="'/'">Look Around</router-link>
+        <router-link :to="'/login'">Login</router-link>
+        <router-link :to="'/profile'">My Profile</router-link>
+        <router-link :to="'/write'">Write a Message</router-link>
+      </nav>
     </div>
 </template>
 

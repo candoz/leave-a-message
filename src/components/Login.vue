@@ -1,11 +1,9 @@
 <template>
   <div id="login">
     <link href="//cdn.bootcss.com/pure/0.6.0/pure-min.css" rel="stylesheet">
-    {{logged}}
     <div v-if="logged === 'false'" >
       <form class="pure-form pure-form-stacked" @submit.prevent="doLogin" id="form">
         <fieldset>
-          <legend>Login Form</legend>
 
           <label for="email">Email</label>
           <input id="email" v-model="email" type="text" placeholder="Email">
@@ -83,8 +81,6 @@ export default {
 };
 </script>
 
-<style scoped>
-#form {
-  margin-left: 20px;
-}
+<style lang="sass" scoped>
+
 </style>
