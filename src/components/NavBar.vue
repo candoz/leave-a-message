@@ -1,10 +1,10 @@
 <template>
     <div>
       <nav>
-        <router-link tag="li" v-if="!logged" :to="'/login'" exact>Login</router-link>
+        <router-link tag="li" v-if="logged == 'false'" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" :to="'/'" exact>Look Around</router-link>
-        <router-link tag="li" v-if="logged" :to="'/write'" exact>Write</router-link>
-        <router-link tag="li" v-if="logged" :to="'/profile'" exact>MyProfile</router-link>
+        <router-link tag="li" v-if="logged == 'true'" :to="'/write'" exact>Write</router-link>
+        <router-link tag="li" v-if="logged == 'true'" :to="'/profile'" exact>MyProfile</router-link>
       </nav>
     </div>
 </template>

@@ -1,20 +1,20 @@
 <template>
   <div class="login-page-body">
     <div class="login-component">
-      <div class="form" v-if="logged === 'false'" >
-        <form class="register-form" v-if="newUser=='true'" @submit.prevent="doRegister">
+      <div class="form" v-if="logged == 'false'" >
+        <form class="register-form" v-if="newUser == 'true'" @submit.prevent="doRegister">
           <input type="text" placeholder="Nickname"/>
           <input type="password" placeholder="Password"/>
           <input type="text" placeholder="Email address"/>
-          <button type="submit" >Create</button>
-          <p class="message" :click="newUser='false'">Already registered? Sign In</p>
+          <button>Create</button>
+          <p type="submit" class="message">Already registered? <a href="#">Sign In</a></p>
         </form>
-        <form class="login-form" v-else @submit.prevent="doLogin">
+        <form class="login-form" v-else-if="newUser == 'false'" @submit.prevent="doLogin">
           <h3>Login Form</h3>
           <input id="email" v-model="email" type="text" placeholder="Email" required>
           <input id="password" v-model="password" type="password" placeholder="Password" required>
           <button type="submit" class="">Login</button>
-          <p class="message" :click="newUser='true'">Not registered? Create an account</p>
+          <p class="message">Not registered? <a href="#">Create an account</a></p>
         </form>
       </div>
       <div class="form" v-else >
@@ -100,7 +100,6 @@ $gradient-background-color: #8DC26F;
   background: linear-gradient(to left, $base-background-color, $gradient-background-color)
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  margin-top: 2vh
   width: 100%
   height: 100vh
 
