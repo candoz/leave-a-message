@@ -1,5 +1,5 @@
 <template>
-    <div class="ext">
+    <div>
       <nav>
         <router-link tag="li" v-if="!logged" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" :to="'/'" exact>Look Around</router-link>
