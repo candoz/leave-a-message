@@ -3,16 +3,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
-    <button @click="getStrippedMessages()">Get stripped messages</button>
-    <p>Messaggio attualmente selezionato: {{selectedMessage}}</p>
-    <map-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></map-component>
-    <messages-list-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></messages-list-component>
-  </div>
+</div>
 </template>
 
 <script type="text/javascript">
-import MapComponent from "@/components/child_components/MapComponent.vue";
-import MessagesListComponent from "@/components/child_components/MessagesListComponent.vue";
 const axios = require('axios');
 
 export default {
@@ -55,7 +49,7 @@ export default {
   },
   computed: {},
   // when component uses other components
-  components: { MapComponent, MessagesListComponent },
+  components: { },
   // methods
   watch: {},
   methods: {
