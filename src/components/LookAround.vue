@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
+    <p> {{ mixedMessages }} </p>
 </div>
 </template>
 
@@ -21,7 +22,6 @@ export default {
   // variables
   data() {
     return {
-      msg: "Componente LookAround",
       selectedMessage: null,
       fullMessages: [
         {
@@ -39,7 +39,7 @@ export default {
       ],
       strippedMessages: [
         {
-          _id: 1,
+          _id: 3,
           name: "Messaggio Stipped 1",
           type: "marker",
           coords: [38.6109607, -90.5050322]
@@ -47,7 +47,17 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    mixedMessages: function() {
+      let mix = this.fullMessages;
+      for (let strippedMessage of this.strippedMessages) {
+        if (mix.find(x => x._id == strippedMessage._id) == null) {
+          mix.push(strippedMessage);
+        }
+      }
+      return mix;
+    }
+  },
   // when component uses other components
   components: { },
   // methods
