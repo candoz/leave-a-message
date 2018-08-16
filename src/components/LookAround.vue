@@ -90,8 +90,7 @@ export default {
 };
 </script>
 
-<style>
-.selected {
-  color: #009;
-}
+<style lang="sass" scoped>
+.selected
+  color: #009
 </style>
