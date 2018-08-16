@@ -1,15 +1,22 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-link v-bind:to="'/'">Look Around</router-link>
-    <router-link v-bind:to="'/login'">Login</router-link>
-    <router-view/>
+    <nav-bar></nav-bar>
+    <app-view></app-view>
   </div>
 </template>
 
 <script>
+import NavBar from "./components/NavBar.vue"
+import AppView from "./components/AppView.vue"
+
 export default {
-  name: 'App'
+  components: {
+    NavBar,
+    AppView
+  },
+  data() {
+    return
+  }
 }
 </script>
 
