@@ -3,7 +3,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
-    <p> {{ mixedMessages }} </p>
+    <h3>Messaggi completi:</h3>
+    <ul>
+      <li v-for="msg in mixedMessages" @click="selectMessage(msg._id)" :key=msg._id :class="{selected: msg._id==selectedMessage._id}">
+        {{msg}}
+      </li>
+    </ul>
 </div>
 </template>
 
@@ -22,7 +27,7 @@ export default {
   // variables
   data() {
     return {
-      selectedMessage: null,
+      selectedMessage: "",
       fullMessages: [
         {
           _id: 0,
@@ -63,8 +68,8 @@ export default {
   // methods
   watch: {},
   methods: {
-    updateSelectedMessage(msg) {
-      this.selectedMessage=msg;
+    selectMessage(id) {
+      this.selectedMessage = this.mixedMessages.find(x => x._id==id);
     },
     getStrippedMessages() {
       let self = this;
@@ -85,6 +90,8 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Si può fare anche lo <style> con scss ecc... */
+<style>
+.selected {
+  color: #009;
+}
 </style>
