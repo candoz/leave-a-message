@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
     <h1>Look Around</h1>
     <div class=search><p>da mettere il componente search</p></div>
-    <button v-on:click="getStrippedMessages()">Get stripped messages</button>
+    <button @click="getStrippedMessages()">Get stripped messages</button>
     <p>Messaggio attualmente selezionato: {{selectedMessage}}</p>
     <map-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></map-component>
     <messages-list-component :strippedmsgs=strippedMessages :fullmsgs=fullMessages :selectedmsg=selectedMessage @selectMessage="updateSelectedMessage"></messages-list-component>
@@ -60,22 +60,18 @@ export default {
   watch: {},
   methods: {
     updateSelectedMessage(msg) {
-        this.selectedMessage=msg;
+      this.selectedMessage=msg;
     },
     getStrippedMessages() {
-        let self = this;
-        axios.get(localStorage.urlHost+'/messages/stripped', {
-                params: {
-                    lng:localStorage.lng, 
-                    lat:localStorage.lat
-                }
-            })
-        .then(function(response) {
-            self.strippedMessages = JSON.stringify(response.data);
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
+      let self = this;
+      axios.get(localStorage.urlHost+'/messages/stripped', {
+        params: {
+          lng:localStorage.lng,
+          lat:localStorage.lat
+        }
+      })
+      .then(response => self.strippedMessages = JSON.stringify(response.data))
+      .catch(err => console.log(err));
     }
   },
   // component Lifecycle hooks
