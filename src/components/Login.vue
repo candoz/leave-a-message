@@ -94,10 +94,10 @@ $gradient-background-color: #8DC26F;
 
 .login-page-body 
   background: $base-background-color
-  background: -webkit-linear-gradient(right, $base-background-color, $gradient-background-color)
-  background: -moz-linear-gradient(right, $base-background-color, $gradient-background-color)
-  background: -o-linear-gradient(right, $base-background-color, $gradient-background-color)
-  background: linear-gradient(to left, $base-background-color, $gradient-background-color)
+  // background: -webkit-linear-gradient(right, $base-background-color, $gradient-background-color)
+  // background: -moz-linear-gradient(right, $base-background-color, $gradient-background-color)
+  // background: -o-linear-gradient(right, $base-background-color, $gradient-background-color)
+  // background: linear-gradient(to left, $base-background-color, $gradient-background-color)
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   width: 100%
@@ -105,7 +105,7 @@ $gradient-background-color: #8DC26F;
 
 .login-component
   width: 360px
-  padding: 8% 0 0
+  padding: 4% 0 0
   margin: auto
 
 .form
