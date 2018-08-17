@@ -1,13 +1,13 @@
 <template>
 <div id="lookAround">
   <div class=search><p>da mettere il componente search</p></div>
-  <messages-map></messages-map>
+  <messages-map :locationStatus="locationStatus"></messages-map>
   <h3>Messaggi completi:</h3>
-  <ul>
+  <!-- <ul>
     <li v-for="msg in mixedMessages" @click="selectMessage(msg._id)" :key=msg._id :class="{selected: msg._id==selectedMessage._id}">
       {{msg}}
     </li>
-  </ul>
+  </ul> -->
 </div>
 </template>
 
@@ -23,8 +23,8 @@ export default {
   // share common functionality with component mixins
   mixins: [],
   extends: {},
-  props: {},
   // variables
+  props: ["loginStatus", "locationStatus"],
   data() {
     return {
     };

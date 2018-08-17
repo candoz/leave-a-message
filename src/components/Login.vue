@@ -35,7 +35,6 @@ export default {
         })
         .then(response => {
           this.loginStatus.logged = "true";
-          console.log(response);
           this.$router.push('/');
         })
         .catch(error => {

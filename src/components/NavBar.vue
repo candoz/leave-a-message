@@ -19,7 +19,6 @@ export default {
     };
   },
 };
-console.log(this.$route);
 </script>
 
 <style lang="sass" scoped>

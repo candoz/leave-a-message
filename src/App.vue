@@ -52,9 +52,27 @@ export default {
       ]
     }
   },
+  mounted() {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((position) => {
+        //this.locationStatus.lat = position.coords.latitude;
+        //this.locationStatus.lng = position.coords.longitude;
+        this.locationStatus.lat = Math.random()*50;
+        this.locationStatus.lng = Math.random()*50;
+        console.log("Fake pos: " + this.locationStatus.lat + " - " + this.locationStatus.lng);
+      });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+  },
   watch: {
     loginStatus: (newStatus, oldStatus) => {
       localStorage.logged = newStatus.logged;
+      console.log("entrato login watch");
+    },
+    locationStatus: (newStatus, oldStatus) => {
+      localStorage.lat = newStatus.lat;
+      localStorage.lng = newStatus.lng;
     }
   }
 }
