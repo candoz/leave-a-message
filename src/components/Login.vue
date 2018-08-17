@@ -2,19 +2,12 @@
   <div class="login-page-body">
     <div class="login-component">
       <div class="form" v-if="logged == 'false'" >
-        <form class="register-form" v-if="newUser == 'true'" @submit.prevent="doRegister">
-          <input type="text" placeholder="Nickname"/>
-          <input type="password" placeholder="Password"/>
-          <input type="text" placeholder="Email address"/>
-          <button>Create</button>
-          <p type="submit" class="message">Already registered? <a href="#">Sign In</a></p>
-        </form>
-        <form class="login-form" v-else-if="newUser == 'false'" @submit.prevent="doLogin">
+        <form class="login-form" @submit.prevent="doLogin">
           <h3>Login Form</h3>
           <input id="email" v-model="email" type="text" placeholder="Email" required>
           <input id="password" v-model="password" type="password" placeholder="Password" required>
           <button type="submit" class="">Login</button>
-          <p class="message">Not registered? <a href="#">Create an account</a></p>
+          <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
         </form>
       </div>
       <div class="form" v-else >
@@ -31,8 +24,7 @@ export default {
     return {
       email: null,
       password: null,
-      logged: localStorage.logged,
-      newUser: 'false'
+      logged: localStorage.logged
     };
   },
   methods: {
@@ -74,9 +66,6 @@ export default {
         .catch(error => {
           console.log(error.config);
         });
-    },
-    doRegister(event) {
-      //TODO da implementare
     }
   },
   watch: {
@@ -94,10 +83,10 @@ $gradient-background-color: #8DC26F;
 
 .login-page-body 
   background: $base-background-color
-  // background: -webkit-linear-gradient(right, $base-background-color, $gradient-background-color)
-  // background: -moz-linear-gradient(right, $base-background-color, $gradient-background-color)
-  // background: -o-linear-gradient(right, $base-background-color, $gradient-background-color)
-  // background: linear-gradient(to left, $base-background-color, $gradient-background-color)
+  background: -webkit-linear-gradient(right, $base-background-color, $gradient-background-color)
+  background: -moz-linear-gradient(right, $base-background-color, $gradient-background-color)
+  background: -o-linear-gradient(right, $base-background-color, $gradient-background-color)
+  background: linear-gradient(to left, $base-background-color, $gradient-background-color)
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   width: 100%
@@ -105,7 +94,7 @@ $gradient-background-color: #8DC26F;
 
 .login-component
   width: 360px
-  padding: 4% 0 0
+  padding: 8% 0 0
   margin: auto
 
 .form

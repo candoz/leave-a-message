@@ -4,6 +4,7 @@ import LookAround from '@/components/LookAround.vue'
 import Login from '@/components/Login.vue'
 import Profile from '@/components/Profile.vue'
 import Write from '@/components/Write.vue'
+import SignUp from '@/components/SignUp.vue'
 
 Vue.use(Router)
 
@@ -25,6 +26,10 @@ export default new Router({
     {
       path: '/write',
       component: Write
+    },
+    {
+      path: '/signup',
+      component: SignUp
     }
   ]
 })
