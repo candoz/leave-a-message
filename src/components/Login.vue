@@ -23,7 +23,6 @@ export default {
     return {
       email: null,
       password: null,
-      // logged: localStorage.logged
     };
   },
   methods: {
@@ -35,7 +34,6 @@ export default {
           password: this.password
         })
         .then(response => {
-          // self.logged = "true";
           this.loginStatus.logged = "true";
           console.log(response);
           this.$router.push('/');
@@ -61,7 +59,6 @@ export default {
       axios
         .put(localStorage.urlHost + "/logout")
         .then(response => {
-          // self.logged = "false";
           this.loginStatus.logged = "false";
           console.log(response);
         })

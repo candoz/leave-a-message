@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav-bar :loginStatus="loginStatus"></nav-bar>
-    <app-view :loginStatus="loginStatus"></app-view>
+    <app-view :loginStatus="loginStatus" :locationStatus="locationStatus"></app-view>
   </div>
 </template>
 
@@ -17,6 +17,10 @@ export default {
     return {
       loginStatus: {
         logged: localStorage.logged || "false"
+      },
+      locationStatus: {
+        lat: localStorage.lat || 0,
+        lng: localStorage.lng || 0,
       },
       messagesAround:[
         {
@@ -51,7 +55,6 @@ export default {
   watch: {
     loginStatus: (newStatus, oldStatus) => {
       localStorage.logged = newStatus.logged;
-      this.loginStatus = newStatus;
     }
   }
 }
