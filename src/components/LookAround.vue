@@ -1,7 +1,6 @@
 <template>
 <div id="lookAround">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
-  <h1>Look Around</h1>
   <div class=search><p>da mettere il componente search</p></div>
   <div id="map" class="map"></div>
   <h3>Messaggi completi:</h3>
@@ -15,60 +14,34 @@
 
 <script type="text/javascript">
 import L from "leaflet";
+import Map from "./components/Map.vue"
+import MessagesList from "./components/MessagesList.vue"
 const axios = require('axios');
 export default {
-  // Do not forget this little guy
-  name: "RangeSlider",
+  components: {
+    Map,
+    MessagesList
+  },
   // share common functionality with component mixins
   mixins: [],
-  // compose new components
   extends: {},
-  // component properties/variables
   props: {},
   // variables
   data() {
     return {
-      selectedMessage: "",
-      map: null,
-      tileLayer: null,
-      fullMessages: [
-        {
-          _id: 0,
-          name: "Messaggio Full 2",
-          type: "marker",
-          coords: [38.6109607, -90.2050322]
-        },
-        {
-          _id: 1,
-          name: "Messaggio Full 4",
-          type: "marker",
-          coords: [38.6109607, -90.2050322]
-        }
-      ],
-      strippedMessages: [
-        {
-          _id: 3,
-          name: "Messaggio Stipped 1",
-          type: "marker",
-          coords: [38.6109607, -90.5050322]
-        }
-      ]
     };
   },
   computed: {
-    mixedMessages: function() {
-      let mix = this.fullMessages;
-      for (let strippedMessage of this.strippedMessages) {
-        if (mix.find(x => x._id == strippedMessage._id) == null) {
-          mix.push(strippedMessage);
-        }
-      }
-      return mix;
-    }
+    // mixedMessages: function() {
+    //   let mix = this.fullMessages;
+    //   for (let strippedMessage of this.strippedMessages) {
+    //     if (mix.find(x => x._id == strippedMessage._id) == null) {
+    //       mix.push(strippedMessage);
+    //     }
+    //   }
+    //   return mix;
+    // }
   },
-  // when component uses other components
-  components: { },
-  // methods
   watch: {},
   methods: {
     selectMessage(id) {

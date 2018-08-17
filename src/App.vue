@@ -14,7 +14,36 @@ export default {
     AppView
   },
   data() {
-    return
+    return {
+      messagesAround:[
+        {
+          _id: 0,
+          nickname: mark, 
+          name: Marco,
+          text: "#welcome to wasteland",
+          tags: "#welcome",
+          votes: 1,
+          location: {
+            type: "Point",
+            coordinates: [38.6109607, -90.2060344]
+          },
+          comments_id: [],
+        },
+        {
+          _id: 1,
+          nickname: euge, 
+          name: Eugenio,
+          text: "#hello there",
+          tags: "#hello",
+          votes: 2,
+          location: {
+            type: "Point",
+            coordinates: [38.6111607, -90.2050322]
+          },
+          comments_id: [],
+        }
+      ],
+    }
   }
 }
 </script>
