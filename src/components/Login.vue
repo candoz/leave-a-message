@@ -36,6 +36,7 @@ export default {
         .then(response => {
           self.logged = "true";
           console.log(response);
+          this.$router.push('/');
         })
         .catch(error => {
           if (error.response) {

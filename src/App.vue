@@ -15,6 +15,9 @@ export default {
   },
   data() {
     return {
+      shared: {
+        logged: localStorage.getItem('logged') || false
+      },
       messagesAround:[
         {
           _id: 0,

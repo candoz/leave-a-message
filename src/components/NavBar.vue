@@ -18,7 +18,7 @@ export default {
       get logged() {
         return localStorage.getItem('logged') || false;
       },
-      set token(value) {
+      set logged(value) {
         localStorage.setItem('logged', value);
       }
     };
