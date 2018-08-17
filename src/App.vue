@@ -18,8 +18,8 @@ export default {
       messagesAround:[
         {
           _id: 0,
-          nickname: mark, 
-          name: Marco,
+          nickname: "mark", 
+          name: "Marco",
           text: "#welcome to wasteland",
           tags: "#welcome",
           votes: 1,
@@ -31,8 +31,8 @@ export default {
         },
         {
           _id: 1,
-          nickname: euge, 
-          name: Eugenio,
+          nickname: "euge", 
+          name: "Eugenio",
           text: "#hello there",
           tags: "#hello",
           votes: 2,
@@ -55,5 +55,4 @@ export default {
   -moz-osx-font-smoothing: grayscale
   text-align: center
   color: #2c3e50
-  margin-top: 60px
 </style>

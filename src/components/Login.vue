@@ -1,18 +1,16 @@
 <template>
-  <div class="login-page-body">
-    <div class="login-component">
-      <div class="form" v-if="logged == 'false'" >
-        <form class="login-form" @submit.prevent="doLogin">
-          <h3>Login Form</h3>
-          <input id="email" v-model="email" type="text" placeholder="Email" required>
-          <input id="password" v-model="password" type="password" placeholder="Password" required>
-          <button type="submit" class="">Login</button>
-          <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
-        </form>
-      </div>
-      <div class="form" v-else >
-        <p>You are logged</p>
-      </div>
+  <div class="login-component">
+    <div class="form" v-if="logged == 'false'" >
+      <form class="login-form" @submit.prevent="doLogin">
+        <h3>Login Form</h3>
+        <input id="email" v-model="email" type="text" placeholder="Email" required>
+        <input id="password" v-model="password" type="password" placeholder="Password" required>
+        <button type="submit" class="">Login</button>
+        <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
+      </form>
+    </div>
+    <div class="form" v-else >
+      <p>You are logged</p>
     </div>
   </div>
 </template>
@@ -78,15 +76,10 @@ export default {
 
 <style lang="sass" scoped>
 
-$base-background-color: #76b852;
-$gradient-background-color: #8DC26F;
-
-.login-page-body 
-  background: $base-background-color
-
 .login-component
-  width: 360px
-  padding: 8% 0 0
+  width: 80%
+  max-width: 500px
+  padding: 15vh 0 0
   margin: auto
 
 .form
@@ -94,8 +87,9 @@ $gradient-background-color: #8DC26F;
   z-index: 1
   background: #FFFFFF
   max-width: 360px
-  margin: 0 auto 100px
-  padding: 45px
+  width: 80%
+  margin: auto
+  padding: 5%
   text-align: center
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
   input
@@ -128,44 +122,5 @@ $gradient-background-color: #8DC26F;
     a
       color: #4CAF50
       text-decoration: none
-  .register-form
-    display: none
-
-.container
-  position: relative
-  z-index: 1
-  max-width: 300px
-  margin: 0 auto
-  &:before, &:after
-    content: ""
-    display: block
-    clear: both
-  .info
-    margin: 50px auto
-    text-align: center
-    h1
-      margin: 0 0 15px
-      padding: 0
-      font-size: 36px
-      font-weight: 300
-      color: #1a1a1a
-    span
-      color: #4d4d4d
-      font-size: 12px
-      a
-        color: #000000
-        text-decoration: none
-      .fa
-        color: #EF3B3A
-
-body
-  background: #76b852
-  /* fallback for old browsers
-  background: -webkit-linear-gradient(right, #76b852, #8DC26F)
-  background: -moz-linear-gradient(right, #76b852, #8DC26F)
-  background: -o-linear-gradient(right, #76b852, #8DC26F)
-  background: linear-gradient(to left, #76b852, #8DC26F)
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
 
 </style>

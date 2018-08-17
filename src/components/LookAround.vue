@@ -91,6 +91,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+#lookAround
+  margin-top: 45px
 .selected
   color: #009
 .map

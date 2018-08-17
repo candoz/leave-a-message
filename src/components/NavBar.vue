@@ -24,8 +24,6 @@ console.log(this.$route);
 
 <style lang="sass" scoped>
 nav
-  margin: 0
-  padding: 0
   top: 0
   left: 0
   width: 100%
