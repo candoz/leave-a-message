@@ -64,8 +64,7 @@ export default {
   margin: auto
 
 .form
-  position: relative
-  z-index: 1
+  z-index: 0
   background: #FFFFFF
   max-width: 360px
   width: 80%
