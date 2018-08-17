@@ -42,9 +42,9 @@ export default {
   },
   watch: {},
   methods: {
-    selectMessage(id) {
-      this.selectedMessage = this.mixedMessages.find(x => x._id==id);
-    },
+    // selectMessage(id) {
+    //   this.selectedMessage = this.mixedMessages.find(x => x._id==id);
+    // },
   },
   // component Lifecycle hooks
   beforeCreate() {},

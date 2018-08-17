@@ -15,7 +15,12 @@ import L from "leaflet";
 export default {
   data() {
     return {
-      logged: localStorage.logged,
+      get logged() {
+        return localStorage.getItem('logged') || false;
+      },
+      set token(value) {
+        localStorage.setItem('logged', value);
+      }
     };
   }
 };
