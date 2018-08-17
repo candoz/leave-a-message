@@ -14,8 +14,8 @@
 
 <script type="text/javascript">
 import L from "leaflet";
-import Map from "./components/Map.vue"
-import MessagesList from "./components/MessagesList.vue"
+import Map from "./Map.vue"
+import MessagesList from "./MessagesList.vue"
 const axios = require('axios');
 export default {
   components: {
