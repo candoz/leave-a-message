@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <nav-bar></nav-bar>
-    <app-view></app-view>
+    <nav-bar :loginStatus="loginStatus"></nav-bar>
+    <app-view :loginStatus="loginStatus"></app-view>
   </div>
 </template>
 
@@ -15,8 +15,8 @@ export default {
   },
   data() {
     return {
-      shared: {
-        logged: localStorage.getItem('logged') || false
+      loginStatus: {
+        logged: localStorage.logged || "false"
       },
       messagesAround:[
         {
@@ -45,7 +45,13 @@ export default {
           },
           comments_id: [],
         }
-      ],
+      ]
+    }
+  },
+  watch: {
+    loginStatus: (newStatus, oldStatus) => {
+      localStorage.logged = newStatus.logged;
+      this.loginStatus = newStatus;
     }
   }
 }

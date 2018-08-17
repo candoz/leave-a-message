@@ -1,10 +1,10 @@
 <template>
     <div>
       <nav>
-        <router-link tag="li" v-if="logged == 'false'" :to="'/login'" exact>Login</router-link>
+        <router-link tag="li" v-if="loginStatus.logged == 'false'" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" :to="'/'" exact>Look Around</router-link>
-        <router-link tag="li" v-if="logged == 'true'" :to="'/write'" exact>Write</router-link>
-        <router-link tag="li" v-if="logged == 'true'" :to="'/profile'" exact>MyProfile</router-link>
+        <router-link tag="li" v-if="loginStatus.logged == 'true'" :to="'/write'" exact>Write</router-link>
+        <router-link tag="li" v-if="loginStatus.logged == 'true'" :to="'/profile'" exact>MyProfile</router-link>
       </nav>
     </div>
 </template>
@@ -13,16 +13,11 @@
 import L from "leaflet";
 
 export default {
+  props: ["loginStatus"],
   data() {
-    return {
-      get logged() {
-        return localStorage.getItem('logged') || false;
-      },
-      set logged(value) {
-        localStorage.setItem('logged', value);
-      }
+    return { 
     };
-  }
+  },
 };
 console.log(this.$route);
 </script>

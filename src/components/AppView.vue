@@ -1,11 +1,12 @@
 <template>
     <div class=app-view>
-      <router-view/>
+      <router-view :loginStatus="loginStatus"/>
     </div>
 </template>
 
 <script>
 export default {
+  props: ["loginStatus"],
   data() {
     return {
       

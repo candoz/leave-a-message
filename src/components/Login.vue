@@ -1,6 +1,6 @@
 <template>
   <div class="login-component">
-    <div class="form" v-if="logged == 'false'" >
+    <div class="form" v-if="loginStatus.logged == 'false'" >
       <form class="login-form" @submit.prevent="doLogin">
         <h3>Login Form</h3>
         <input id="email" v-model="email" type="text" placeholder="Email" required>
@@ -10,7 +10,7 @@
       </form>
     </div>
     <div class="form" v-else >
-      <p>You are logged</p>
+      <p>You are logged-in! :)</p>
     </div>
   </div>
 </template>
@@ -18,11 +18,12 @@
 <script>
 const axios = require("axios");
 export default {
+  props: ["loginStatus"],
   data() {
     return {
       email: null,
       password: null,
-      logged: localStorage.logged
+      // logged: localStorage.logged
     };
   },
   methods: {
@@ -34,7 +35,8 @@ export default {
           password: this.password
         })
         .then(response => {
-          self.logged = "true";
+          // self.logged = "true";
+          this.loginStatus.logged = "true";
           console.log(response);
           this.$router.push('/');
         })
@@ -59,17 +61,13 @@ export default {
       axios
         .put(localStorage.urlHost + "/logout")
         .then(response => {
-          self.logged = "false";
+          // self.logged = "false";
+          this.loginStatus.logged = "false";
           console.log(response);
         })
         .catch(error => {
           console.log(error.config);
         });
-    }
-  },
-  watch: {
-    logged(state) {
-      localStorage.logged = state;
     }
   }
 };
