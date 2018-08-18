@@ -1,12 +1,13 @@
 <template>
     <div class=app-view>
-      <router-view :loginStatus="loginStatus" :locationStatus="locationStatus"/>
+      <router-view :logged="logged" :located="located"/>
     </div>
 </template>
 
+
 <script>
 export default {
-  props: ["loginStatus", "locationStatus"],
+  props: ["logged", "located"],
   data() {
     return {
       
@@ -14,6 +15,7 @@ export default {
   }
 };
 </script>
+
 
 <style lang="sass" scoped>
   $base-background-color: #76b852;

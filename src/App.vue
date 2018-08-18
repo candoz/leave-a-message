@@ -1,27 +1,25 @@
 <template>
   <div id="app">
-    <nav-bar :loginStatus="loginStatus"></nav-bar>
-    <app-view :loginStatus="loginStatus" :locationStatus="locationStatus"></app-view>
+    <app-nav :logged="logged"></app-nav>
+    <app-body :logged="logged" :located="located"></app-body>
   </div>
 </template>
 
+
 <script>
-import NavBar from "./components/NavBar.vue"
-import AppView from "./components/AppView.vue"
+import AppNav from "./components/AppNav.vue"
+import AppBody from "./components/AppBody.vue"
+import { eventBus } from "main" 
+
 export default {
   components: {
-    NavBar,
-    AppView
+    AppNav,
+    AppBody
   },
   data() {
     return {
-      loginStatus: {
-        logged: localStorage.logged || "false"
-      },
-      locationStatus: {
-        lat: localStorage.lat || 0,
-        lng: localStorage.lng || 0,
-      },
+      logged: (localStorage.logged === null) ? false : JSON.parse(localStorage.logged),
+      located: (localStorage.located === null) ? {lat: 0, lng: 0} : JSON.parse(localStorage.located),
       messagesAround:[
         {
           _id: 0,
@@ -52,31 +50,32 @@ export default {
       ]
     }
   },
-  mounted() {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition((position) => {
-        //this.locationStatus.lat = position.coords.latitude;
-        //this.locationStatus.lng = position.coords.longitude;
-        this.locationStatus.lat = Math.random()*50;
-        this.locationStatus.lng = Math.random()*50;
-        console.log("Fake pos: " + this.locationStatus.lat + " - " + this.locationStatus.lng);
-      });
-    } else {
-        alert("Geolocation is not supported by this browser.");
+  watch: {
+    loginStatus: (event) => {
+      this.logged = JSON.stringify(event.logged);
+      localStorage.logged = JSON.stringify(event.logged);
+    },
+    locationStatus: (event) => {
+      this.located = JSON.stringify(event.located);
+      localStorage.located = JSON.stringify(event.located);
     }
   },
-  watch: {
-    loginStatus: (newStatus, oldStatus) => {
-      localStorage.logged = newStatus.logged;
-      console.log("entrato login watch");
-    },
-    locationStatus: (newStatus, oldStatus) => {
-      localStorage.lat = newStatus.lat;
-      localStorage.lng = newStatus.lng;
+  created() {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((position) => {
+        //this.located.lat = position.coords.latitude;
+        //this.located.lng = position.coords.longitude;
+        this.located.lat = Math.random()*50;
+        this.located.lng = Math.random()*50;
+        console.log("Fake located: " + this.located.lat + " - " + this.located.lng);
+      });
+    } else {
+        alert("Geolocation not supported by this browser.");
     }
   }
 }
 </script>
+
 
 <style lang="sass" scoped>
 #app

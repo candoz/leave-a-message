@@ -1,25 +1,26 @@
 <template>
     <div>
       <nav>
-        <router-link tag="li" v-if="loginStatus.logged == 'false'" :to="'/login'" exact>Login</router-link>
+        <router-link tag="li" v-if="logged === false" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" :to="'/'" exact>Look Around</router-link>
-        <router-link tag="li" v-if="loginStatus.logged == 'true'" :to="'/write'" exact>Write</router-link>
-        <router-link tag="li" v-if="loginStatus.logged == 'true'" :to="'/profile'" exact>MyProfile</router-link>
+        <router-link tag="li" v-if="logged === true" :to="'/write'" exact>Write</router-link>
+        <router-link tag="li" v-if="logged === true" :to="'/profile'" exact>MyProfile</router-link>
       </nav>
     </div>
 </template>
 
-<script>
-import L from "leaflet";
 
+<script>
 export default {
-  props: ["loginStatus"],
+  props: ["logged"],
   data() {
-    return { 
+    return {
+      
     };
   },
 };
 </script>
+
 
 <style lang="sass" scoped>
 nav

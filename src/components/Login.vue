@@ -1,10 +1,10 @@
 <template>
   <div class="login-component">
-    <div class="form" v-if="loginStatus.logged == 'false'" >
+    <div class="form" v-if="logged === false" >
       <form class="login-form" @submit.prevent="doLogin">
         <h3>Login Form</h3>
-        <input id="email" v-model="email" type="text" placeholder="Email" required>
-        <input id="password" v-model="password" type="password" placeholder="Password" required>
+        <input id="email" v-model="email" type="text" placeholder="Email" required>               <!--  'v-model.lazy' ? -->
+        <input id="password" v-model="password" type="password" placeholder="Password" required>  <!--  'v-model.lazy' ? -->
         <button type="submit" class="">Login</button>
         <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
       </form>
@@ -15,19 +15,21 @@
   </div>
 </template>
 
+
 <script>
+import { eventBus } from "../main" 
 const axios = require("axios");
+
 export default {
-  props: ["loginStatus"],
+  props: ["logged"],
   data() {
     return {
-      email: null,
-      password: null,
+      email,
+      password,
     };
   },
   methods: {
     doLogin(event) {
-      let self = this;
       axios
         .put(localStorage.urlHost + "/login", {
           email: this.email,
@@ -44,7 +46,7 @@ export default {
             console.log(error.response.status);
             console.log(error.response.headers);
           } else if (error.request) {
-            console.log("Richiesta");
+            console.log("Request");
             console.log(error.request);
           } else {
             console.log("Setting up");
@@ -54,7 +56,7 @@ export default {
         });
     },
     doLogout(event) {
-      let self = this;
+      const self = this;
       axios
         .put(localStorage.urlHost + "/logout")
         .then(response => {
@@ -65,9 +67,19 @@ export default {
           console.log(error.config);
         });
     }
+  },
+  watch: {
+    loginStatus: (newStatus, oldStatus) => {
+      console.log("entrato login watch di login");
+      localStorage.logged = newStatus.logged;
+    },
+    email: (newStatus, oldStatus) => {
+      console.log("entrato email watch di login");
+    }
   }
 };
 </script>
+
 
 <style lang="sass" scoped>
 
