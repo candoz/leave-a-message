@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-export const eventBus = new Vue();
+export const EventBus = new Vue();
 
 Vue.config.productionTip = false
 

@@ -1,11 +1,11 @@
 <template>
-  <div class="signup-component">
+  <div id="signup-component">
     <div class="form" v-if="logged == 'false'" >
-      <form class="signup-form" @submit.prevent="doRegister">
+      <form @submit.prevent="doRegister">
         <h3>Signup Form</h3>
-        <input id="nickname" v-model="nickname" type="text" placeholder="Nickname" required/>
-        <input  id="password" v-model="password" type="password" placeholder="Password" required/>
-        <input  id="email" v-model="email" type="text" placeholder="Email address" required/>
+        <input v-model="nickname" type="text" placeholder="Nickname" required/>
+        <input v-model="password" type="password" placeholder="Password" required/>
+        <input v-model="email" type="text" placeholder="Email address" required/>
         <button type="submit" class="">Create</button>
         <router-link :to="'/login'" class="message" exact>Already registered? Sign In</router-link>
       </form>
@@ -16,15 +16,17 @@
   </div>
 </template>
 
+
 <script>
 const axios = require("axios");
+
 export default {
+  props: ["logged"],
   data() {
     return {
-      email: null,
-      password: null,
-      nickname: null,
-      logged: localStorage.logged
+      email: "",
+      password: "",
+      nickname: "",
     };
   },
   methods: {
@@ -55,9 +57,10 @@ export default {
 }
 </script>
 
+
 <style lang="sass" scoped>
 
-.signup-component
+#signup-component
   width: 80%
   max-width: 500px
   padding: 15vh 0 0

@@ -1,10 +1,10 @@
 <template>
-  <div class="login-component">
+  <div id="login-component">
     <div class="form" v-if="logged === false" >
-      <form class="login-form" @submit.prevent="doLogin">
+      <form @submit.prevent="doLogin">
         <h3>Login Form</h3>
-        <input id="email" v-model="email" type="text" placeholder="Email" required>               <!--  'v-model.lazy' ? -->
-        <input id="password" v-model="password" type="password" placeholder="Password" required>  <!--  'v-model.lazy' ? -->
+        <input v-model="email" type="text" placeholder="Email" required>               <!--  'v-model.lazy' ? -->
+        <input v-model="password" type="password" placeholder="Password" required>  <!--  'v-model.lazy' ? -->
         <button type="submit" class="">Login</button>
         <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
       </form>
@@ -17,15 +17,15 @@
 
 
 <script>
-import { eventBus } from "../main" 
+import { EventBus } from "../main.js" 
 const axios = require("axios");
 
 export default {
   props: ["logged"],
   data() {
     return {
-      email,
-      password,
+      email: "",
+      password: "",
     };
   },
   methods: {
@@ -36,7 +36,7 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.loginStatus.logged = "true";
+          EventBus.$emit("loggedIn");
           this.$router.push('/');
         })
         .catch(error => {
@@ -56,25 +56,15 @@ export default {
         });
     },
     doLogout(event) {
-      const self = this;
       axios
         .put(localStorage.urlHost + "/logout")
         .then(response => {
-          this.loginStatus.logged = "false";
+          EventBus.$emit("loggedOut");
           console.log(response);
         })
         .catch(error => {
           console.log(error.config);
         });
-    }
-  },
-  watch: {
-    loginStatus: (newStatus, oldStatus) => {
-      console.log("entrato login watch di login");
-      localStorage.logged = newStatus.logged;
-    },
-    email: (newStatus, oldStatus) => {
-      console.log("entrato email watch di login");
     }
   }
 };
@@ -83,7 +73,7 @@ export default {
 
 <style lang="sass" scoped>
 
-.login-component
+#login-component
   width: 80%
   max-width: 500px
   padding: 15vh 0 0
