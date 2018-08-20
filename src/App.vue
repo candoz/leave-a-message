@@ -21,8 +21,8 @@ export default {
   },
   data() {
     return {
-      logged: (localStorage.getItem("logged") === null) ? false : JSON.parse(localStorage.logged),
-      located: (localStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(localStorage.located),
+      logged: (sessionStorage.getItem("logged") === null) ? false : JSON.parse(sessionStorage.logged),
+      located: (sessionStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(sessionStorage.located),
       // selectedMessageId,
       messagesAround:[
         {
@@ -57,23 +57,23 @@ export default {
   created() {
     EventBus.$on("loggedIn", () => {
       this.logged = true;
-      localStorage.logged = JSON.stringify(true);
+      sessionStorage.logged = JSON.stringify(true);
     });
     EventBus.$on("loggedOut", () => {
       this.logged = false;
-      localStorage.logged = JSON.stringify(false);
+      sessionStorage.logged = JSON.stringify(false);
     });
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition((position) => {
-        //this.located.lat = position.coords.latitude;
-        //this.located.lng = position.coords.longitude;
-        this.located.lat = Math.random()*50;
-        this.located.lng = Math.random()*50;
-        console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
+        this.located.lat = position.coords.latitude;
+        this.located.lng = position.coords.longitude;
+        /* this.located.lat = Math.random()*50;
+        this.located.lng = Math.random()*50; */
+        //console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
 
         if (this.logged === true) {
           axios
-          .put(localStorage.urlHost + "/users/location", {
+          .put(sessionStorage.urlHost + "/users/location", {
             lng: position.coords.longitude,
             lat: position.coords.latitude
           })
@@ -97,7 +97,7 @@ export default {
           });
         }
 
-        // localStorage.located = JSON.stringify(this.located);  // serve fare questo?
+        // sessionStorage.located = JSON.stringify(this.located);  // serve fare questo?
 
       });
     } else {

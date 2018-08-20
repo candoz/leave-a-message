@@ -31,7 +31,7 @@ export default {
   methods: {
     doLogin(event) {
       axios
-        .put(localStorage.urlHost + "/login", {
+        .put(sessionStorage.urlHost + "/login", {
           email: this.email,
           password: this.password
         })
@@ -55,17 +55,6 @@ export default {
           console.log(error.config);
         });
     },
-    doLogout(event) {
-      axios
-        .put(localStorage.urlHost + "/logout")
-        .then(response => {
-          EventBus.$emit("loggedOut");
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error.config);
-        });
-    }
   }
 };
 </script>

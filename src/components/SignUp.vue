@@ -1,6 +1,6 @@
 <template>
   <div id="signup-component">
-    <div class="form" v-if="logged == 'false'" >
+    <div class="form" v-if="logged === false" >
       <form @submit.prevent="doRegister">
         <h3>Signup Form</h3>
         <input v-model="nickname" type="text" placeholder="Nickname" required/>
@@ -33,7 +33,7 @@ export default {
     doRegister(event) {
       let self = this;
       axios
-        .post(localStorage.urlHost + "/users", {
+        .post(sessionStorage.urlHost + "/users", {
           email: this.email,
           password: this.password,
           nickname: this.nickname

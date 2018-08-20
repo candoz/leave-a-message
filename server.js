@@ -20,6 +20,10 @@ app.use(bodyParser.json());
 let routes = require('./routes/routes');
 app.use(routes);
 
+app.all('/*', function(req, res) {
+  res.sendFile('index.html', { root: __dirname+'/dist' });
+});
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log('Listening on port ' + port)
