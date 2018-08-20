@@ -22,7 +22,7 @@ export default {
     return {
       myMap: null,
       myArea: null,
-      strippedMessages: null,
+      strippedMessages: [ ],
       tileLayer: null,
       layers: [
         {
@@ -66,11 +66,15 @@ export default {
           lat: event.target.getCenter().lat,
         }
       }).then(response => {
-        console.log(response.data);
-        /* for(element in response.data) {   NON FUNZIONAAAAAAAA
-          this.strippedMessages.push(JSON.stringify(element));
-        } */
-        console.log(this.strippedMessages);
+        for (let element of response.data) {
+          this.strippedMessages.push({
+            id : element._id,
+            name: element.name,
+            tags: element.tags,
+            votes: element.votes,
+            latLng: L.latLng(element.location.coordinates[1], element.location.coordinates[0]) //NB: lat and lng are inverted server side
+          });
+        }
       }).catch(error => {
         console.log(error);
       });
