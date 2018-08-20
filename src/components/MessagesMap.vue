@@ -14,6 +14,7 @@
 // get dei messaggi in base alla mappa visualizzata (map.on("move")???)
 // render dei marker personalizzati dei messaggi
 import L from "leaflet";
+const axios = require("axios");
 
 export default {
   props: ["located"],
@@ -21,7 +22,16 @@ export default {
     return {
       myMap: null,
       myArea: null,
-      tileLayer: null
+      strippedMessages: null,
+      tileLayer: null,
+      layers: [
+        {
+          id: 0,
+          name: "StrippedMessages",
+          active: true,
+          features: this.strippedMessages
+        }
+      ]
     }
   },
   methods: {
@@ -48,8 +58,22 @@ export default {
   },
   mounted() {  // do NOT change to "created"
     this.initMap();
-    this.myMap.on("move", (event) => {
-      this.myArea.setLatLng(event.target.getCenter() );
+    this.myMap.on("moveend", (event) => {
+      //this.myArea.setLatLng(event.target.getCenter() );
+      axios.get(localStorage.urlHost + "/messages/stripped", {
+        params: {
+          lng: event.target.getCenter().lng,
+          lat: event.target.getCenter().lat,
+        }
+      }).then(response => {
+        console.log(response.data);
+        /* for(element in response.data) {   NON FUNZIONAAAAAAAA
+          this.strippedMessages.push(JSON.stringify(element));
+        } */
+        console.log(this.strippedMessages);
+      }).catch(error => {
+        console.log(error);
+      });
     });
   }
 }
