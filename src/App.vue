@@ -11,6 +11,8 @@ import AppNav from "./components/AppNav.vue"
 import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
+const DEFAULT_LAT = 44;
+const DEFAULT_LNG = 12;
 
 export default {
   components: {
@@ -20,7 +22,8 @@ export default {
   data() {
     return {
       logged: (localStorage.getItem("logged") === null) ? false : JSON.parse(localStorage.logged),
-      located: (localStorage.getItem("located") === null) ? {lat: 0, lng: 0} : JSON.parse(localStorage.located),
+      located: (localStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(localStorage.located),
+      // selectedMessageId,
       messagesAround:[
         {
           _id: 0,
@@ -91,10 +94,11 @@ export default {
               console.log("Error", error.message);
             }
             console.log(error.config);
-        });
+          });
         }
 
         // localStorage.located = JSON.stringify(this.located);  // serve fare questo?
+
       });
     } else {
       alert("Geolocation not supported by this browser.");

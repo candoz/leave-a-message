@@ -30,7 +30,7 @@ export default {
       this.tileLayer = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
         maxZoom: 30,
-        minZoom: 10,
+        minZoom: 5,
       }).addTo(this.myMap);
       this.myArea = L.circle([this.located.lat, this.located.lng], {
         color: '#669999',
@@ -44,16 +44,13 @@ export default {
     located: (newCoordinates) => {
       console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
       this.myArea.setLatLng(T.latLng(newCoordinates.lat, newCoordinates.lng));
-
     }
   },
   mounted() {  // do NOT change to "created"
     this.initMap();
-    /* let self = this;
-    self.myMap.on("move", function(){
-      var center = self.myMap.getCenter();
-      self.myArea.setLatLng( center );
-    }); */
+    this.myMap.on("move", (event) => {
+      this.myArea.setLatLng(event.target.getCenter() );
+    });
   }
 }
 </script>
