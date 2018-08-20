@@ -24,7 +24,11 @@ export default {
       myArea: null,
       strippedMessages: [ ],
       tileLayer: null,
-      layers: [
+    }
+  },
+  computed: {
+    layers() {
+      return [
         {
           id: 0,
           name: "StrippedMessages",
@@ -48,6 +52,42 @@ export default {
         fillOpacity: 0.1,
         radius: 500
       }).addTo(this.myMap);
+    },
+    updateStrippedLayer() {
+      //TODO rimuovere marker non più visibili
+      this.layers[0].features.forEach((feature) => {
+        feature.leafletObject = L.marker(feature.latLng).bindPopup(
+          "Tags:" + feature.tags + "\n" +
+          "Votes: " + feature.votes + "\n" +
+          "Author: " + feature.name + "\n"
+        ).addTo(this.myMap);
+      });
+    },
+    watchMapMovement() {
+      this.myMap.on("moveend", (event) => {
+      //this.myArea.setLatLng(event.target.getCenter() );
+        axios.get(localStorage.urlHost + "/messages/stripped", {
+          params: {
+            lng: event.target.getCenter().lng,
+            lat: event.target.getCenter().lat,
+          }
+        }).then(response => {
+          this.strippedMessages.length = 0;
+          for (let element of response.data) {
+            console.log(JSON.stringify(element));
+            this.strippedMessages.push({
+              id : element._id,
+              name: element.name,//NON VIENE INVIATO
+              tags: element.hashtags,
+              votes: element.votes, //NON VENGONO INVIATI
+              latLng: [element.location.coordinates[1], element.location.coordinates[0]], //NB: lat and lng are inverted server side
+            });
+          }
+          this.updateStrippedLayer();
+        }).catch(error => {
+          console.log(error);
+        });
+      });
     }
   },
   watch: {
@@ -58,27 +98,7 @@ export default {
   },
   mounted() {  // do NOT change to "created"
     this.initMap();
-    this.myMap.on("moveend", (event) => {
-      //this.myArea.setLatLng(event.target.getCenter() );
-      axios.get(localStorage.urlHost + "/messages/stripped", {
-        params: {
-          lng: event.target.getCenter().lng,
-          lat: event.target.getCenter().lat,
-        }
-      }).then(response => {
-        for (let element of response.data) {
-          this.strippedMessages.push({
-            id : element._id,
-            name: element.name,
-            tags: element.tags,
-            votes: element.votes,
-            latLng: L.latLng(element.location.coordinates[1], element.location.coordinates[0]) //NB: lat and lng are inverted server side
-          });
-        }
-      }).catch(error => {
-        console.log(error);
-      });
-    });
+    this.watchMapMovement();
   }
 }
 </script>
