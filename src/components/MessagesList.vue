@@ -1,10 +1,11 @@
 <template>
     <div>
-      <ul>
-        <li v-for="msg in messagesAround" @click="expandMessage()" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-          {{JSON.stringify(msg.hashtags)}}
-        </li>
-      </ul>
+      <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+        <button class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+msg._id">{{msg.hashtags}}</button>
+        <div class="panel" :ref="'panel-'+msg._id">
+          {{msg.text}}
+        </div>
+      </div>
     </div>
 </template>
 
@@ -17,8 +18,15 @@ export default {
     };
   },
   methods: {
-    expandMessage() {
-
+    expandMessage(id) {
+      let button = this.$refs['button-'+id][0];  // '[0]' because we want the first element of the ref
+      button.classList.toggle("active");  
+      let panel = this.$refs['panel-'+id][0];
+      if (panel.style.maxHeight){
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      } 
     }
   }
   
