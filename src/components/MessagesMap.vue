@@ -20,7 +20,8 @@ export default {
       myArea: null,
       strippedMessages: [ ],
       tileLayer: null,
-      strippedGroup : null
+      strippedGroup : null,
+      strippedMessageIcon : null
     }
   },
   methods: {
@@ -41,7 +42,7 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        let messageMarker = L.marker(message.latLng).bindPopup(
+        let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon}).bindPopup(
           "Tags:" + message.tags + "\n" +
           "Votes: " + message.votes + "\n" +
           "Author: " + message.name + "\n"
@@ -52,7 +53,7 @@ export default {
     watchMapMovement() {
       this.myMap.on("moveend", (event) => {
       //this.myArea.setLatLng(event.target.getCenter() );
-        axios.get(localStorage.urlHost + "/messages/stripped", {
+        axios.get(sessionStorage.urlHost + "/messages/stripped", {
           params: {
             lng: event.target.getCenter().lng,
             lat: event.target.getCenter().lat,
@@ -60,7 +61,6 @@ export default {
         }).then(response => {
           this.strippedMessages.length = 0;
           for (let element of response.data) {
-            console.log(JSON.stringify(element));
             this.strippedMessages.push({
               id : element._id,
               name: element.name,//NON VIENE INVIATO
@@ -83,6 +83,13 @@ export default {
     }
   },
   mounted() {  // do NOT change to "created"
+    this.strippedMessageIcon = L.icon({
+      iconUrl: '../assets/strippedMessage.png',
+
+      iconSize:     [38, 95], // size of the icon
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    }); 
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
     this.watchMapMovement();
