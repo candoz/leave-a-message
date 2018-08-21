@@ -9,10 +9,6 @@
 
 
 <script>
-//TODO:
-// update della posizione -> render del cerchio in corrispondenza
-// get dei messaggi in base alla mappa visualizzata (map.on("move")???)
-// render dei marker personalizzati dei messaggi
 import L from "leaflet";
 const axios = require("axios");
 
@@ -24,18 +20,7 @@ export default {
       myArea: null,
       strippedMessages: [ ],
       tileLayer: null,
-    }
-  },
-  computed: {
-    layers() {
-      return [
-        {
-          id: 0,
-          name: "StrippedMessages",
-          active: true,
-          features: this.strippedMessages
-        }
-      ]
+      strippedGroup : null
     }
   },
   methods: {
@@ -54,13 +39,14 @@ export default {
       }).addTo(this.myMap);
     },
     updateStrippedLayer() {
-      //TODO rimuovere marker non più visibili
-      this.layers[0].features.forEach((feature) => {
-        feature.leafletObject = L.marker(feature.latLng).bindPopup(
-          "Tags:" + feature.tags + "\n" +
-          "Votes: " + feature.votes + "\n" +
-          "Author: " + feature.name + "\n"
-        ).addTo(this.myMap);
+      this.strippedGroup.clearLayers();
+      this.strippedMessages.forEach(message => {
+        let messageMarker = L.marker(message.latLng).bindPopup(
+          "Tags:" + message.tags + "\n" +
+          "Votes: " + message.votes + "\n" +
+          "Author: " + message.name + "\n"
+        );
+        this.strippedGroup.addLayer(messageMarker);
       });
     },
     watchMapMovement() {
@@ -98,6 +84,7 @@ export default {
   },
   mounted() {  // do NOT change to "created"
     this.initMap();
+    this.strippedGroup = L.layerGroup().addTo(this.myMap);
     this.watchMapMovement();
   }
 }
