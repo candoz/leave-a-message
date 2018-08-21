@@ -1,13 +1,13 @@
 <template>
     <div class=app-view>
-      <router-view :logged="logged" :located="located"/>
+      <router-view :logged="logged" :located="located" :messagesAround="messagesAround"/>
     </div>
 </template>
 
 
 <script>
 export default {
-  props: ["logged", "located"],
+  props: ["logged", "located", "messagesAround"],
   data() {
     return {
       

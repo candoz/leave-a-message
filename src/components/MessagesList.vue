@@ -1,19 +1,65 @@
 <template>
     <div>
-      
+      <ul>
+        <li v-for="msg in messagesAround" @click="expandMessage()" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+          {{JSON.stringify(msg.hashtags)}}
+        </li>
+      </ul>
     </div>
 </template>
 
 <script>
 export default {
+  props: ["messagesAround"],
   data() {
     return {
       
     };
+  },
+  methods: {
+    expandMessage() {
+
+    }
   }
+  
 };
 </script>
 
 <style lang="sass" scoped>
+
+.accordion
+  background-color: #eee
+  color: #444
+  cursor: pointer
+  padding: 18px
+  width: 100%
+  border: none
+  text-align: left
+  outline: none
+  font-size: 15px
+  transition: 0.4s
+
+.active
+  background-color: #ccc
+
+.accordion
+  &:hover
+    background-color: #ccc
+  &:after
+    content: '\002B'
+    color: #777
+    font-weight: bold
+    float: right
+    margin-left: 5px
+
+.active:after
+  content: "\2212"
+
+.panel
+  padding: 0 18px
+  background-color: white
+  max-height: 0
+  overflow: hidden
+  transition: max-height 0.2s ease-out
 
 </style>

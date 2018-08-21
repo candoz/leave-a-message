@@ -2,12 +2,10 @@
 <div id="look-around-component">
   <div class=search><p>da mettere il componente search</p></div>
   <messages-map :located="located"></messages-map>
-  <h3>Messages nearby:</h3>
-  <!-- <ul>
-    <li v-for="msg in mixedMessages" @click="selectMessage(msg._id)" :key=msg._id :class="{selected: msg._id==selectedMessage._id}">
-      {{msg}}
-    </li>
-  </ul> -->
+  <!-- <div v-if="logged === true" > -->
+    <h3>Messages nearby:</h3>
+    <messages-list :messagesAround="messagesAround"></messages-list>
+  <!-- </div> -->
 </div>
 </template>
 
@@ -22,7 +20,7 @@ export default {
     MessagesMap,
     MessagesList
   },
-  props: ["logged", "located"],
+  props: ["logged", "located", "messagesAround"],
   data() {
     return {
 

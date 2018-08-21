@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <app-nav :logged="logged"></app-nav>
-    <app-body :logged="logged" :located="located"></app-body>
+    <app-body :logged="logged" :located="located" :messagesAround="messagesAround"></app-body>
   </div>
 </template>
 
@@ -29,8 +29,8 @@ export default {
           _id: 0,
           nickname: "mark", 
           name: "Marco",
-          text: "#welcome to wasteland",
-          tags: "#welcome",
+          text: "#welcome to #wasteland",
+          hashtags: ["welcome", "wasteland"],
           votes: 1,
           location: {
             type: "Point",
@@ -43,7 +43,7 @@ export default {
           nickname: "euge", 
           name: "Eugenio",
           text: "#hello there",
-          tags: "#hello",
+          hashtags: ["hello"],
           votes: 2,
           location: {
             type: "Point",
