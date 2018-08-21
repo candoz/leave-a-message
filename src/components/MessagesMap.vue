@@ -84,7 +84,7 @@ export default {
   },
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.icon({
-      iconUrl: '../assets/strippedMessage.png',
+      iconUrl: require("../assets/strippedMessage.png"),
 
       iconSize:     [38, 95], // size of the icon
       iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
