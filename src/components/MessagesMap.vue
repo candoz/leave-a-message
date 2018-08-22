@@ -90,19 +90,19 @@ export default {
         console.log("ID del full: " + idMessage);
         console.log("---");
         if(message.options.id == idMessage) {
-          message.openPopup();
           this.myMap.setView(message.getLatLng(), 13);
+          message.openPopup();
         }
       });
     });
   },
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.icon({
-      iconUrl: require("../assets/strippedMessage.png"),
+      iconUrl: require("../assets/stripped-message.png"),
       iconSize: [24, 24],
     }); 
     this.fullMessageIcon = L.icon({
-      iconUrl: require("../assets/fullMessage.png"),
+      iconUrl: require("../assets/full-message.png"),
       iconSize: [24, 24],
     });
     this.initMap();
@@ -121,5 +121,6 @@ export default {
   max-height: 40%
   max-width: 1100px
   margin: auto
+  z-index: 0
 
 </style>

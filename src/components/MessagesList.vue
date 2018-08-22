@@ -1,7 +1,15 @@
 <template>
     <div>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-        <button class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+msg._id">{{msg.hashtags}}</button>
+        <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+msg._id">
+          <button class="heart-button">
+            <img class="heart" src="../assets/heart-circle.png"/><!-- scaricare anche gli id di chi ha votato per controllo, userei il v-if -->
+          </button>
+          <p class="votes">{{msg.votes}}</p>
+          <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
+            &nbsp; #{{ value }}
+          </p>
+        </div>
         <div class="panel" :ref="'panel-'+msg._id">
           {{msg.text}}
         </div>
@@ -22,7 +30,7 @@ export default {
   methods: {
     expandMessage(id) {
       let button = this.$refs['button-'+id][0];  // '[0]' because we want the first element of the ref
-      button.classList.toggle("active");  
+      button.classList.toggle("active");
       let panel = this.$refs['panel-'+id][0];
       if (panel.style.maxHeight){
         panel.style.maxHeight = null;
@@ -32,7 +40,6 @@ export default {
       EventBus.$emit("selectedFullMessage", id);
     }
   }
-  
 };
 </script>
 
@@ -43,9 +50,9 @@ export default {
   color: #444
   cursor: pointer
   padding: 18px
-  width: 100%
+  /* width: 100% */
   border: none
-  text-align: left
+  text-align: center
   outline: none
   font-size: 15px
   transition: 0.4s
@@ -72,5 +79,29 @@ export default {
   max-height: 0
   overflow: hidden
   transition: max-height 0.2s ease-out
+
+.heart 
+  margin:auto
+
+.heart-button
+  padding: 0
+  border: none
+  background: none
+  display: inline-block
+  float: left
+
+.heart-button-liked
+  padding: 0
+  border: none
+  background: none
+  display: inline-block
+  float: left
+
+.votes
+  display: inline-block
+  float: left
+
+.hashtags
+  display: inline-block
 
 </style>

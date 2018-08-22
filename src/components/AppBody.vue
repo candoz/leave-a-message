@@ -22,9 +22,8 @@ export default {
 $base-background-color: #e68a00;
 
 .app-view 
-  height: 100vh
+  min-height: 100vh
   background-color: $base-background-color
   width: 100%
-  overflow: hidden
 
 </style>
