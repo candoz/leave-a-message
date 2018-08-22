@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import { EventBus } from "../main.js" 
+
 export default {
   props: ["messagesAround"],
   data() {
@@ -26,7 +28,8 @@ export default {
         panel.style.maxHeight = null;
       } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
+      }
+      EventBus.$emit("selectedFullMessage", id);
     }
   }
   

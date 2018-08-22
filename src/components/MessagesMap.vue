@@ -11,6 +11,7 @@
 <script>
 import L from "leaflet";
 const axios = require("axios");
+import { EventBus } from "../main.js" 
 
 export default {
   props: ["located"],
@@ -42,7 +43,7 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon}).bindPopup(
+        let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon, id: message.id}).bindPopup(
           "Tags:" + message.tags + "\n" +
           "Votes: " + message.votes + "\n" +
           "Author: " + message.name + "\n"
@@ -82,14 +83,28 @@ export default {
       this.myArea.setLatLng(T.latLng(newCoordinates.lat, newCoordinates.lng));
     }
   },
+  created() {
+    EventBus.$on("selectedFullMessage", (idMessage) => {
+      this.strippedGroup.getLayers().forEach(message => {
+        console.log("ID dello stripped: " + message.options.id);
+        console.log("ID del full: " + idMessage);
+        console.log("---");
+        if(message.options.id == idMessage) {
+          message.openPopup();
+          this.myMap.setView(message.getLatLng(), 13);
+        }
+      });
+    });
+  },
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.icon({
       iconUrl: require("../assets/strippedMessage.png"),
-
-      iconSize:     [38, 95], // size of the icon
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      iconSize: [24, 24],
     }); 
+    this.fullMessageIcon = L.icon({
+      iconUrl: require("../assets/fullMessage.png"),
+      iconSize: [24, 24],
+    });
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
     this.watchMapMovement();
