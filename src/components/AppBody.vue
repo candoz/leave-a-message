@@ -19,7 +19,7 @@ export default {
 
 <style lang="sass" scoped>
 
-$base-background-color: #76b852;
+$base-background-color: #e68a00;
 
 .app-view 
   height: 100vh

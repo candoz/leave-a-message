@@ -33,8 +33,8 @@ export default {
         minZoom: 5,
       }).addTo(this.myMap);
       this.myArea = L.circle([this.located.lat, this.located.lng], {
-        color: '#669999',
-        fillColor: '#669999',
+        color: '#e68a00',
+        fillColor: '#ff9900 ',
         fillOpacity: 0.1,
         radius: 500
       }).addTo(this.myMap);

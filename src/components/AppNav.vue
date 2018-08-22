@@ -23,6 +23,9 @@ export default {
 
 
 <style lang="sass" scoped>
+
+$base-background-color: #e68a00;
+
 nav
   top: 0
   left: 0
@@ -37,7 +40,7 @@ nav
     margin: 0px
     text-decoration: none
     &.router-link-active
-      background-color: #6600ff
+      background-color: $base-background-color
       cursor: pointer
     &:hover:not(.router-link-active)
       background-color: #111
@@ -47,5 +50,6 @@ nav
  *background-color: #0099ff
  *background-color: #ff9900
  *background-color: #6600ff
+ *background-color: #43A047
 
 </style>

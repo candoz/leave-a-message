@@ -62,6 +62,9 @@ export default {
 
 <style lang="sass" scoped>
 
+$base-background-color: #ff9900;
+$base-background-opacity-color: #e68a00;
+
 #login-component
   width: 80%
   max-width: 500px
@@ -89,7 +92,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    background: #4CAF50
+    background: $base-background-color
     width: 100%
     border: 0
     padding: 15px
@@ -99,7 +102,7 @@ export default {
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      background: #43A047
+      background: $base-background-opacity-color
   .message
     margin: 15px 0 0
     color: #b3b3b3
