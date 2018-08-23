@@ -54,10 +54,14 @@ export default {
     watchMapMovement() {
       this.myMap.on("moveend", (event) => {
       //this.myArea.setLatLng(event.target.getCenter() );
+        let cornerSouthWest = event.target.getBounds().getSouthWest();
+        let cornerNorthEast = event.target.getBounds().getNorthEast();
+        let cornerBottomLeft = [ cornerSouthWest.lng , cornerSouthWest.lat ];
+        let cornerUpperRight = [ cornerNorthEast.lng , cornerNorthEast.lat ];
         axios.get(sessionStorage.urlHost + "/messages/stripped", {
           params: {
-            lng: event.target.getCenter().lng,
-            lat: event.target.getCenter().lat,
+            cornerBottomLeft: cornerBottomLeft,
+            cornerUpperRight: cornerUpperRight,
           }
         }).then(response => {
           this.strippedMessages.length = 0;

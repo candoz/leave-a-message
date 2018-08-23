@@ -186,7 +186,7 @@ module.exports = (function () {
     dbPoolConnection.collection("Messages")
       .find({
         "location": {
-          $near: {
+          /* $near: {
             $geometry: {
               "type": "Point",
               "coordinates": [
@@ -195,7 +195,13 @@ module.exports = (function () {
               ]
             },
             $maxDistance: MAX_DISTANCE_STRIPPED_MESSAGES
-          }
+          } */
+          $geoWithin: {
+            $box: [
+              [ Number(req.query.cornerBottomLeft[0]) , Number(req.query.cornerBottomLeft[1]) ],
+              [ Number(req.query.cornerUpperRight[0]) , Number(req.query.cornerUpperRight[1]) ]
+            ]
+         }
         }
       })
       .toArray(function (err, dbResMessagesStripped) {
