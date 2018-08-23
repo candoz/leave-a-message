@@ -1,19 +1,162 @@
 <template>
-    <div class=write>
-      
+    <div class=write-component>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+        crossorigin=""/>
+      <div id="map"></div>
+      <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
+        <h3>Write a message</h3>
+          <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
+        <button :disabled="loading === true" type="submit" class="">Write the message</button>
+        <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
+      </form>
     </div>
 </template>
 
 <script>
+import L from "leaflet";
+const axios = require("axios");
+
 export default {
+  props: ["located"],
   data() {
     return {
-      
+      myMap: null,
+      tileLayer: null,
+      pencilIcon: null,
+      messageText: null,
+      loading: false,
     };
+  },
+  methods: {
+    initMap() {
+      this.myMap = L.map('map').setView([this.located.lat, this.located.lng], 13);
+      this.tileLayer = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
+        maxZoom: 18,
+        minZoom: 18,
+      }).addTo(this.myMap);
+      L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
+    },
+    writeMessage(event) {
+      let self = this;
+      this.loading = true;
+      setTimeout(function(){
+        axios
+        .post(sessionStorage.urlHost + "/messages", {
+          text: self.messageText
+        })
+        .then(response => {
+          console.log(response);
+          self.loading = false;
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log("Response");
+          } else if (error.request) {
+            console.log("Richiesta");
+          } else {
+            console.log("Setting up");
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
+        });
+      }, 2000);
+    }
+  },
+  mounted() {
+    this.pencilIcon = L.icon({
+      iconUrl: require("../assets/lead-pencil.png"),
+      iconSize: [24, 24],
+    }); 
+    this.initMap();
   }
 };
 </script>
 
 <style lang="sass" scoped>
 
+$base-background-color: #ff9900;
+$base-background-opacity-color: #e68a00;
+
+#map
+  width: 90%
+  height: 50vh
+  max-height: 40%
+  max-width: 1100px
+  margin: auto
+  z-index: 0
+
+.write-component
+  margin: auto
+  background: #FFFFFF
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+  width: 90%
+  padding: 15vh 0 0
+
+form
+  z-index: 0
+  background: #FFFFFF
+  max-width: 360px
+  width: 80%
+  margin: 1% auto auto auto
+  padding: 2%
+  text-align: center
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+
+textarea
+  outline: 0
+  background: #f2f2f2
+  width: 100%
+  border: 0
+  margin: 0 0 15px
+  padding: 15px
+  box-sizing: border-box
+  font-size: 14px
+  max-width: 360px
+
+button
+  text-transform: uppercase
+  outline: 0
+  background: $base-background-color
+  width: 100%
+  border: 0
+  padding: 15px
+  color: #FFFFFF
+  font-size: 14px
+  transition: all 0.3 ease
+  cursor: pointer
+  &:hover, &:active, &:focus
+    background: $base-background-opacity-color
+
+.lds-facebook
+  display: inline-block
+  position: relative
+  width: 64px
+  height: 64px
+  div
+    display: inline-block
+    position: absolute
+    left: 6px
+    width: 13px
+    background: #dfc
+    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite
+    &:nth-child(1)
+      left: 6px
+      animation-delay: -0.24s
+    &:nth-child(2)
+      left: 26px
+      animation-delay: -0.12s
+    &:nth-child(3)
+      left: 45px
+      animation-delay: 0
+
+@keyframes lds-facebook
+  0%
+    top: 6px
+    height: 51px
+
+  50%, 100%
+    top: 19px
+    height: 26px
 </style>

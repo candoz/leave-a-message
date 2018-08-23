@@ -99,7 +99,9 @@ export default {
 
         // sessionStorage.located = JSON.stringify(this.located);  // serve fare questo?
 
-      });
+      }, function() {
+        noGeolocation('Error: The Geolocation service failed.');
+      }, { enableHighAccuracy: true });
     } else {
       alert("Geolocation not supported by this browser.");
     }

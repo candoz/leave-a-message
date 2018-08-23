@@ -33,7 +33,7 @@ export default {
         maxZoom: 30,
         minZoom: 5,
       }).addTo(this.myMap);
-      this.myArea = L.circle([this.located.lat, this.located.lng], {
+      this.myArea = L.circle([this.located.lat, this.located.lng], {//UPDATE CON MOVIMENTO USER
         color: '#e68a00',
         fillColor: '#ff9900 ',
         fillOpacity: 0.1,
