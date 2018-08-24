@@ -12,6 +12,14 @@ export default {
     return {
       
     };
+  },
+  watch: {
+    located: {
+      handler(newValue, oldValue) {
+        console.log("watch in appbody");
+      },
+      deep: true
+    }
   }
 };
 </script>

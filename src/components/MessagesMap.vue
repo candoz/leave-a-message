@@ -27,18 +27,20 @@ export default {
   },
   methods: {
     initMap() {
-      this.myMap = L.map('map').setView([this.located.lat, this.located.lng], 13);
+      this.myMap = L.map('map');
+      this.myMap.setView([this.located.lat, this.located.lng], 13);
       this.tileLayer = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
         maxZoom: 30,
         minZoom: 5,
       }).addTo(this.myMap);
-      this.myArea = L.circle([this.located.lat, this.located.lng], {//UPDATE CON MOVIMENTO USER
+      this.myArea = L.circle([this.located.lat, this.located.lng], {
         color: '#e68a00',
         fillColor: '#ff9900 ',
         fillOpacity: 0.1,
         radius: 500
-      }).addTo(this.myMap);
+      });
+      this.myArea.addTo(this.myMap);
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
@@ -82,9 +84,14 @@ export default {
     }
   },
   watch: {
-    located: (newCoordinates) => {
-      console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
-      this.myArea.setLatLng(T.latLng(newCoordinates.lat, newCoordinates.lng));
+    located: {
+      handler(newCoordinates, oldValue) {
+        console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
+        this.myMap.removeLayer(this.myArea);
+        this.myArea.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
+        this.myMap.setView([this.located.lat, this.located.lng], 13);
+      },
+      deep: true
     }
   },
   created() {

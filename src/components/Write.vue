@@ -23,6 +23,7 @@ export default {
     return {
       myMap: null,
       tileLayer: null,
+      pencilPointer: null,
       pencilIcon: null,
       messageText: null,
       loading: false,
@@ -36,7 +37,7 @@ export default {
         maxZoom: 18,
         minZoom: 18,
       }).addTo(this.myMap);
-      L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
+      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
     },
     writeMessage(event) {
       let self = this;
@@ -70,7 +71,17 @@ export default {
       iconSize: [24, 24],
     }); 
     this.initMap();
-  }
+  },
+  watch: {
+    located: {
+      handler(newCoordinates, oldValue) {
+        this.myMap.removeLayer(this.pencilPointer);
+        this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); 
+        this.myMap.setView([this.located.lat, this.located.lng], 13);
+      },
+      deep: true
+    }
+  },
 };
 </script>
 
