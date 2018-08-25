@@ -1,5 +1,6 @@
 <template>
-    <div>
+  <div>
+    <div v-if="logged === true" >
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
         <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+msg._id">
           <button class="heart-button">
@@ -15,13 +16,17 @@
         </div>
       </div>
     </div>
+    <div v-else> 
+      <h4>To see full messages please login...</h4>
+    </div>
+  </div>
 </template>
 
 <script>
 import { EventBus } from "../main.js" 
 
 export default {
-  props: ["messagesAround"],
+  props: ["messagesAround", "logged"],
   data() {
     return {
       

@@ -79,6 +79,26 @@ export default {
           })
           .then(response => {
             console.log("coordinates updated in server")
+            axios
+            .get(sessionStorage.urlHost + "/messages/full")
+            .then(response => {
+              console.log(response.data);
+              this.messagesAround = response.data;
+            }).catch(error => {
+              if (error.response) {
+                console.log("Response");
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+              } else if (error.request) {
+                console.log("Request");
+                console.log(error.request);
+              } else {
+                console.log("Setting up");
+                console.log("Error", error.message);
+              }
+              console.log(error.config);
+            });
           })
           .catch(error => {
             if (error.response) {

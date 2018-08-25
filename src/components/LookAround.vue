@@ -4,7 +4,7 @@
   <messages-map :located="located"></messages-map>
   <!-- <div v-if="logged === true" > -->
   <h3>Messages nearby:</h3>
-  <messages-list :messagesAround="messagesAround"></messages-list>
+  <messages-list :logged="logged" :messagesAround="messagesAround"></messages-list>
   <!-- </div> -->
 </div>
 </template>
