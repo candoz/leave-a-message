@@ -2,9 +2,9 @@
   <div>
     <div v-if="logged === true" >
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-        <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+msg._id">
-          <button class="heart-button">
-            <img class="heart" src="../assets/heart-circle.png"/><!-- scaricare anche gli id di chi ha votato per controllo, userei il v-if -->
+        <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
+          <button class="heart-button" @click="love(msg._id)" :ref="'heart-button' + msg._id">
+            <img class="heart" v-bind:src="likeButton" :ref="'heart-image' + msg._id"/> <!-- v-if sull'id? 2 image differenti-->
           </button>
           <p class="votes">{{msg.votes}}</p>
           <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
@@ -29,7 +29,8 @@ export default {
   props: ["messagesAround", "logged"],
   data() {
     return {
-      
+      likeButton: require("../assets/heart-circle.png"),
+      likedButton: require("../assets/heart-circle-outline.png")
     };
   },
   methods: {
@@ -43,6 +44,9 @@ export default {
         panel.style.maxHeight = panel.scrollHeight + "px";
       }
       EventBus.$emit("selectedFullMessage", id);
+    },
+    love(id) {
+      console.log("like to message " + this.$refs['heart-button'+id][0]);
     }
   }
 };

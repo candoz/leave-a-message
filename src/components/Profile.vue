@@ -1,7 +1,7 @@
 <template>
     <div class=profile>
       <div class="card">
-        <img src="../assets/profile-pic.png" alt="profile-pic" style="width:80%">
+        <img v-bind:src="profilePic" style="width:80%">
         <h3>{{ nickname }}</h3>
         <p class="mail">{{ email }}</p>
         <p class="reputation">{{ reputation }}</p>
@@ -25,7 +25,7 @@ export default {
       writedMessages: [],
       reputation: "15",
       badges: ["badge1", "badge2"],
-      profilePic: null
+      profilePic: require("../assets/profile-pic.png")
     };
   },
   methods: {
