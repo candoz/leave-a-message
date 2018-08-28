@@ -51,6 +51,17 @@ module.exports = (function () {
     });
   });
 
+  dbRoutes.get("/users", function(req, res, next) {
+    if (req.session.userId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve profile information without being logged-in"); }
+      return next(boom.unauthorized("Cannot retrieve your profile if not logged-in"));
+    }
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
+      if (err) { return next(boom.badImplementation(err)); }
+      res.send(dbResLoggedUser);
+    });
+  });
+
   dbRoutes.put("/login", function (req, res, next) {
     if (!req.body.email || !req.body.password) {
       if (LOG_CLIENT_ERRORS) { console.log("User tried to login without specifying both email and password"); }

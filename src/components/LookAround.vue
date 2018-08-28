@@ -37,9 +37,6 @@ export default {
   background: #FFFFFF
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
   width: 90%
-  padding: 15vh 0 0
-
-.selected
-  color: #009
+  padding: 10vh 0 0
 
 </style>
