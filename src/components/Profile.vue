@@ -8,8 +8,8 @@
         <div class="badges" v-for="badge in badges" :key=badge>
           {{badge}}
         </div>
+        <button @click="doLogout()">logout</button>
       </div>
-      <button @click="doLogout()">logout</button>
     </div>
 </template>
 
@@ -66,12 +66,12 @@ $base-background-opacity-color: #800000;
   width: 80%
   padding: 10vh 0 0
   margin: auto
-  background: #FFFFFF
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
 
 .card 
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
   max-width: 300px
+  background: #FFFFFF
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
   margin: auto auto 1% auto
   text-align: center
   padding: 2%
@@ -86,7 +86,7 @@ button
   background: $base-background-color
   width: 100%
   max-width: 200px
-  margin: auto
+  margin: 3% auto auto auto
   border: 0
   padding: 15px
   color: #FFFFFF
