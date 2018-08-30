@@ -11,6 +11,7 @@
 <script>
 import L from "leaflet";
 import { } from "leaflet-easybutton"
+import { } from "../leaflet-tilelayer-mask-master/leaflet-tilelayer-mask.js"
 import { EventBus } from "../main.js"
 const axios = require("axios");
 const POLLING_INTERVAL = 10000;
@@ -24,14 +25,15 @@ export default {
       strippedMessages: [ ],
       tileLayer: null,
       strippedGroup : null,
-      strippedMessageIcon : null
+      strippedMessageIcon : null,
+      fg: null,
     }
   },
   methods: {
     initMap() {
       this.myMap = L.map('map');
       this.myMap.setView([this.located.lat, this.located.lng], 13);
-      this.tileLayer = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
+      this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
         maxZoom: 30,
         minZoom: 5,
@@ -47,6 +49,10 @@ export default {
         map.setView([self.located.lat, self.located.lng], 15);
       }).addTo(this.myMap);
       this.myArea.addTo(this.myMap);
+
+      this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
+        maskSize : L.point(200, 200)
+      }).addTo(this.myMap);
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
@@ -95,6 +101,7 @@ export default {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
         this.myMap.removeLayer(this.myArea);
         this.myArea.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
+        this.fg.setCenter(e.containerPoint);
         // this.myMap.setView([this.located.lat, this.located.lng], 13);
       },
       deep: true
