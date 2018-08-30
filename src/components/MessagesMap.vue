@@ -10,8 +10,9 @@
 
 <script>
 import L from "leaflet";
+import { EventBus } from "../main.js"
 const axios = require("axios");
-import { EventBus } from "../main.js" 
+const POLLING_INTERVAL = 10000;
 
 export default {
   props: ["located"],
@@ -54,23 +55,24 @@ export default {
       });
     },
     watchMapMovement() {
-      this.myMap.on("moveend", (event) => {
-      //this.myArea.setLatLng(event.target.getCenter() );
+      this.myMap.on("moveend", (event) => {  // "move"
         let cornerSouthWest = event.target.getBounds().getSouthWest();
         let cornerNorthEast = event.target.getBounds().getNorthEast();
-        let cornerBottomLeft = [ cornerSouthWest.lng , cornerSouthWest.lat ];
-        let cornerUpperRight = [ cornerNorthEast.lng , cornerNorthEast.lat ];
-        axios.get(sessionStorage.urlHost + "/messages/stripped", {
+        this.getStripped(cornerSouthWest, cornerNorthEast);
+      });
+    },
+    getStripped(cornerSouthWest, cornerNorthEast) {
+      axios.get(sessionStorage.urlHost + "/messages/stripped", {
           params: {
-            cornerBottomLeft: cornerBottomLeft,
-            cornerUpperRight: cornerUpperRight,
+            cornerBottomLeft: [ cornerSouthWest.lng , cornerSouthWest.lat ],
+            cornerUpperRight: [ cornerNorthEast.lng , cornerNorthEast.lat ],
           }
         }).then(response => {
           this.strippedMessages.length = 0;
           for (let element of response.data) {
             this.strippedMessages.push({
               id : element._id,
-              name: element.name,//NON VIENE INVIATO
+              name: element.name, //NON VIENE INVIATO
               tags: element.hashtags,
               votes: element.votes, //NON VENGONO INVIATI
               latLng: [element.location.coordinates[1], element.location.coordinates[0]], //NB: lat and lng are inverted server side
@@ -80,7 +82,6 @@ export default {
         }).catch(error => {
           console.log(error);
         });
-      });
     }
   },
   watch: {
@@ -89,7 +90,7 @@ export default {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
         this.myMap.removeLayer(this.myArea);
         this.myArea.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
-        this.myMap.setView([this.located.lat, this.located.lng], 13);
+        // this.myMap.setView([this.located.lat, this.located.lng], 13);
       },
       deep: true
     }
@@ -119,6 +120,9 @@ export default {
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
     this.watchMapMovement();
+
+    // Polling ...
+    setInterval(this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast()).bind(this), POLLING_INTERVAL);
   }
 }
 </script>

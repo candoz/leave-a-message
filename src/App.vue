@@ -11,6 +11,7 @@ import AppNav from "./components/AppNav.vue"
 import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
+const POLLING_INTERVAL = 2500;
 const DEFAULT_LAT = 44.148020;
 const DEFAULT_LNG = 12.235375;
 
@@ -72,19 +73,33 @@ export default {
         console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng); */
 
         if (this.logged === true) {
-          axios
-          .put(sessionStorage.urlHost + "/users/location", {
-            lng: position.coords.longitude,
-            lat: position.coords.latitude
-          })
-          .then(response => {
-            console.log("coordinates updated in server")
-            axios
-            .get(sessionStorage.urlHost + "/messages/full")
+          axios.put(sessionStorage.urlHost + "/users/location", {
+              lng: position.coords.longitude,
+              lat: position.coords.latitude
+            })
             .then(response => {
-              console.log(response.data);
-              this.messagesAround = response.data;
-            }).catch(error => {
+              console.log("coordinates updated in server")
+              axios.get(sessionStorage.urlHost + "/messages/full")
+                .then(response => {
+                  console.log(response.data);
+                  this.messagesAround = response.data;
+                }).catch(error => {
+                  if (error.response) {
+                    console.log("Response");
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                  } else if (error.request) {
+                    console.log("Request");
+                    console.log(error.request);
+                  } else {
+                    console.log("Setting up");
+                    console.log("Error", error.message);
+                  }
+                  console.log(error.config);
+                });
+            })
+            .catch(error => {
               if (error.response) {
                 console.log("Response");
                 console.log(error.response.data);
@@ -99,8 +114,22 @@ export default {
               }
               console.log(error.config);
             });
-          })
-          .catch(error => {
+        }
+      }, function() {
+        noGeolocation('Error: The Geolocation service failed.');
+      }, { enableHighAccuracy: true });
+    } else {
+      alert("Geolocation not supported by this browser.");
+    }
+
+    // Polling for new messages if the user isn't moving
+    setInterval(function () {
+      if (this.logged === true) {
+        axios.get(sessionStorage.urlHost + "/messages/full")
+          .then(response => {
+            console.log(response.data);
+            this.messagesAround = response.data;
+          }).catch(error => {
             if (error.response) {
               console.log("Response");
               console.log(error.response.data);
@@ -115,13 +144,8 @@ export default {
             }
             console.log(error.config);
           });
-        }
-      }, function() {
-        noGeolocation('Error: The Geolocation service failed.');
-      }, { enableHighAccuracy: true });
-    } else {
-      alert("Geolocation not supported by this browser.");
-    }
+      }
+    }.bind(this), POLLING_INTERVAL); 
   }
 }
 </script>

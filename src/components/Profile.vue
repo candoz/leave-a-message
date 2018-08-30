@@ -44,6 +44,7 @@ export default {
         .put(sessionStorage.urlHost + "/logout")
         .then(response => {
           EventBus.$emit("loggedOut");
+          this.$router.push('/');
           console.log(response);
         })
         .catch(error => {
