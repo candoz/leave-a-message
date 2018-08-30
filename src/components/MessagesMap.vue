@@ -11,7 +11,7 @@
 <script>
 import L from "leaflet";
 import { } from "leaflet-easybutton"
-import { } from "../leaflet-tilelayer-mask-master/leaflet-tilelayer-mask.js"
+// import { } from "../leaflet-tilelayer-mask-master/leaflet-tilelayer-mask.js"
 import { EventBus } from "../main.js"
 const axios = require("axios");
 const POLLING_INTERVAL = 10000;
@@ -33,26 +33,52 @@ export default {
     initMap() {
       this.myMap = L.map('map');
       this.myMap.setView([this.located.lat, this.located.lng], 13);
-      this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-        maxZoom: 30,
+
+      // this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+      //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
+      //   maxZoom: 30,
+      //   minZoom: 5,
+      // }).addTo(this.myMap);
+
+      // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+      //   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      //   // subdomains: 'abcd',
+      //   minZoom: 5,
+      //   maxZoom: 16,
+      //   ext: 'png'
+      // }).addTo(this.myMap);
+
+      this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        // subdomains: 'abcd',
         minZoom: 5,
+        maxZoom: 15,
+        ext: 'png'
       }).addTo(this.myMap);
+
       this.myArea = L.circle([this.located.lat, this.located.lng], {
-        color: '#e68a00',
-        fillColor: '#ff9900 ',
+        stroke: true,
+        // color: "#e68a00",
+        // color: "#FFD700",
+        color: "#F4A460",
+        weight: "2",
+        dashArray: "4",
+        // fillColor: "#ff9900",
+        // fillColor: "#FFD700",
+        fillColor: "#B46420",
         fillOpacity: 0.1,
-        radius: 500
+        radius: 5000 // meters
       });
+
       let self = this;
       L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
-        map.setView([self.located.lat, self.located.lng], 15);
+        map.setView([self.located.lat, self.located.lng], 12);
       }).addTo(this.myMap);
       this.myArea.addTo(this.myMap);
 
-      this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
-        maskSize : L.point(200, 200)
-      }).addTo(this.myMap);
+      // this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
+      //   maskSize : L.point(200, 200)
+      // }).addTo(this.myMap);
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
