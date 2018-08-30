@@ -3,10 +3,10 @@
     <div class="form" v-if="logged === false" >
       <form @submit.prevent="doRegister">
         <h3>Signup Form</h3>
+        <input v-model="email" type="text" placeholder="Email address" required/>
         <input v-model="nickname" type="text" placeholder="Nickname" required/>
         <input v-model="password" type="password" placeholder="Password" required/>
-        <input v-model="email" type="text" placeholder="Email address" required/>
-        <button type="submit" class="">Create</button>
+        <button type="submit" class="">Create account</button>
         <router-link :to="'/login'" class="message" exact>Already registered? Sign In</router-link>
       </form>
     </div>
@@ -88,7 +88,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    background: $base-background-color
+    background: $secondary-color
     width: 100%
     border: 0
     padding: 15px
@@ -98,7 +98,7 @@ export default {
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      background: $base-background-opacity-color
+      background: $secondary-color-mod
   .message
     margin: 15px 0 0
     color: #b3b3b3

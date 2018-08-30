@@ -3,7 +3,7 @@
     <div class="form" v-if="logged === false" >
       <form @submit.prevent="doLogin">
         <h3>Login Form</h3>
-        <input v-model="email" type="text" placeholder="Email" required>               <!--  'v-model.lazy' ? -->
+        <input v-model="email" type="text" placeholder="Email" required>            <!--  'v-model.lazy' ? -->
         <input v-model="password" type="password" placeholder="Password" required>  <!--  'v-model.lazy' ? -->
         <button type="submit" class="">Login</button>
         <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
@@ -90,7 +90,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    background: $base-background-color
+    background: $base-color
     width: 100%
     border: 0
     padding: 15px
@@ -100,7 +100,7 @@ export default {
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      background: $base-background-opacity-color
+      background: $base-color-mod
   .message
     margin: 15px 0 0
     color: #b3b3b3

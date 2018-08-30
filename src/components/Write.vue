@@ -5,9 +5,9 @@
         crossorigin=""/>
       <div id="map"></div>
       <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
-        <h3>Write a message</h3>
+        <!-- <h3>Write a message</h3> -->
           <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
-        <button :disabled="loading === true" type="submit" class="">Write the message</button>
+        <button :disabled="loading === true" type="submit" class="">Publish message</button>
         <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
       </form>
     </div>
@@ -86,9 +86,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-
-$base-background-color: #ff9900;
-$base-background-opacity-color: #e68a00;
+@import './vars.sass'
 
 #map
   width: 90%
@@ -129,7 +127,7 @@ textarea
 button
   text-transform: uppercase
   outline: 0
-  background: $base-background-color
+  background: $secondary-color
   width: 100%
   border: 0
   padding: 15px
@@ -138,7 +136,7 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    background: $base-background-opacity-color
+    background: $secondary-color-mod
 
 .lds-facebook
   display: inline-block

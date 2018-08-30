@@ -14,6 +14,7 @@ import { } from "leaflet-easybutton"
 // import { } from "../leaflet-tilelayer-mask-master/leaflet-tilelayer-mask.js"
 import { EventBus } from "../main.js"
 const axios = require("axios");
+const FULL_MESSAGES_RADIUS = 5000;  // meters
 const POLLING_INTERVAL = 10000;
 
 export default {
@@ -50,24 +51,19 @@ export default {
 
       this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
         attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        // subdomains: 'abcd',
+        subdomains: 'abcd',
         minZoom: 5,
         maxZoom: 15,
         ext: 'png'
       }).addTo(this.myMap);
 
       this.myArea = L.circle([this.located.lat, this.located.lng], {
-        stroke: true,
-        // color: "#e68a00",
-        // color: "#FFD700",
-        color: "#F4A460",
+        color: "#B96925", // "#B96925", // "#e68a00", "#FFD700",
         weight: "2",
-        dashArray: "4",
-        // fillColor: "#ff9900",
-        // fillColor: "#FFD700",
-        fillColor: "#B46420",
+        dashArray: "5",
+        fillColor: "#B96925", // "#ff9900", "#FFD700",
         fillOpacity: 0.1,
-        radius: 5000 // meters
+        radius: FULL_MESSAGES_RADIUS
       });
 
       let self = this;
@@ -79,6 +75,7 @@ export default {
       // this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
       //   maskSize : L.point(200, 200)
       // }).addTo(this.myMap);
+      
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();

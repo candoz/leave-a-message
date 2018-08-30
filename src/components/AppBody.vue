@@ -22,7 +22,7 @@ export default {
 
 .app-view 
   min-height: 100vh
-  background-color: $base-background-color
+  background-color: $base-color
   width: 100%
 
 </style>

@@ -40,16 +40,10 @@ nav
     margin: 0px
     text-decoration: none
     &.router-link-active
-      background-color: $base-background-color
+      background-color: $base-color
       cursor: pointer
     &:hover:not(.router-link-active)
       background-color: #111
       cursor: pointer
-
-/* 
- *background-color: #0099ff
- *background-color: #ff9900
- *background-color: #6600ff
- *background-color: #43A047
 
 </style>

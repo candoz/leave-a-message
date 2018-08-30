@@ -82,7 +82,7 @@ export default {
 button
   text-transform: uppercase
   outline: 0
-  background: $logout-background-color
+  background: $secondary-color
   width: 100%
   max-width: 200px
   margin: 3% auto auto auto
@@ -93,6 +93,6 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    background: $logout-background-opacity-color
+    background: $secondary-color-mod
 
 </style>
