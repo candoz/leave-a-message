@@ -160,7 +160,14 @@ module.exports = (function () {
       dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
         if (err) { return next(boom.badImplementation(err)); }
         res.send("Message succesfully published");
-        if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
+        dbPoolConnection.collection("Users").updateOne( 
+          { _id: new ObjectId(req.session.userId) },
+          { $push: { messages_id: dbResPublishedMessage.insertedId } },
+          function(err, dbResAddedMessageToUser) {
+            if (err) throw err;
+            if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
+          }
+        )
       });
     });
   });
