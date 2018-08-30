@@ -10,6 +10,7 @@
 
 <script>
 import L from "leaflet";
+import { } from "leaflet-easybutton"
 import { EventBus } from "../main.js"
 const axios = require("axios");
 const POLLING_INTERVAL = 10000;
@@ -41,6 +42,10 @@ export default {
         fillOpacity: 0.1,
         radius: 500
       });
+      let self = this;
+      L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
+        map.setView([self.located.lat, self.located.lng], 15);
+      }).addTo(this.myMap);
       this.myArea.addTo(this.myMap);
     },
     updateStrippedLayer() {
