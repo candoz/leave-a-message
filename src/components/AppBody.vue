@@ -18,8 +18,7 @@ export default {
 
 
 <style lang="sass" scoped>
-
-$base-background-color: #e68a00;
+@import './vars.sass'
 
 .app-view 
   min-height: 100vh

@@ -59,9 +59,7 @@ export default {
 
 
 <style lang="sass" scoped>
-
-$base-background-color: #ff9900;
-$base-background-opacity-color: #e68a00;
+@import './vars.sass'
 
 #signup-component
   width: 80%

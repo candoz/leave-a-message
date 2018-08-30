@@ -59,9 +59,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-
-$base-background-color: #990000;
-$base-background-opacity-color: #800000;
+@import './vars.sass'
 
 .profile
   width: 80%
@@ -84,7 +82,7 @@ $base-background-opacity-color: #800000;
 button
   text-transform: uppercase
   outline: 0
-  background: $base-background-color
+  background: $logout-background-color
   width: 100%
   max-width: 200px
   margin: 3% auto auto auto
@@ -95,6 +93,6 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    background: $base-background-opacity-color
+    background: $logout-background-opacity-color
 
 </style>

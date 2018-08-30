@@ -122,7 +122,9 @@ export default {
     this.watchMapMovement();
 
     // Polling ...
-    setInterval(this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast()).bind(this), POLLING_INTERVAL);
+    setInterval(function() {
+      this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
+    }.bind(this), POLLING_INTERVAL);
   }
 }
 </script>
