@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-if="logged === true" >
+      <h3>Messages nearby:</h3>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
         <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
           <button class="heart-button" @click="love(msg._id)" :ref="'heart-button' + msg._id">
