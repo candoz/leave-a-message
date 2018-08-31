@@ -5,7 +5,7 @@
         crossorigin=""/>
       <div id="map"></div>
       <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
-        <!-- <h3>Write a message</h3> -->
+        <h3>Write a message</h3>
           <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
         <button :disabled="loading === true" type="submit" class="">Publish message</button>
         <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
@@ -16,6 +16,7 @@
 <script>
 import L from "leaflet";
 const axios = require("axios");
+const ZOOM_LEVEL = 13;
 
 export default {
   props: ["located"],
@@ -31,17 +32,27 @@ export default {
   },
   methods: {
     initMap() {
-      this.myMap = L.map('map').setView([this.located.lat, this.located.lng], 13);
-      this.tileLayer = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-        maxZoom: 18,
-        minZoom: 18,
+      this.myMap = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        dragging: false,
+        doubleClickZoom: false,
+      });
+      this.myMap.setView([this.located.lat, this.located.lng], ZOOM_LEVEL);
+
+      this.tileLayer = L.tileLayer("https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}", {
+        // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: 'abcd',
+        minZoom: ZOOM_LEVEL,
+        maxZoom: ZOOM_LEVEL,
+        ext: 'png'
       }).addTo(this.myMap);
-      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
+
+      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be published here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
     },
     writeMessage(event) {
-      let self = this;
       this.loading = true;
+      let self = this;
       setTimeout(function(){
         axios
         .post(sessionStorage.urlHost + "/messages", {
