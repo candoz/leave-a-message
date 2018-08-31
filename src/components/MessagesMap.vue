@@ -11,7 +11,7 @@
 <script>
 import L from "leaflet";
 import { } from "leaflet-easybutton"
-// import { } from "../leaflet-tilelayer-mask-master/leaflet-tilelayer-mask.js"
+import { } from "leaflet-maskcanvas"
 import { EventBus } from "../main.js"
 const axios = require("axios");
 const FULL_MESSAGES_RADIUS = 5000;  // meters
@@ -23,9 +23,9 @@ export default {
   data() {
     return {
       myMap: null,
-      myArea: null,
       strippedMessages: [ ],
       tileLayer: null,
+      maskLayer: null,
       strippedGroup : null,
       strippedMessageIcon : null,
       fg: null,
@@ -42,41 +42,15 @@ export default {
       });
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
-      // this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
-      //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-      //   maxZoom: 30,
-      //   minZoom: 5,
-      // }).addTo(this.myMap);
-
-      // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-      //   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      //   // subdomains: 'abcd',
-      //   minZoom: 5,
-      //   maxZoom: 16,
-      //   ext: 'png'
-      // }).addTo(this.myMap);
-
-      // this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png', {
-      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-      // this.tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-      // this.tileLayer = L.tileLayer('https://{s}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey={apikey}', {
+      this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+      // this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
       // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-      // this.tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        
+
         // subdomains: 'abcd',
         minZoom: 5,
         // maxZoom: 15,
         ext: 'png'
       }).addTo(this.myMap);
-
-      this.myArea = L.circle([this.located.lat, this.located.lng], {
-        color: COLOR, // "#B96925", // "#e68a00", "#FFD700",
-        weight: "2",
-        dashArray: "5",
-        // fillColor: COLOR, // "#ff9900", "#FFD700",
-        fillOpacity: 0.075,
-        radius: FULL_MESSAGES_RADIUS
-      });
 
       this.userLocationMarker = L.marker([this.located.lat, this.located.lng], {
         icon: this.userLocationIcon
@@ -88,11 +62,16 @@ export default {
       L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
         map.setView([self.located.lat, self.located.lng], 12);
       }).addTo(this.myMap);
-      this.myArea.addTo(this.myMap);
 
-      // this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
-      //   maskSize : L.point(200, 200)
-      // }).addTo(this.myMap);
+      this.maskLayer = L.TileLayer.maskCanvas({
+        radius: FULL_MESSAGES_RADIUS,  // radius in pixels or in meters (see useAbsoluteRadius)
+        useAbsoluteRadius: true,       // true: r in meters, false: r in pixels
+        color: '#000',                 // the color of the layer
+        opacity: 0.75,                 // opacity of the not covered area
+        noMask: false,                 // true results in normal (filled) circled, instead masked circles
+        lineColor: '#0A0'              // color of the circle outline if noMask is true
+      }).addTo(this.myMap);
+      this.maskLayer.setData([[self.located.lat, self.located.lng]]);
       
     },
     updateStrippedLayer() {
@@ -107,7 +86,7 @@ export default {
       });
     },
     watchMapMovement() {
-      this.myMap.on("moveend", (event) => {  // "move"
+      this.myMap.on("moveend", (event) => {  // "move" ?
         let cornerSouthWest = event.target.getBounds().getSouthWest();
         let cornerNorthEast = event.target.getBounds().getNorthEast();
         this.getStripped(cornerSouthWest, cornerNorthEast);
@@ -139,13 +118,10 @@ export default {
   watch: {
     located: {
       handler(newCoordinates, oldValue) {
+        this.userLocationMarker.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng));
+        this.maskLayer.setData([[newCoordinates.lat, newCoordinates.lng]]);
+        // this.myMap.setView([this.located.lat, this.located.lng]);
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
-        this.myMap.removeLayer(this.myArea);
-        this.myArea.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
-        this.myMap.removeLayer(this.userLocationMarker);
-        this.userLocationMarker.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
-        // this.fg.setCenter(e.containerPoint);
-        // this.myMap.setView([this.located.lat, this.located.lng], 13);
       },
       deep: true
     }

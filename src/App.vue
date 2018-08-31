@@ -71,9 +71,11 @@ export default {
       navigator.geolocation.watchPosition((position) => {
         this.located.lat = position.coords.latitude;
         this.located.lng = position.coords.longitude;
-        /* this.located.lat = Math.random()*50;
-        this.located.lng = Math.random()*50;
-        console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng); */
+
+        // (DEBUGGING) Uncomment the following lines to simulate random movements
+        // this.located.lat = Math.random()*50;
+        // this.located.lng = Math.random()*50;
+        // console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
 
         if (this.logged === true) {
           axios.put(sessionStorage.urlHost + "/users/location", {
