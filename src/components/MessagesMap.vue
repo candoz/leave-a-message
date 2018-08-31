@@ -32,7 +32,11 @@ export default {
   },
   methods: {
     initMap() {
-      this.myMap = L.map('map');
+      this.myMap = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        doubleClickZoom: false,
+      });
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
       // this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
@@ -50,10 +54,10 @@ export default {
       // }).addTo(this.myMap);
 
       this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         subdomains: 'abcd',
         minZoom: 5,
-        maxZoom: 15,
+        maxZoom: 16,
         ext: 'png'
       }).addTo(this.myMap);
 
@@ -71,6 +75,10 @@ export default {
         map.setView([self.located.lat, self.located.lng], 12);
       }).addTo(this.myMap);
       this.myArea.addTo(this.myMap);
+
+      L.control.zoom({
+        position:'topleft'
+      }).addTo(this.myMap);
 
       // this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
       //   maskSize : L.point(200, 200)
