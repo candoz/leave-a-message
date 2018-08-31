@@ -2,9 +2,7 @@
 <div id="look-around-component">
   <div class=search><p>da mettere il componente search</p></div>
   <messages-map :located="located"></messages-map>
-  <!-- <div v-if="logged === true" > -->
   <messages-list :logged="logged" :messagesAround="messagesAround"></messages-list>
-  <!-- </div> -->
 </div>
 </template>
 

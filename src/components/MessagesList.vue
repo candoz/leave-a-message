@@ -18,7 +18,11 @@
       </div>
     </div>
     <div v-else> 
-      <h4>To see full messages please login...</h4>
+      <h4>To open the messages nearby please
+        <router-link :to="'/login'" class="message" exact> login </router-link>
+        or
+        <router-link :to="'/signup'" class="message" exact> signup </router-link>
+      </h4>
     </div>
   </div>
 </template>

@@ -2,16 +2,16 @@
   <div id="signup-component">
     <div class="form" v-if="logged === false" >
       <form @submit.prevent="doRegister">
-        <h3>Signup Form</h3>
-        <input v-model="email" type="text" placeholder="Email address" required/>
+        <input v-model="name" type="text" placeholder="Name" required/>
         <input v-model="nickname" type="text" placeholder="Nickname" required/>
+        <input v-model="email" type="text" placeholder="Email" required/>
         <input v-model="password" type="password" placeholder="Password" required/>
         <button type="submit" class="">Create account</button>
         <router-link :to="'/login'" class="message" exact>Already registered? Sign In</router-link>
       </form>
     </div>
     <div class="form" v-else >
-      <p>You are logged</p>
+      <p>You are logged-in! :)</p>
     </div>
   </div>
 </template>
@@ -24,9 +24,10 @@ export default {
   props: ["logged"],
   data() {
     return {
+      name: "",
+      nickname: "",
       email: "",
       password: "",
-      nickname: "",
     };
   },
   methods: {

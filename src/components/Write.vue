@@ -38,6 +38,9 @@ export default {
       this.myMap = L.map('map', {
         attributionControl: false,
         dragging: false,
+        scrollWheelZoom: 'center',
+			  doubleClickZoom: 'center',
+			  touchZoom:       'center'
         // zoomControl: false,
       });
       this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);

@@ -14,9 +14,8 @@ import { } from "leaflet-easybutton"
 import { } from "leaflet-maskcanvas"
 import { EventBus } from "../main.js"
 const axios = require("axios");
-const FULL_MESSAGES_RADIUS = 5000;  // meters
+const FULL_MESSAGES_RADIUS = 7500;  // meters
 const POLLING_INTERVAL = 10000;
-const COLOR = "#14a76c";
 
 export default {
   props: ["located"],
@@ -39,13 +38,14 @@ export default {
       this.myMap = L.map('map', {
         attributionControl: false,
         doubleClickZoom: false,
+        scrollWheelZoom: 'center',
+			  doubleClickZoom: 'center',
+			  touchZoom:       'center'
       });
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
-      this.tileLayer = L.tileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
-      // this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
       // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-
+      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         // subdomains: 'abcd',
         minZoom: 5,
         // maxZoom: 15,
@@ -60,16 +60,15 @@ export default {
 
       let self = this;
       L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
-        map.setView([self.located.lat, self.located.lng], 12);
+        map.setView([self.located.lat, self.located.lng]);
       }).addTo(this.myMap);
 
       this.maskLayer = L.TileLayer.maskCanvas({
         radius: FULL_MESSAGES_RADIUS,  // radius in pixels or in meters (see useAbsoluteRadius)
         useAbsoluteRadius: true,       // true: r in meters, false: r in pixels
-        color: '#000',                 // the color of the layer
-        opacity: 0.75,                 // opacity of the not covered area
-        noMask: false,                 // true results in normal (filled) circled, instead masked circles
-        lineColor: '#0A0'              // color of the circle outline if noMask is true
+        color: '#000',
+        opacity: 0.6  ,
+        noMask: false,
       }).addTo(this.myMap);
       this.maskLayer.setData([[self.located.lat, self.located.lng]]);
       
