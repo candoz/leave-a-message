@@ -28,6 +28,8 @@ export default {
       strippedGroup : null,
       strippedMessageIcon : null,
       fg: null,
+      userLocationIcon: null,
+      userLocationMarker: null
     }
   },
   methods: {
@@ -69,6 +71,12 @@ export default {
         fillOpacity: 0.1,
         radius: FULL_MESSAGES_RADIUS
       });
+
+      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], {
+        icon: this.userLocationIcon
+      }).bindPopup(
+        "Your current position"
+      ).addTo(this.myMap);
 
       let self = this;
       L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
@@ -132,7 +140,9 @@ export default {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
         this.myMap.removeLayer(this.myArea);
         this.myArea.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
-        this.fg.setCenter(e.containerPoint);
+        this.myMap.removeLayer(this.userLocationMarker);
+        this.userLocationMarker.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng)).addTo(this.myMap);
+        // this.fg.setCenter(e.containerPoint);
         // this.myMap.setView([this.located.lat, this.located.lng], 13);
       },
       deep: true
@@ -158,6 +168,10 @@ export default {
     }); 
     this.fullMessageIcon = L.icon({
       iconUrl: require("../assets/full-message.png"),
+      iconSize: [24, 24],
+    });
+    this.userLocationIcon = L.icon({
+      iconUrl: require("../assets/map-marker.png"),
       iconSize: [24, 24],
     });
     this.initMap();
