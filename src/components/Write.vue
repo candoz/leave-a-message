@@ -16,7 +16,10 @@
 <script>
 import L from "leaflet";
 const axios = require("axios");
-const ZOOM_LEVEL = 13;
+const DEFAULT_ZOOM_LEVEL = 13
+const MIN_ZOOM_LEVEL = 5;
+const MAX_ZOOM_LEVEL = 15;
+const POPUP_TEXT = "Your message will be published here"
 
 export default {
   props: ["located"],
@@ -33,22 +36,19 @@ export default {
   methods: {
     initMap() {
       this.myMap = L.map('map', {
-        zoomControl: false,
         attributionControl: false,
         dragging: false,
-        doubleClickZoom: false,
+        // zoomControl: false,
       });
-      this.myMap.setView([this.located.lat, this.located.lng], ZOOM_LEVEL);
-
+      this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
       this.tileLayer = L.tileLayer("https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}", {
         // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         subdomains: 'abcd',
-        minZoom: ZOOM_LEVEL,
-        maxZoom: ZOOM_LEVEL,
+        minZoom: MIN_ZOOM_LEVEL,
+        maxZoom: MAX_ZOOM_LEVEL,
         ext: 'png'
       }).addTo(this.myMap);
-
-      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be published here").addTo(this.myMap); //LINK POSITION WITH USER MOVEMENT
+      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap);
     },
     writeMessage(event) {
       this.loading = true;
@@ -86,9 +86,10 @@ export default {
   watch: {
     located: {
       handler(newCoordinates, oldValue) {
+        console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
+        this.myMap.setView([this.located.lat, this.located.lng]);
         this.myMap.removeLayer(this.pencilPointer);
-        this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup("Your message will be here").addTo(this.myMap); 
-        this.myMap.setView([this.located.lat, this.located.lng], 13);
+        this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap); 
       },
       deep: true
     }
@@ -100,9 +101,9 @@ export default {
 @import './vars.sass'
 
 #map
-  width: 90%
+  width: 50%
   height: 50vh
-  max-height: 40%
+  max-height: 30%
   max-width: 1100px
   margin: auto
   z-index: 0
