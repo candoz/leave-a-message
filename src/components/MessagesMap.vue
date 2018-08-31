@@ -29,7 +29,8 @@ export default {
       strippedMessageIcon : null,
       fg: null,
       userLocationIcon: null,
-      userLocationMarker: null
+      userLocationMarker: null,
+      strippedPollingId: null
     }
   },
   methods: {
@@ -179,9 +180,12 @@ export default {
     this.watchMapMovement();
 
     // Polling ...
-    setInterval(function() {
+    this.strippedPollingId = setInterval(function() {
       this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
     }.bind(this), POLLING_INTERVAL);
+  },
+  destroyed() {
+    clearInterval(this.strippedPollingId);
   }
 }
 </script>
