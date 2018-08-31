@@ -82,7 +82,7 @@ export default {
 button
   text-transform: uppercase
   outline: 0
-  background: $secondary-color
+  background: $accent-color
   width: 100%
   max-width: 200px
   margin: 3% auto auto auto
@@ -93,6 +93,6 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    background: $secondary-color-mod
+    background: $accent-color-mod
 
 </style>

@@ -16,6 +16,7 @@ import { EventBus } from "../main.js"
 const axios = require("axios");
 const FULL_MESSAGES_RADIUS = 5000;  // meters
 const POLLING_INTERVAL = 10000;
+const COLOR = "#14a76c";
 
 export default {
   props: ["located"],
@@ -36,7 +37,6 @@ export default {
   methods: {
     initMap() {
       this.myMap = L.map('map', {
-        zoomControl: false,
         attributionControl: false,
         doubleClickZoom: false,
       });
@@ -56,20 +56,25 @@ export default {
       //   ext: 'png'
       // }).addTo(this.myMap);
 
-      this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-        // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        subdomains: 'abcd',
+      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png', {
+      // this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
+      // this.tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      // this.tileLayer = L.tileLayer('https://{s}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey={apikey}', {
+      // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+      // this.tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        
+        // subdomains: 'abcd',
         minZoom: 5,
-        maxZoom: 15,
+        // maxZoom: 15,
         ext: 'png'
       }).addTo(this.myMap);
 
       this.myArea = L.circle([this.located.lat, this.located.lng], {
-        color: "#B96925", // "#B96925", // "#e68a00", "#FFD700",
+        color: COLOR, // "#B96925", // "#e68a00", "#FFD700",
         weight: "2",
         dashArray: "5",
-        fillColor: "#B96925", // "#ff9900", "#FFD700",
-        fillOpacity: 0.1,
+        // fillColor: COLOR, // "#ff9900", "#FFD700",
+        fillOpacity: 0.075,
         radius: FULL_MESSAGES_RADIUS
       });
 
@@ -84,10 +89,6 @@ export default {
         map.setView([self.located.lat, self.located.lng], 12);
       }).addTo(this.myMap);
       this.myArea.addTo(this.myMap);
-
-      L.control.zoom({
-        position:'topleft'
-      }).addTo(this.myMap);
 
       // this.fg = L.tileLayer.mask('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', { 
       //   maskSize : L.point(200, 200)

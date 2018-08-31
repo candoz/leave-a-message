@@ -69,7 +69,7 @@ export default {
 
 .form
   z-index: 0
-  background: #FFFFFF
+  background: $light-color
   max-width: 360px
   width: 80%
   margin: auto
@@ -88,7 +88,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    background: $secondary-color
+    background: $accent-color
     width: 100%
     border: 0
     padding: 15px
@@ -98,7 +98,8 @@ export default {
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      background: $secondary-color-mod
+      // background: $accent-color-mod
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
   .message
     margin: 15px 0 0
     color: #b3b3b3

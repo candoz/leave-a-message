@@ -31,7 +31,7 @@ nav
   width: 100%
   z-index: 10
   overflow: hidden
-  background-color: #333
+  background-color: $dark-color
   position: fixed
   li
     display: inline-block
@@ -43,7 +43,7 @@ nav
       background-color: $base-color
       cursor: pointer
     &:hover:not(.router-link-active)
-      background-color: #111
+      background-color: $dark-color-mod
       cursor: pointer
 
 </style>
