@@ -70,10 +70,8 @@ export default {
         .then(response => {
           console.log(response.data);
           this.userMessages = response.data;
-          console.log("dati: " + response.data);
           this.userMessages.forEach(message => {
-            console.log("aggiunto marker");
-            let messageMarker = L.marker(message.latLng, {icon: this.userFullMessagesIcon}).bindPopup(
+            let messageMarker = L.marker([message.location.coordinates[1], message.location.coordinates[0]], {icon: this.userFullMessagesIcon}).bindPopup(
               "Tags:" + message.tags + "\n" +
               "Votes: " + message.votes + "\n" +
               "Text: " + message.text + "\n"

@@ -208,19 +208,14 @@ module.exports = (function () {
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, messages_id: 1 }}, function (err, dbResUserFullMessagesId) {
       if (err) { return next(boom.badImplementation(err)); }
       console.log(dbResUserFullMessagesId);
-      dbPoolConnection.collection("Messages").find( {"_id" : {"$in" : arrayStringToObjectIds(dbResUserFullMessagesId.messages_id) }}).toArray(function (err, dbResUserFullMessages) {
+      dbPoolConnection.collection("Messages").find( {_id : {$in : dbResUserFullMessagesId.messages_id }})
+      .toArray(function (err, dbResUserFullMessages) {
         if (err) { return next(boom.badImplementation(err)); }
         res.send(dbResUserFullMessages);
         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResUserFullMessages.length + " full message/s of user with session: " + req.session.userId); }
       })
     })
   });
-
-  function arrayStringToObjectIds(array) {
-    let objectIdList = [ ];
-    array.forEach(str => objectIdList.push(new ObjectId(str)));
-    return objectIdList;
-  }
 
   dbRoutes.get("/messages/stripped", function (req, res, next) {
     dbPoolConnection.collection("Messages")
