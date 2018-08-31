@@ -20,8 +20,6 @@
 <script>
 const axios = require("axios");
 const DEFAULT_ZOOM_LEVEL = 13; 
-const MIN_ZOOM_LEVEL = 5;
-const MAX_ZOOM_LEVEL = 15;
 import { EventBus } from "../main.js" 
 import L from "leaflet";
 
@@ -58,9 +56,7 @@ export default {
       });
       this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd',
-        minZoom: MIN_ZOOM_LEVEL,
-        maxZoom: MAX_ZOOM_LEVEL,
+        // subdomains: 'abcd',
         ext: 'png'
       }).addTo(this.myMap);
     },
@@ -70,12 +66,15 @@ export default {
         .then(response => {
           console.log(response.data);
           this.userMessages = response.data;
+          let markers = [];
           this.userMessages.forEach(message => {
             let messageMarker = L.marker([message.location.coordinates[1], message.location.coordinates[0]], {icon: this.userFullMessagesIcon}).bindPopup(
               "Tags:" + message.tags + "\n" +
               "Votes: " + message.votes + "\n" +
               "Text: " + message.text + "\n"
             ).addTo(this.myMap);
+            markers.push(messageMarker);
+          this.myMap.fitBounds(new L.featureGroup(markers).getBounds().pad(0.5));
           });
         })
         .catch(err => {
@@ -96,12 +95,12 @@ export default {
     }
   },
   mounted() {
-    this.initProfile();
     this.initMap();
+    this.initProfile();
     this.userFullMessagesIcon = L.icon({
       iconUrl: require("../assets/stripped-message.png"),
       iconSize: [24, 24],
-    }); 
+    });
   },
 };
 </script>

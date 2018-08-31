@@ -1,7 +1,8 @@
 <template>
   <div>
+
     <div v-if="logged === true" >
-      <h3>Messages nearby:</h3>
+      <h4>Messages nearby:</h4>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
         <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
           <button class="heart-button" @click="love(msg._id)" :ref="'heart-button' + msg._id">
@@ -17,13 +18,30 @@
         </div>
       </div>
     </div>
+    
+    <!--    W O R K   I N   P R O G R E S S   ! ! !    -->
     <div v-else> 
       <h4>To open the messages nearby please
         <router-link :to="'/login'" class="message" exact> login </router-link>
         or
         <router-link :to="'/signup'" class="message" exact> signup </router-link>
       </h4>
+      <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+        <div class="accordion">
+          <button class=" -button">
+            <img class="heart" v-bind:src="likeButton" :ref="'heart-image' + msg._id"/> <!-- v-if sull'id? 2 image differenti-->
+          </button>
+          <p class="votes">{{msg.votes}}</p>
+          <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
+            &nbsp; #{{ value }}
+          </p>
+        </div>
+        <div class="panel" :ref="'panel-'+msg._id">
+          {{msg.text}}
+        </div>
+      </div>
     </div>
+
   </div>
 </template>
 
