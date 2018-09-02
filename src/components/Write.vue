@@ -63,6 +63,7 @@ export default {
         })
         .then(response => {
           console.log(response);
+          self.messageText = "";
           self.loading = false;
         })
         .catch(error => {

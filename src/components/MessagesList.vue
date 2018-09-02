@@ -15,7 +15,16 @@
         </div>
         <div class="panel" :ref="'panel-'+msg._id">
           {{msg.text}}
-          <button class="comment-button" @click="addComment(msg._id)">Commenta</button>
+
+          <button @click="writing = true">Commenta</button> <!-- ICONA COMMENTO? -->
+          <form v-if="writing === true" v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
+            <h3>Write a comment</h3>
+              <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
+            <button type="submit" class="">Publish comment</button>
+          </form>
+
+          <!-- MOSTRARE I COMMENTI -->
+
         </div>
       </div>
     </div>
@@ -55,7 +64,9 @@ export default {
   data() {
     return {
       likeButton: require("../assets/heart-circle.png"),
-      likedButton: require("../assets/heart-circle-outline.png")
+      likedButton: require("../assets/heart-circle-outline.png"),
+      writing: false,
+      commentText: null,
     };
   },
   methods: {
@@ -74,14 +85,15 @@ export default {
       console.log("like to message " + this.$refs['heart-button'+id][0]);
     },
     addComment(id) {
-      //POPUP TO TAKE MESSAGE
+      this.writing = false;
       axios
         .post(sessionStorage.urlHost + "/messages/comment", {
-          text: "ciao",
+          text: this.commentText,
           messageId: id
         })
         .then(response => {
           console.log(response);
+          this.commentText = "";
         })
         .catch(error => {
           if (error.response) {
@@ -100,6 +112,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import './vars.sass'
 
 .accordion
   background-color: #eee
@@ -159,5 +172,45 @@ export default {
 
 .hashtags
   display: inline-block
+
+form
+  z-index: 0
+  background: #FFFFFF
+  max-width: 360px
+  margin: 1% auto auto auto
+  padding: 2%
+  text-align: center
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+  position: fixed
+  z-index: 1
+  width: 40%
+  height: 40%
+  padding-top: 100px
+  left: 0
+  top: 0
+  button
+    text-transform: uppercase
+    outline: 0
+    background: $base-color
+    width: 100%
+    border: 0
+    padding: 15px
+    color: #FFFFFF
+    font-size: 14px
+    transition: all 0.3 ease
+    cursor: pointer
+    &:hover, &:active, &:focus
+      background: $base-color-mod
+
+textarea
+  outline: 0
+  background: #f2f2f2
+  width: 100%
+  border: 0
+  margin: 0 0 15px
+  padding: 15px
+  box-sizing: border-box
+  font-size: 14px
+  max-width: 360px
 
 </style>
