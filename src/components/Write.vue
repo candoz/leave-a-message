@@ -18,7 +18,7 @@ import L from "leaflet";
 const axios = require("axios");
 const DEFAULT_ZOOM_LEVEL = 13
 const MIN_ZOOM_LEVEL = 5;
-const MAX_ZOOM_LEVEL = 15;
+const MAX_ZOOM_LEVEL = 16;
 const POPUP_TEXT = "Your message will be published here"
 
 export default {
@@ -163,7 +163,7 @@ button
     position: absolute
     left: 6px
     width: 13px
-    background: $base-color
+    background: $accent-color
     animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite
     &:nth-child(1)
       left: 6px

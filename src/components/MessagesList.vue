@@ -15,6 +15,7 @@
         </div>
         <div class="panel" :ref="'panel-'+msg._id">
           {{msg.text}}
+          <button class="comment-button" @click="addComment(msg._id)">Commenta</button>
         </div>
       </div>
     </div>
@@ -47,6 +48,7 @@
 
 <script>
 import { EventBus } from "../main.js" 
+const axios = require("axios");
 
 export default {
   props: ["messagesAround", "logged"],
@@ -70,6 +72,28 @@ export default {
     },
     love(id) {
       console.log("like to message " + this.$refs['heart-button'+id][0]);
+    },
+    addComment(id) {
+      //POPUP TO TAKE MESSAGE
+      axios
+        .post(sessionStorage.urlHost + "/messages/comment", {
+          text: "ciao",
+          messageId: id
+        })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log("Response");
+          } else if (error.request) {
+            console.log("Richiesta");
+          } else {
+            console.log("Setting up");
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
+        });
     }
   }
 };

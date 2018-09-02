@@ -172,6 +172,41 @@ module.exports = (function () {
     });
   });
 
+  dbRoutes.post("/messages/comment", function (req, res, next) {
+    if (req.session.userId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a message without being logged-in"); }
+      return next(boom.unauthorized("Cannot post a message if not logged-in"));
+    }
+    if (req.body.messageId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a comment without specifying message id"); }
+      return next(boom.badRequest("Cannot post a comment to a unknown message"));
+    }
+    if (req.body.text == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a comment without specifying text"); }
+      return next(boom.badRequest("Cannot post a comment with an empty message"));
+    }
+    console.log(req.body);
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
+      if (err) { return next(boom.badImplementation(err)); }
+      var newComment = { $push: {
+          comments: { 
+            author_nickname: dbResUser.nickname,
+            author_name: dbResUser.name,
+            text: req.body.text
+          } 
+        }
+      };
+      dbPoolConnection.collection("Messages").updateOne(
+        { _id: new ObjectId(req.body.messageId) }, 
+        newComment, 
+        function(err, dbResComment) {
+          if (err) { return next(boom.badImplementation(err)); }
+          console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
+        }
+      );
+    });
+  });
+
   dbRoutes.get("/messages/full", function (req, res, next) {
     if (req.session.userId == null) {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
