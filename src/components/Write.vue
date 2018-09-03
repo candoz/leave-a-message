@@ -81,9 +81,8 @@ export default {
     }
   },
   mounted() {
-    this.pencilIcon = L.icon({
-      iconUrl: require("../assets/lead-pencil.png"),
-      iconSize: [24, 24],
+    this.pencilIcon = L.divIcon({
+      className: "fas fa-pen fa-2x",
     }); 
     this.initMap();
   },

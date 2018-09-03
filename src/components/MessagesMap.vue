@@ -128,9 +128,6 @@ export default {
   created() {
     EventBus.$on("selectedFullMessage", (idMessage) => {
       this.strippedGroup.getLayers().forEach(message => {
-        console.log("ID dello stripped: " + message.options.id);
-        console.log("ID del full: " + idMessage);
-        console.log("---");
         if(message.options.id == idMessage) {
           this.myMap.setView(message.getLatLng(), 13);
           message.openPopup();
@@ -139,17 +136,14 @@ export default {
     });
   },
   mounted() {  // do NOT change to "created"
-    this.strippedMessageIcon = L.icon({
-      iconUrl: require("../assets/stripped-message.png"),
-      iconSize: [24, 24],
+    this.strippedMessageIcon = L.divIcon({
+      className: "fas fa-envelope fa-2x"
     }); 
-    this.fullMessageIcon = L.icon({
-      iconUrl: require("../assets/full-message.png"),
-      iconSize: [24, 24],
+    this.fullMessageIcon = L.divIcon({
+      className: "fas fa-envelope fa-2x"
     });
-    this.userLocationIcon = L.icon({
-      iconUrl: require("../assets/map-marker.png"),
-      iconSize: [24, 24],
+    this.userLocationIcon = L.divIcon({
+      className: "fas fa-map-marker-alt fa-2x"
     });
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
