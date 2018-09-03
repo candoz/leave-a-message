@@ -161,6 +161,7 @@ module.exports = (function () {
             console.log("-> Lat: " + req.body.lat);
           }
         });
+    })
   });
 
   dbRoutes.post("/messages", function (req, res, next) {
