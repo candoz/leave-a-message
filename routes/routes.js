@@ -35,20 +35,20 @@ module.exports = (function () {
       return next(boom.badRequest("Cannot register new user: missing email, password or nickname"));
     }
     dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       if (dbResUserWithThatEmail != null) {
         if (LOG_CLIENT_ERRORS) { console.log(req.body.email + " tried to register again"); }
         return next(boom.badRequest("Email " + req.body.email + " already registered"));
       }
       bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hashed) {
-        if (err) { return next(err); }
+        if (err) return next(boom.badImplementation(err));
         let newUserData = {
           "email": req.body.email,
           "nickname": req.body.nickname,
           "password": hashed
         }
         dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
-          if (err) { return next(err); }
+          if (err) return next(boom.badImplementation(err));
           // uncomment next line if you want to login on registration:
           // req.session.userId = dbResNewUser._id;
           res.send("Registration succeeded with email " + req.body.email);
@@ -64,7 +64,7 @@ module.exports = (function () {
       return next(boom.unauthorized("Cannot retrieve your profile if not logged-in"));
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       res.send(dbResLoggedUser);
     });
   });
@@ -75,13 +75,13 @@ module.exports = (function () {
       return next(boom.badRequest("Missing email and/or password"));
     }
     dbPoolConnection.collection("Users").findOne({ "email": req.body.email }, function (err, dbResUserWithThatEmail) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       if (!dbResUserWithThatEmail) {
         if (LOG_CLIENT_ERRORS) { console.log("User tried to login with a non-registered email: " + req.body.email); }
         return next(boom.badRequest("Email not registered"));
       }
       bcrypt.compare(req.body.password, dbResUserWithThatEmail.password, function (err, cryptResult) {
-        if (err) { return next(boom.badRequest(err)); }
+        if (err) return next(boom.badRequest(err));
         if (cryptResult !== true) {
           if (LOG_CLIENT_ERRORS) { console.log("User " + dbResUserWithThatEmail.email + " failed trying to login. Wrong password"); }
           return next(boom.unauthorized("Wrong password"));
@@ -100,7 +100,7 @@ module.exports = (function () {
       return next(boom.badRequest("Cannot logout if not logged-in"));
     }
     req.session.destroy(function (err) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       if (LOG_SERVER_EVENTS) { console.log("User with session id " + userId + " logged-out"); }
       res.send("Logged-out");
     });
@@ -128,7 +128,7 @@ module.exports = (function () {
 
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, location: 1, km_covered: 1, badges: 1}}, function (err, dbResUserInfo) {
       console.log(dbResUserInfo);
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       let dataToUpdate = {
         location: {
           type: "Point",
@@ -151,16 +151,15 @@ module.exports = (function () {
         }
       }
       
-      dbPoolConnection.collection("Users")
-        .updateOne({ "_id": ObjectId(req.session.userId) }, { $set: dataToUpdate }, function (err, dbResUpdatedLocation) {
-          if (err) { return next(boom.badImplementation(err)); }
-          res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
-          if (LOG_SERVER_EVENTS) {
-            console.log("User with session id " + req.session.userId + " updated his/her location:");
-            console.log("-> Lng: " + req.body.lng);
-            console.log("-> Lat: " + req.body.lat);
-          }
-        });
+      dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), { $set: dataToUpdate }, function (err) {
+        if (err) return next(boom.badImplementation(err));
+        res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
+        if (LOG_SERVER_EVENTS) {
+          console.log("User with session id " + req.session.userId + " updated his/her location:");
+          console.log("-> Lng: " + req.body.lng);
+          console.log("-> Lat: " + req.body.lat);
+        }
+      });
     })
   });
 
@@ -181,19 +180,15 @@ module.exports = (function () {
     }
 
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       messageData.location = dbResLoggedUser.location;
       dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
-        if (err) { return next(boom.badImplementation(err)); }
+        if (err) return next(boom.badImplementation(err));
         res.send("Message succesfully published");
-        dbPoolConnection.collection("Users").updateOne( 
-          { _id: new ObjectId(req.session.userId) },
-          { $push: { messages_id: dbResPublishedMessage.insertedId } },
-          function(err, dbResAddedMessageToUser) {
-            if (err) throw err;
-            if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
-          }
-        )
+        dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), { $push: { messages_id: dbResPublishedMessage.insertedId } }, function(err) {
+          if (err) return next(boom.badImplementation(err));
+          if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
+        });
       });
     });
   });
@@ -213,7 +208,7 @@ module.exports = (function () {
     }
     console.log(req.body);
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       var newComment = {
         $push: {
           comments: { 
@@ -223,14 +218,10 @@ module.exports = (function () {
           } 
         }
       };
-      dbPoolConnection.collection("Messages").updateOne(
-        { _id: new ObjectId(req.body.messageId) }, 
-        newComment, 
-        function(err, dbResComment) {
-          if (err) { return next(boom.badImplementation(err)); }
-          console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
-        }
-      );
+      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), newComment, function(err) {
+        if (err) return next(boom.badImplementation(err));
+        console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
+      });
     });
   });
 
@@ -243,17 +234,25 @@ module.exports = (function () {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to like a message without specifying the message id"); }
       return next(boom.badRequest("Cannot like an unknown message"));
     }
-    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
-      if (err) { return next(boom.badImplementation(err)); }
-      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, { $addToSet: { likes: req.session.userId } }, function(err, dbResLike) {
-        if (err) { return next(boom.badImplementation(err)); }
-        if (dbResLike.modifiedCount > 0) {
-          console.log("Like added for message " + req.body.messageId);
-          dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthor) {
-            if (err) { return next(boom.badImplementation(err)); }
-            dbPoolConnection.collection("Users").UpdateOne({ _id: new ObjectId(dbResAuthor.author_id) }, { $inc: { reputation: 1 } }, function(err) {
-              if (err) { return next(boom.badImplementation(err)); }
-              
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err) {
+      if (err) return next(boom.badImplementation(err));
+      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), { $addToSet: { likes: req.session.userId } }, function(err, dbResLikedBy) {
+        if (err) return next(boom.badImplementation(err));
+        if (dbResLikedBy.modifiedCount > 0) {
+          res.send("Message " + req.body.messageId + " liked");
+          if (LOG_SERVER_EVENTS) { console.log("Like added for message " + req.body.messageId); }
+          dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthorId) {
+            if (err) return next(boom.badImplementation(err));
+            dbPoolConnection.collection("Users").findOneAndUpdate(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: 1 } }, { returnNewDocument: true }, function(err, dbResAuthor) {
+              if (err) return next(boom.badImplementation(err));
+              if (dbResAuthor.reputation >= TOTAL_LIKES_GOAL) {
+                dbPoolConnection.collection("Messages").updateOne(new ObjectId(dbResAuthorId.author_id), { $addToSet: { badges: TOTAL_LIKES_GOAL } }, function(err) {
+                  if (err) return next(boom.badImplementation(err));
+                  if (dbResLikedBy.modifiedCount > 0) {
+                    if (LOG_SERVER_EVENTS) { console.log("Added " + TOTAL_LIKES_GOAL + " badge to user " + dbResAuthorId.author_id); }
+                  }
+                });
+              }
             });
           });
         }  
@@ -270,12 +269,22 @@ module.exports = (function () {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to unlike a message without specifying the message id"); }
       return next(boom.badRequest("Cannot like an unknown message"));
     }
-    
-
-    //todo
-
-
-
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err) {
+      if (err) return next(boom.badImplementation(err));
+      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), { $pull: { likes: req.session.userId } }, function(err, dbResLikedBy) {
+        if (err) return next(boom.badImplementation(err));
+        if (dbResLikedBy.modifiedCount > 0) {
+          res.send("Message " + req.body.messageId + " unliked");
+          if (LOG_SERVER_EVENTS) { console.log("Like removed for message " + req.body.messageId); }
+          dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthorId) {
+            if (err) return next(boom.badImplementation(err));
+            dbPoolConnection.collection("Users").updateOne(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: -1 } }, function(err) {
+              if (err) return next(boom.badImplementation(err));
+            });
+          });
+        }  
+      });
+    });
   });
 
   dbRoutes.get("/messages/full", function (req, res, next) {
@@ -284,7 +293,7 @@ module.exports = (function () {
       return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       if (!dbResLoggedUser.location) {
         if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
         return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
@@ -299,7 +308,7 @@ module.exports = (function () {
           }
         })
         .toArray(function (err, dbResMessagesFull) {
-          if (err) { return next(boom.badImplementation(err)); }
+          if (err) return next(boom.badImplementation(err));
           res.send(dbResMessagesFull);
           if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
         });
@@ -312,11 +321,11 @@ module.exports = (function () {
       return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, messages_id: 1 }}, function (err, dbResUserFullMessagesId) {
-      if (err) { return next(boom.badImplementation(err)); }
+      if (err) return next(boom.badImplementation(err));
       console.log(dbResUserFullMessagesId);
       dbPoolConnection.collection("Messages").find( {_id : {$in : dbResUserFullMessagesId.messages_id }})
       .toArray(function (err, dbResUserFullMessages) {
-        if (err) { return next(boom.badImplementation(err)); }
+        if (err) return next(boom.badImplementation(err));
         res.send(dbResUserFullMessages);
         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResUserFullMessages.length + " full message/s of user with session: " + req.session.userId); }
       })
@@ -336,7 +345,7 @@ module.exports = (function () {
         }
       })
       .toArray(function (err, dbResMessagesStripped) {
-        if (err) { return next(boom.badImplementation(err)); }
+        if (err) return next(boom.badImplementation(err));
         dbResMessagesStripped.forEach(function (val) {
           delete val.author_id;  // ALTERNATIVE: si può anche costruire direttamente un nuovo oggetto
           delete val.text;       //              solamente con i campi che sono necessari.
