@@ -11,6 +11,13 @@ const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 const LOG_CLIENT_ERRORS = true;
 const LOG_SERVER_EVENTS = true;
 
+const BADGE_BETA_TESTER = "beta-tester";
+const BADGE_EXPLORER = "explorer";
+const BADGE_TOP_CONTRIBUTOR = "top-contributor";
+
+const KM_COVERED_GOAL = 1_000_000;
+const TOTAL_LIKES_GOAL = 10_000;
+
 let dbPoolConnection;
 MongoClient.connect(URL, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
   if (err) throw err;
@@ -104,38 +111,56 @@ module.exports = (function () {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location without being logged-in"); }
       return next(boom.unauthorized("Cannot update location if not logged-in"));
     }
-    const lng = Number(req.body.lng);
-    const lat = Number(req.body.lat);
-    if (!lng || !lat) {
+    const newLng = Number(req.body.lng);
+    const newLat = Number(req.body.lat);
+    if (!newLng || !newLat) {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location without sending both lng and lat"); }
       return next(boom.badRequest("Cannot update location without both lng and lat"));
     }
-    if (lng < -180 || lng > 180) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lng value: " + lng); }
-      return next(boom.badRequest("Cannot update location, invalid lng value: " + lng));
+    if (newLng < -180 || newLng > 180) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lng value: " + newLng); }
+      return next(boom.badRequest("Cannot update location, invalid lng value: " + newLng));
     }
-    if (lat < -90 || lat > 90) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lat value: " + lat); }
-      return next(boom.badRequest("Cannot update location, invalid lat value: " + lat));
+    if (newLat < -90 || newLat > 90) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to update his/her location with an invalid lat value: " + newLat); }
+      return next(boom.badRequest("Cannot update location, invalid lat value: " + newLat));
     }
-    const dataToUpdate = {
-      $set: {
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat]
+
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, location: 1, km_covered: 1, badges: 1}}, function (err, dbResUserInfo) {
+      console.log(dbResUserInfo);
+      if (err) { return next(boom.badImplementation(err)); }
+      let dataToUpdate = {
+        location: {
+          type: "Point",
+          coordinates: [newLng, newLat]
+        }
+      };
+
+      if (dbResUserInfo.location != null && Array.isArray(dbResUserInfo.location.coordinates) && dbResUserInfo.location.coordinates.length === 2) {
+        const oldLat = dbResUserInfo.location.coordinates[1];
+        const oldLng = dbResUserInfo.location.coordinates[0];
+        const kmCoveredUpdated = (dbResUserInfo.kmCovered || 0) + distance(oldLat, oldLng, newLat, newLng, "K");
+        dataToUpdate.km_covered = kmCoveredUpdated;
+        
+        if (kmCoveredUpdated >= KM_COVERED_GOAL) {
+          if (dbResUserInfo.badges == null) {
+            dataToUpdate.badges = [BADGE_EXPLORER]
+          } else if (Array.isArray(dbResUserInfo.badges) && !dbResUserInfo.badges.includes(BADGE_EXPLORER)) {
+            dataToUpdate.badges = (dbResUserInfo.badges).concat([BADGE_EXPLORER]);
+          }
         }
       }
-    };
-    dbPoolConnection.collection("Users")
-      .updateOne({ "_id": ObjectId(req.session.userId) }, dataToUpdate, function (err, dbResUpdatedLocation) {
-        if (err) { return next(boom.badImplementation(err)); }
-        res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
-        if (LOG_SERVER_EVENTS) {
-          console.log("User with session id " + req.session.userId + " updated his/her location:");
-          console.log("-> Lng: " + req.body.lng);
-          console.log("-> Lat: " + req.body.lat);
-        }
-      });
+      
+      dbPoolConnection.collection("Users")
+        .updateOne({ "_id": ObjectId(req.session.userId) }, { $set: dataToUpdate }, function (err, dbResUpdatedLocation) {
+          if (err) { return next(boom.badImplementation(err)); }
+          res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
+          if (LOG_SERVER_EVENTS) {
+            console.log("User with session id " + req.session.userId + " updated his/her location:");
+            console.log("-> Lng: " + req.body.lng);
+            console.log("-> Lat: " + req.body.lat);
+          }
+        });
   });
 
   dbRoutes.post("/messages", function (req, res, next) {
@@ -256,16 +281,6 @@ module.exports = (function () {
     dbPoolConnection.collection("Messages")
       .find({
         "location": {
-          /* $near: {
-            $geometry: {
-              "type": "Point",
-              "coordinates": [
-                Number(req.query.lng),
-                Number(req.query.lat)
-              ]
-            },
-            $maxDistance: MAX_DISTANCE_STRIPPED_MESSAGES
-          } */
           $geoWithin: {
             $box: [
               [ Number(req.query.cornerBottomLeft[0]) , Number(req.query.cornerBottomLeft[1]) ],
@@ -292,3 +307,39 @@ module.exports = (function () {
 
   return dbRoutes;
 })();
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:::                                                                         :::
+//:::  This routine calculates the distance between two points (given the     :::
+//:::  latitude/longitude of those points). It is being used to calculate     :::
+//:::  the distance between two locations using GeoDataSource (TM) products   :::
+//:::                                                                         :::
+//:::  Passed to function:                                                    :::
+//:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+//:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+//:::    unit = the unit you desire for results                               :::
+//:::           where: 'M' is statute miles (default)                         :::
+//:::                  'K' is kilometers                                      :::
+//:::                  'N' is nautical miles                                  :::
+//:::                                                                         :::
+//:::  Official Web site: https://www.geodatasource.com                       :::
+//:::  GeoDataSource.com (C) All Rights Reserved 2017                         :::
+//:::                                                                         :::
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+function distance(lat1, lon1, lat2, lon2, unit) {
+	var radlat1 = Math.PI * lat1/180
+	var radlat2 = Math.PI * lat2/180
+	var theta = lon1-lon2
+	var radtheta = Math.PI * theta/180
+	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+	if (dist > 1) {
+		dist = 1;
+	}
+	dist = Math.acos(dist)
+	dist = dist * 180/Math.PI
+	dist = dist * 60 * 1.1515
+	if (unit=="K") { dist = dist * 1.609344 }
+	if (unit=="N") { dist = dist * 0.8684 }
+	return dist
+}
