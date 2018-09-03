@@ -249,11 +249,13 @@ module.exports = (function () {
         if (err) { return next(boom.badImplementation(err)); }
         if (dbResLike.modifiedCount > 0) {
           console.log("Like added for message " + req.body.messageId);
-          dbPoolConnection.collection("Messages").findOne({ _id: new ObjectId(req.body.messageId) }, ..., function(err, dbResPoster) {
+          dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthor) {
+            if (err) { return next(boom.badImplementation(err)); }
+            dbPoolConnection.collection("Users").UpdateOne({ _id: new ObjectId(dbResAuthor.author_id) }, { $inc: { reputation: 1 } }, function(err) {
               if (err) { return next(boom.badImplementation(err)); }
-              console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
-            }
-          );
+              
+            });
+          });
         }  
       });
     });
