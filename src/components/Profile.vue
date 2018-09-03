@@ -97,10 +97,9 @@ export default {
   mounted() {
     this.initMap();
     this.initProfile();
-    this.userFullMessagesIcon = L.icon({
-      iconUrl: require("../assets/stripped-message.png"),
-      iconSize: [24, 24],
-    });
+    this.userFullMessagesIcon = L.divIcon({
+      className: "fas fa-envelope fa-2x"
+    }); 
   },
 };
 </script>

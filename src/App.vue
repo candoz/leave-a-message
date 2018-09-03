@@ -156,7 +156,8 @@ export default {
 </script>
 
 
-<style lang="sass" scoped>
+<style lang="sass">
+@import './components/vars.sass'
 
 #app
   font-family: 'Avenir', Helvetica, Arial, sans-serif
@@ -164,5 +165,32 @@ export default {
   -moz-osx-font-smoothing: grayscale
   text-align: center
   color: #2c3e50
+
+.fa-pen
+  color: $base-color 
+
+.fa-times-circle
+  text-align: right
+  padding-top: 12%
+  cursor: pointer
+  font-size: 24px 
+  color: $base-color
+  &:hover, &:active, &:focus
+    color: $base-color-mod
+
+.fa-comment
+  font-size: 24px
+  color: $base-color
+  cursor: pointer
+  width: 100%
+  &:hover, &:active, &:focus
+    color: $base-color-mod
+
+.fa-envelope
+  color: $base-color 
+
+.fa-map-marker-alt
+  color: $accent-color
+  z-index: 1
 
 </style>
