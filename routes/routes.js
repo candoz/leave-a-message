@@ -200,11 +200,11 @@ module.exports = (function () {
 
   dbRoutes.post("/messages/comment", function (req, res, next) {
     if (req.session.userId == null) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a message without being logged-in"); }
-      return next(boom.unauthorized("Cannot post a message if not logged-in"));
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a comment without being logged-in"); }
+      return next(boom.unauthorized("Cannot post a comment if not logged-in"));
     }
     if (req.body.messageId == null) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a comment without specifying message id"); }
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to post a comment without specifying the message id"); }
       return next(boom.badRequest("Cannot post a comment to a unknown message"));
     }
     if (req.body.text == null) {
@@ -214,7 +214,8 @@ module.exports = (function () {
     console.log(req.body);
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
       if (err) { return next(boom.badImplementation(err)); }
-      var newComment = { $push: {
+      var newComment = {
+        $push: {
           comments: { 
             author_nickname: dbResUser.nickname,
             author_name: dbResUser.name,
@@ -231,6 +232,48 @@ module.exports = (function () {
         }
       );
     });
+  });
+
+  dbRoutes.put("/messages/like", function (req, res, next) {
+    if (req.session.userId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to like a message without being logged-in"); }
+      return next(boom.unauthorized("Cannot like a message if not logged-in"));
+    }
+    if (req.body.messageId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to like a message without specifying the message id"); }
+      return next(boom.badRequest("Cannot like an unknown message"));
+    }
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
+      if (err) { return next(boom.badImplementation(err)); }
+      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, { $addToSet: { likes: req.session.userId } }, function(err, dbResLike) {
+        if (err) { return next(boom.badImplementation(err)); }
+        if (dbResLike.modifiedCount > 0) {
+          console.log("Like added for message " + req.body.messageId);
+          dbPoolConnection.collection("Messages").findOne({ _id: new ObjectId(req.body.messageId) }, ..., function(err, dbResPoster) {
+              if (err) { return next(boom.badImplementation(err)); }
+              console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
+            }
+          );
+        }  
+      });
+    });
+  });
+
+  dbRoutes.put("/messages/unlike", function (req, res, next) {
+    if (req.session.userId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to unlike a message without being logged-in"); }
+      return next(boom.unauthorized("Cannot like a message if not logged-in"));
+    }
+    if (req.body.messageId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to unlike a message without specifying the message id"); }
+      return next(boom.badRequest("Cannot like an unknown message"));
+    }
+    
+
+    //todo
+
+
+
   });
 
   dbRoutes.get("/messages/full", function (req, res, next) {
