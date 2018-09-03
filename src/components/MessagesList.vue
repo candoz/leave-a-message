@@ -16,15 +16,20 @@
         <div class="panel" :ref="'panel-'+msg._id">
           {{msg.text}}
 
-          <button @click="writing = true">Commenta</button> <!-- ICONA COMMENTO? -->
-          <form v-if="writing === true" v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-            <h3>Write a comment</h3>
-              <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
-            <button type="submit" class="">Publish comment</button>
-          </form>
+          <i class="fas fa-comment" @click="writing = true" v-if="msg.comments">{{ msg.comments.length }}</i>
 
-          <!-- MOSTRARE I COMMENTI -->
-
+          <div v-if="writing === true" class="comment-section">
+            <i class="far fa-times-circle" @click="writing = false"></i>
+            <h4>Comments:</h4>
+            <div v-for="comment in msg.comments" :key=comment style="text-align:left">
+              <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+            </div>
+            <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
+              <h3>Write a comment</h3>
+                <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
+              <button type="submit" class="">Publish comment</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -173,21 +178,44 @@ export default {
 .hashtags
   display: inline-block
 
-form
-  z-index: 0
+.far, .fa-times-circle
+  text-align: right
+  padding-top: 12%
+  cursor: pointer
+  font-size: 24px 
+  color: $base-color
+  &:hover, &:active, &:focus
+    color: $base-color-mod
+
+.fas, .fa-comment
+  font-size: 24px
+  color: $base-color
+  cursor: pointer
+  width: 100%
+  &:hover, &:active, &:focus
+    color: $base-color-mod
+
+.comment-section
   background: #FFFFFF
   max-width: 360px
-  margin: 1% auto auto auto
-  padding: 2%
-  text-align: center
+  margin: auto
+  padding: 3%
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
   position: fixed
   z-index: 1
   width: 40%
   height: 40%
-  padding-top: 100px
-  left: 0
   top: 0
+  overflow: auto 
+  @media only screen and (max-width: 600px)
+    width: 80%
+    padding: 3%
+    height: 60%
+    left: 0
+
+form
+  text-align: center
+  padding: 2%
   button
     text-transform: uppercase
     outline: 0

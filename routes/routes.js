@@ -15,8 +15,8 @@ const BADGE_BETA_TESTER = "beta-tester";
 const BADGE_EXPLORER = "explorer";
 const BADGE_TOP_CONTRIBUTOR = "top-contributor";
 
-const KM_COVERED_GOAL = 1_000_000;
-const TOTAL_LIKES_GOAL = 10_000;
+const KM_COVERED_GOAL = 1000000;
+const TOTAL_LIKES_GOAL = 10000;
 
 let dbPoolConnection;
 MongoClient.connect(URL, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
