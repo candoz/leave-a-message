@@ -16,9 +16,13 @@ import { EventBus } from "../main.js"
 const axios = require("axios");
 const FULL_MESSAGES_RADIUS = 7500;  // meters
 const POLLING_INTERVAL = 10000;
+const USER_LOCATION_ICON_WIDTH = 18;
+const USER_LOCATION_ICON_HEIGHT = 24;
+const MESSAGE_ICON_WIDTH = 24;
+const MESSAGE_ICON_HEIGHT = 25;
 
 export default {
-  props: ["located"],
+  props: ["located", "logged"],
   data() {
     return {
       myMap: null,
@@ -123,6 +127,25 @@ export default {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
       },
       deep: true
+    },
+    logged: {
+      handler(newValue, oldValue) {
+        if (newValue === true) {
+          this.userLocationIcon = L.divIcon({
+            className: "fas fa-map-marker-alt fa-2x logged-in",
+            iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+            iconSize: [USER_LOCATION_ICON_WIDTH, USER_LOCATION_ICON_HEIGHT],
+          });
+        } else {
+          this.userLocationIcon = L.divIcon({
+            className: "fas fa-map-marker-alt fa-2x logged-out",
+            iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+            iconSize: [USER_LOCATION_ICON_WIDTH, USER_LOCATION_ICON_HEIGHT],
+          });
+        }
+        this.userLocationMarker.setIcon(this.userLocationIcon)
+      },
+      deep: true
     }
   },
   created() {
@@ -137,14 +160,28 @@ export default {
   },
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.divIcon({
-      className: "fas fa-envelope fa-2x"
+      className: "fas fa-envelope fa-2x",
+      iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
+      iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     }); 
     this.fullMessageIcon = L.divIcon({
       className: "fas fa-envelope fa-2x"
     });
-    this.userLocationIcon = L.divIcon({
-      className: "fas fa-map-marker-alt fa-2x"
-    });
+    
+    if (this.logged === true) {
+      this.userLocationIcon = L.divIcon({
+        className: "fas fa-map-marker-alt fa-2x logged-in",
+        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+        iconSize: [USER_LOCATION_ICON_WIDTH, USER_LOCATION_ICON_HEIGHT],
+      });
+    } else {
+      this.userLocationIcon = L.divIcon({
+        className: "fas fa-map-marker-alt fa-2x logged-out",
+        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+        iconSize: [USER_LOCATION_ICON_WIDTH, USER_LOCATION_ICON_HEIGHT],
+      });
+    }
+    
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
     this.watchMapMovement();

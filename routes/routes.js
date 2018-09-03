@@ -352,7 +352,7 @@ module.exports = (function () {
           delete val.comments_id;
         });
         res.send(dbResMessagesStripped);
-        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages near (lng:" + req.query.lng + ",lat:" + req.query.lat + ")"); }
+        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages between (bottom left corner:" + req.query.cornerBottomLeft[0] + ", upper right corner:" + req.query.cornerUpperRight[1] + ")"); }
       });
   });
 

@@ -1,7 +1,7 @@
 <template>
 <div id="look-around-component">
   <div class=search><p>da mettere il componente search</p></div>
-  <messages-map :located="located"></messages-map>
+  <messages-map :logged="logged" :located="located"></messages-map>
   <messages-list :logged="logged" :messagesAround="messagesAround"></messages-list>
 </div>
 </template>

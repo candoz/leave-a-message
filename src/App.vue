@@ -167,7 +167,8 @@ export default {
   color: #2c3e50
 
 .fa-pen
-  color: $base-color 
+  color: $base-color
+  width: 100%
 
 .fa-times-circle
   text-align: right
@@ -189,8 +190,13 @@ export default {
 .fa-envelope
   color: $base-color 
 
-.fa-map-marker-alt
+.logged-in
   color: $accent-color
-  z-index: 1
+
+.logged-out
+  color: $dark-color
+
+.fa-map-marker-alt
+  z-index: 500
 
 </style>

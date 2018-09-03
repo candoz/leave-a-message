@@ -83,9 +83,11 @@ export default {
   mounted() {
     this.pencilIcon = L.divIcon({
       className: "fas fa-pen fa-2x",
+      iconAnchor: [0, 24],
+      iconSize: [18, 24],
     }); 
     this.initMap();
-  },
+  },  
   watch: {
     located: {
       handler(newCoordinates, oldValue) {
