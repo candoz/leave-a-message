@@ -43,9 +43,17 @@ module.exports = (function () {
       bcrypt.hash(req.body.password, SALT_ROUNDS, function (err, hashed) {
         if (err) return next(boom.badImplementation(err));
         let newUserData = {
-          "email": req.body.email,
-          "nickname": req.body.nickname,
-          "password": hashed
+          email: req.body.email,
+          nickname: req.body.nickname,
+          name: req.body.name,
+          password: hashed,
+          messages_id: [],
+          badges: [BADGE_BETA_TESTER],
+          registration_date: new Date(),
+          // location,
+          km_covered: 0.0,
+          reputation: 0,
+          profile_image: ""
         }
         dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
           if (err) return next(boom.badImplementation(err));
@@ -237,7 +245,7 @@ module.exports = (function () {
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err) {
       if (err) return next(boom.badImplementation(err));
-      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), { $addToSet: { likes: req.session.userId } }, function(err, dbResLikedBy) {
+      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId)}, { $addToSet: { likes: req.session.userId } }, function(err, dbResLikedBy) {
         if (err) return next(boom.badImplementation(err));
         if (dbResLikedBy.modifiedCount > 0) {
           res.send("Message " + req.body.messageId + " liked");
@@ -247,7 +255,7 @@ module.exports = (function () {
             dbPoolConnection.collection("Users").findOneAndUpdate(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: 1 } }, { returnNewDocument: true }, function(err, dbResAuthor) {
               if (err) return next(boom.badImplementation(err));
               if (dbResAuthor.reputation >= TOTAL_LIKES_GOAL) {
-                dbPoolConnection.collection("Messages").updateOne(new ObjectId(dbResAuthorId.author_id), { $addToSet: { badges: TOTAL_LIKES_GOAL } }, function(err) {
+                dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(dbResAuthorId.author_id) }, { $addToSet: { badges: TOTAL_LIKES_GOAL } }, function(err) {
                   if (err) return next(boom.badImplementation(err));
                   if (dbResLikedBy.modifiedCount > 0) {
                     if (LOG_SERVER_EVENTS) { console.log("Added " + TOTAL_LIKES_GOAL + " badge to user " + dbResAuthorId.author_id); }
@@ -272,14 +280,14 @@ module.exports = (function () {
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err) {
       if (err) return next(boom.badImplementation(err));
-      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), { $pull: { likes: req.session.userId } }, function(err, dbResLikedBy) {
+      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, { $pull: { likes: req.session.userId } }, function(err, dbResLikedBy) {
         if (err) return next(boom.badImplementation(err));
         if (dbResLikedBy.modifiedCount > 0) {
           res.send("Message " + req.body.messageId + " unliked");
           if (LOG_SERVER_EVENTS) { console.log("Like removed for message " + req.body.messageId); }
           dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthorId) {
             if (err) return next(boom.badImplementation(err));
-            dbPoolConnection.collection("Users").updateOne(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: -1 } }, function(err) {
+            dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(dbResAuthorId.author_id)}, { $inc: { reputation: -1 } }, function(err) {
               if (err) return next(boom.badImplementation(err));
             });
           });
