@@ -16,12 +16,12 @@
         <div class="panel" :ref="'panel-'+msg._id">
           {{msg.text}}
 
-          <i class="fas fa-comment" @click="writing = true" v-if="msg.comments">{{ msg.comments.length }}</i>
+          <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments">{{ msg.comments.length }}</i>
 
-          <div v-if="writing === true" class="comment-section">
-            <i class="far fa-times-circle" @click="writing = false"></i>
-            <h4>Comments:</h4>
-            <div v-for="comment in msg.comments" :key=comment style="text-align:left">
+          <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
+            <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
+            <h4>Comments:</h4> 
+            <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
               <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
             </div>
             <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
@@ -30,6 +30,7 @@
               <button type="submit" class="">Publish comment</button>
             </form>
           </div>
+
         </div>
       </div>
     </div>
@@ -70,7 +71,6 @@ export default {
     return {
       likeButton: require("../assets/heart-circle.png"),
       likedButton: require("../assets/heart-circle-outline.png"),
-      writing: false,
       commentText: null,
     };
   },
@@ -111,6 +111,14 @@ export default {
           }
           console.log(error.config);
         });
+    },
+    showCommentsPopup(id) {
+      let commentsPopup = this.$refs["comment-section-"+id][0];
+      commentsPopup.style.display = "block";
+    },
+    hideCommentsPopup(id) {
+      let commentsPopup = this.$refs["comment-section-"+id][0];
+      commentsPopup.style.display = "none";
     }
   }
 };
@@ -130,7 +138,7 @@ export default {
   background-color: #eee
   color: #444
   cursor: pointer
-  padding: 18px
+  padding: 5px
   /* width: 100% */
   border: none
   text-align: center
@@ -213,6 +221,7 @@ export default {
   width: 40%
   height: 40%
   top: 0
+  left: 0
   overflow: auto 
   @media only screen and (max-width: 600px)
     width: 80%
