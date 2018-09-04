@@ -1,10 +1,10 @@
 <template>
-    <div class="messages-map">
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
-        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
-        crossorigin=""/>
-      <div id="map"></div>
-    </div>
+  <div class="messages-map">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+      integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+      crossorigin=""/>
+    <div id="map"></div>
+  </div>
 </template>
 
 
@@ -201,11 +201,17 @@ export default {
 <style lang="sass" scoped>
 
 #map
-  width: 90%
+  width: 100%
   height: 50vh
   max-height: 40%
   max-width: 1100px
   margin: auto
   z-index: 0
+
+.messages-map
+  width: 60%
+  display: inline-block
+  @media only screen and (max-width: 1100px)
+    width: 100%
 
 </style>

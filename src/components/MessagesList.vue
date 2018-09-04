@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="messages-list">
 
     <div v-if="logged === true" >
       <h4>Messages nearby:</h4>
@@ -118,6 +118,13 @@ export default {
 
 <style lang="sass" scoped>
 @import './vars.sass'
+
+.messages-list
+  width: 39%
+  display: inline-block
+  vertical-align: top
+  @media only screen and (max-width: 1100px)
+    width: 100%
 
 .accordion
   background-color: #eee
