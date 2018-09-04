@@ -36,6 +36,8 @@ export default {
         })
         .then(response => {
           EventBus.$emit("loggedIn");
+          console.log(response.data);
+          this.sessionStorage.myUserId = response.data;
           this.$router.push('/');
         })
         .catch(error => {

@@ -139,6 +139,15 @@ export default {
   text-align: center
   color: #2c3e50
 
+.fa-heart
+  color: $dark-color
+  display: inline-block
+  &:hover, &:active, &:focus
+    color: $dark-color-mod
+
+.liked
+  color: $accent-color
+
 .fa-pen
   color: $base-color
   width: 100%
@@ -153,12 +162,11 @@ export default {
     color: $base-color-mod
 
 .fa-comment
-  font-size: 24px
-  color: $base-color
+  color: $dark-color
   cursor: pointer
-  width: 100%
+  display: inline-block
   &:hover, &:active, &:focus
-    color: $base-color-mod
+    color: $dark-color-mod
 
 .fa-envelope
   color: $dark-color

@@ -5,17 +5,14 @@
       <h4>Messages nearby:</h4>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
         <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
-          <button class="heart-button" @click="love(msg._id)" :ref="'heart-button' + msg._id">
-            <img class="heart" v-bind:src="likeButton" :ref="'heart-image' + msg._id"/> <!-- v-if sull'id? 2 image differenti-->
-          </button>
-          <p class="votes">{{msg.votes}}</p>
           <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
             &nbsp; #{{ value }}
           </p>
         </div>
         <div class="panel" :ref="'panel-'+msg._id">
-          {{msg.text}}
-
+          <p><b>@{{ msg.author_nickname }}</b></p>
+          <p>{{msg.text}}</p>          
+          <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" :ref="'heart-'+msg._id">{{ msg.likes.length }}</i> 
           <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments">{{ msg.comments.length }}</i>
 
           <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
@@ -30,7 +27,6 @@
               <button type="submit" class="">Publish comment</button>
             </form>
           </div>
-
         </div>
       </div>
     </div>
@@ -69,8 +65,6 @@ export default {
   props: ["messagesAround", "logged"],
   data() {
     return {
-      likeButton: require("../assets/heart-circle.png"),
-      likedButton: require("../assets/heart-circle-outline.png"),
       commentText: null,
     };
   },
@@ -85,9 +79,6 @@ export default {
         panel.style.maxHeight = panel.scrollHeight + "px";
       }
       EventBus.$emit("selectedFullMessage", id);
-    },
-    love(id) {
-      console.log("like to message " + this.$refs['heart-button'+id][0]);
     },
     addComment(id) {
       let commentMsg = this.commentText;
@@ -119,7 +110,29 @@ export default {
     hideCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
       commentsPopup.style.display = "none";
+    },
+    likeUnlike(id, likesArray) {
+      let likeUnlike = "";
+      let likeIcon = this.$refs["heart-"+id][0];
+      if(likesArray.includes(sessionStorage.nickname)) {
+        likeUnlike = "/messages/unlike";
+        
+      } else {
+        likeUnlike = "/messages/like";
+
+      }
+      axios
+        .put(sessionStorage.urlHost + likeUnlike)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
+  },
+  mount: {
+
   }
 };
 </script>
@@ -131,6 +144,7 @@ export default {
   width: 39%
   display: inline-block
   vertical-align: top
+  padding-bottom: 2%
   @media only screen and (max-width: 1100px)
     width: 100%
 
@@ -138,7 +152,7 @@ export default {
   background-color: #eee
   color: #444
   cursor: pointer
-  padding: 5px
+  padding-right: 5px
   /* width: 100% */
   border: none
   text-align: center
@@ -168,23 +182,7 @@ export default {
   max-height: 0
   overflow: hidden
   transition: max-height 0.2s ease-out
-
-.heart 
-  margin:auto
-
-.heart-button
-  padding: 0
-  border: none
-  background: none
-  display: inline-block
-  float: left
-
-.heart-button-liked
-  padding: 0
-  border: none
-  background: none
-  display: inline-block
-  float: left
+  border: 1px
 
 .votes
   display: inline-block
@@ -192,23 +190,6 @@ export default {
 
 .hashtags
   display: inline-block
-
-.far, .fa-times-circle
-  text-align: right
-  padding-top: 12%
-  cursor: pointer
-  font-size: 24px 
-  color: $base-color
-  &:hover, &:active, &:focus
-    color: $base-color-mod
-
-.fas, .fa-comment
-  font-size: 24px
-  color: $base-color
-  cursor: pointer
-  width: 100%
-  &:hover, &:active, &:focus
-    color: $base-color-mod
 
 .comment-section
   background: #FFFFFF

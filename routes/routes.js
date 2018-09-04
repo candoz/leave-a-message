@@ -95,8 +95,8 @@ module.exports = (function () {
           return next(boom.unauthorized("Wrong password"));
         }
         req.session.userId = dbResUserWithThatEmail._id;
-        res.send("Logged-in as " + req.body.email);
-        if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.email + " logged-in"); }
+        res.send(req.session.userId);
+        if (LOG_SERVER_EVENTS) { console.log("User " + dbResUserWithThatEmail.nickname + " logged-in"); }
       });
     });
   });
