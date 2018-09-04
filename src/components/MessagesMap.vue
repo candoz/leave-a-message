@@ -83,7 +83,7 @@ export default {
             '<p><b>Hashtags:</b> ' +  
             this.hashtagFormatter(message.hashtags) + 
             '<br /><b>Likes:</b> ' +
-            message.likes +
+            message.likes.length +
             '<br /><b>Written by:</b> ' +
             message.author_nickname +
             '</p>');
@@ -91,7 +91,7 @@ export default {
 
         } else {
           let filterSatisfied = false;
-          message.tags.forEach(hashtag => {
+          message.hashtags.forEach(hashtag => {
             if (hashtag.toLowerCase().startsWith(this.filter.toLowerCase())) {
               filterSatisfied = true;
             }
@@ -101,7 +101,7 @@ export default {
               '<p><b>Hashtags:</b> ' +  
               this.hashtagFormatter(message.hashtags) + 
               '<br /><b>Likes:</b> ' +
-              message.likes +
+              message.likes.length +
               '<br /><b>Written by:</b> ' +
               message.author_nickname +
               '</p>'
@@ -138,9 +138,9 @@ export default {
           for (let element of response.data) {
             this.strippedMessages.push({
               id : element._id,
-              name: element.name, //NON VIENE INVIATO
-              tags: element.hashtags,
-              votes: element.votes, //NON VENGONO INVIATI
+              author_nickname: element.author_nickname,
+              hashtags: element.hashtags,
+              likes: element.likes,
               latLng: [element.location.coordinates[1], element.location.coordinates[0]], //NB: lat and lng are inverted server side
             });
           }

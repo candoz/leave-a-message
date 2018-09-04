@@ -180,7 +180,9 @@ module.exports = (function () {
     let messageData = {
       author_id: req.session.userId,
       text: req.body.text,
-      comments: [ ]
+      comments: [],
+      likes: [],
+      date: new Date()
     }
     if (HASHTAG_REGEX.test(req.body.text)) {
       messageData.hashtags = [...new Set(req.body.text.match(HASHTAG_REGEX).map(val => val.split("#")[1]))];  // Set to remove duplicates!
@@ -191,7 +193,7 @@ module.exports = (function () {
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
       if (err) return next(boom.badImplementation(err));
       messageData.location = dbResLoggedUser.location;
-      messageData.author_nickname = dbResLoggedUser.author_nickname;
+      messageData.author_nickname = dbResLoggedUser.nickname;
       dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
         if (err) return next(boom.badImplementation(err));
         res.send("Message succesfully published");
@@ -359,7 +361,8 @@ module.exports = (function () {
         dbResMessagesStripped.forEach(function (val) {
           delete val.author_id;  // ALTERNATIVE: si può anche costruire direttamente un nuovo oggetto
           delete val.text;       //              solamente con i campi che sono necessari.
-          delete val.comments_id;
+          delete val.comments;
+          // delete val.date;
         });
         res.send(dbResMessagesStripped);
         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages between (bottom left corner:" + req.query.cornerBottomLeft[0] + ", upper right corner:" + req.query.cornerUpperRight[1] + ")"); }
