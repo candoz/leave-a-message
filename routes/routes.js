@@ -151,7 +151,7 @@ module.exports = (function () {
         }
       }
       
-      dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), { $set: dataToUpdate }, function (err) {
+      dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(req.session.userId) }, { $set: dataToUpdate }, function (err) {
         if (err) return next(boom.badImplementation(err));
         res.send("Updated location (lng:" + req.body.lng + ",lat:" + req.body.lat + ")");
         if (LOG_SERVER_EVENTS) {
@@ -172,6 +172,7 @@ module.exports = (function () {
     let messageData = {
       author_id: req.session.userId,
       text: req.body.text,
+      comments: [ ]
     }
     if (HASHTAG_REGEX.test(req.body.text)) {
       messageData.hashtags = [...new Set(req.body.text.match(HASHTAG_REGEX).map(val => val.split("#")[1]))];  // Set to remove duplicates!
@@ -185,7 +186,7 @@ module.exports = (function () {
       dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
         if (err) return next(boom.badImplementation(err));
         res.send("Message succesfully published");
-        dbPoolConnection.collection("Users").updateOne(new ObjectId(req.session.userId), { $push: { messages_id: dbResPublishedMessage.insertedId } }, function(err) {
+        dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(req.session.userId) }, { $push: { messages_id: dbResPublishedMessage.insertedId } }, function(err) {
           if (err) return next(boom.badImplementation(err));
           if (LOG_SERVER_EVENTS) { console.log("A new message has been published by user with session id " + req.session.userId); }
         });
@@ -207,7 +208,7 @@ module.exports = (function () {
       return next(boom.badRequest("Cannot post a comment with an empty message"));
     }
     console.log(req.body);
-    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResUser) {
+    dbPoolConnection.collection("Users").findOne({ _id: new ObjectId(req.session.userId) }, function (err, dbResUser) {
       if (err) return next(boom.badImplementation(err));
       var newComment = {
         $push: {
@@ -218,7 +219,7 @@ module.exports = (function () {
           } 
         }
       };
-      dbPoolConnection.collection("Messages").updateOne(new ObjectId(req.body.messageId), newComment, function(err) {
+      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, newComment, function(err) {
         if (err) return next(boom.badImplementation(err));
         console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
       });
