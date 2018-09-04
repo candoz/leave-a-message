@@ -1,8 +1,8 @@
 <template>
 <div id="look-around-component">
-  <div class=search><p>da mettere il componente search</p></div>
-  <messages-map :logged="logged" :located="located"></messages-map>
-  <messages-list :logged="logged" :messagesAround="messagesAround"></messages-list>
+  <messages-map :logged="logged" :located="located" :filtering="filtering"></messages-map>
+  <input type="text" v-model="filtering" placeholder="filter by hashtag" />
+  <messages-list :logged="logged" :messagesAround="messagesAround" :filtering="filtering"></messages-list>
 </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   props: ["logged", "located", "messagesAround"],
   data() {
     return {
-
+      filtering: ""
     };
   }
 };
