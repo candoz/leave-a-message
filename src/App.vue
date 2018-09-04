@@ -28,34 +28,7 @@ export default {
       logged: (sessionStorage.getItem("logged") === null) ? false : JSON.parse(sessionStorage.logged),
       located: (sessionStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(sessionStorage.located),
       // selectedMessageId,
-      messagesAround:[
-        {
-          _id: 0,
-          nickname: "mark", 
-          name: "Marco",
-          text: "#welcome to #wasteland",
-          hashtags: ["welcome", "wasteland"],
-          votes: 1,
-          location: {
-            type: "Point",
-            coordinates: [38.6109607, -90.2060344]
-          },
-          comments_id: [],
-        },
-        {
-          _id: 1,
-          nickname: "euge", 
-          name: "Eugenio",
-          text: "#hello there",
-          hashtags: ["hello"],
-          votes: 2,
-          location: {
-            type: "Point",
-            coordinates: [38.6111607, -90.2050322]
-          },
-          comments_id: [],
-        }
-      ]
+      messagesAround:[ ]
     }
   },
   created() {
@@ -197,6 +170,6 @@ export default {
   color: $dark-color
 
 .fa-map-marker-alt
-  z-index: 500
+  z-index: 500 !important
 
 </style>

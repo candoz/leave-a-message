@@ -44,9 +44,9 @@ export default {
         // zoomControl: false,
       });
       this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
-      this.tileLayer = L.tileLayer("https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}", {
+      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        subdomains: 'abcd',
+        // subdomains: 'abcd',
         minZoom: MIN_ZOOM_LEVEL,
         maxZoom: MAX_ZOOM_LEVEL,
         ext: 'png'
@@ -153,7 +153,7 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    background: $base-color-mod
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
 
 .lds-facebook
   display: inline-block

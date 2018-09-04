@@ -52,7 +52,6 @@ export default {
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         // subdomains: 'abcd',
         minZoom: 5,
-        // maxZoom: 15,
         ext: 'png'
       }).addTo(this.myMap);
 
@@ -73,6 +72,7 @@ export default {
         color: '#000',
         opacity: 0.6  ,
         noMask: false,
+        minZoom: 5
       }).addTo(this.myMap);
       this.maskLayer.setData([[self.located.lat, self.located.lng]]);
       
