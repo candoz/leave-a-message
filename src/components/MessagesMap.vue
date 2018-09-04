@@ -81,12 +81,25 @@ export default {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
         let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon, id: message.id}).bindPopup(
-          "Tags:" + message.tags + "\n" +
-          "Votes: " + message.votes + "\n" +
-          "Author: " + message.name + "\n"
+          '<p><b>Hashtags:</b> ' +  
+          this.hashtagFormatter(message.hashtags) + 
+          '<br /><b>Likes:</b> ' +
+          message.likes +
+          '<br /><b>Written by:</b> ' +
+          message.author_nickname +
+          '</p>'
         );
         this.strippedGroup.addLayer(messageMarker);
       });
+    },
+    hashtagFormatter(hashtagsArray) {
+      let result = [ ];
+      if(hashtagsArray) {
+        hashtagsArray.forEach(hashtag => {
+          result.push("#"+hashtag)
+        });
+      }
+      return result;
     },
     watchMapMovement() {
       this.myMap.on("moveend", (event) => {  // "move" ?
