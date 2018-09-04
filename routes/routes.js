@@ -177,8 +177,6 @@ module.exports = (function () {
       return next(boom.unauthorized("Cannot post a message if not logged-in"));
     }
 
-
-
     let messageData = {
       author_id: req.session.userId,
       text: req.body.text,

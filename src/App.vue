@@ -161,10 +161,13 @@ export default {
     color: $base-color-mod
 
 .fa-envelope
-  color: $base-color 
+  color: $dark-color
+
+.filtered
+  color: $accent-color
 
 .logged-in
-  color: $accent-color
+  color: $base-color
 
 .logged-out
   color: $dark-color

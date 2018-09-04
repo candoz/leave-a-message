@@ -22,7 +22,7 @@ const MESSAGE_ICON_WIDTH = 24;
 const MESSAGE_ICON_HEIGHT = 25;
 
 export default {
-  props: ["located", "logged"],
+  props: ["located", "logged","filter"],
   data() {
     return {
       myMap: null,
@@ -48,9 +48,7 @@ export default {
       });
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
-      // this.tileLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        // subdomains: 'abcd',
         minZoom: 5,
         ext: 'png'
       }).addTo(this.myMap);
@@ -80,16 +78,37 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon, id: message.id}).bindPopup(
-          '<p><b>Hashtags:</b> ' +  
-          this.hashtagFormatter(message.hashtags) + 
-          '<br /><b>Likes:</b> ' +
-          message.likes +
-          '<br /><b>Written by:</b> ' +
-          message.author_nickname +
-          '</p>'
-        );
-        this.strippedGroup.addLayer(messageMarker);
+        if (this.filter === "") {
+          let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon, id: message.id}).bindPopup(
+            '<p><b>Hashtags:</b> ' +  
+            this.hashtagFormatter(message.hashtags) + 
+            '<br /><b>Likes:</b> ' +
+            message.likes +
+            '<br /><b>Written by:</b> ' +
+            message.author_nickname +
+            '</p>');
+          this.strippedGroup.addLayer(messageMarker);
+
+        } else {
+          let filterSatisfied = false;
+          message.tags.forEach(hashtag => {
+            if (hashtag.toLowerCase().startsWith(this.filter.toLowerCase())) {
+              filterSatisfied = true;
+            }
+          });
+          if (filterSatisfied) {
+            let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageFilteredIcon, id: message.id}).bindPopup(
+              '<p><b>Hashtags:</b> ' +  
+              this.hashtagFormatter(message.hashtags) + 
+              '<br /><b>Likes:</b> ' +
+              message.likes +
+              '<br /><b>Written by:</b> ' +
+              message.author_nickname +
+              '</p>'
+            );
+            this.strippedGroup.addLayer(messageMarker);
+          }
+        }
       });
     },
     hashtagFormatter(hashtagsArray) {
@@ -133,7 +152,7 @@ export default {
   },
   watch: {
     located: {
-      handler(newCoordinates, oldValue) {
+      handler(newCoordinates) {
         this.userLocationMarker.setLatLng(L.latLng(newCoordinates.lat, newCoordinates.lng));
         this.maskLayer.setData([[newCoordinates.lat, newCoordinates.lng]]);
         // this.myMap.setView([this.located.lat, this.located.lng]);
@@ -142,7 +161,7 @@ export default {
       deep: true
     },
     logged: {
-      handler(newValue, oldValue) {
+      handler(newValue) {
         if (newValue === true) {
           this.userLocationIcon = L.divIcon({
             className: "fas fa-map-marker-alt fa-2x logged-in",
@@ -159,6 +178,11 @@ export default {
         this.userLocationMarker.setIcon(this.userLocationIcon)
       },
       deep: true
+    },
+    filter: {
+      handler() {
+        this.updateStrippedLayer();
+      }
     }
   },
   created() {
@@ -174,6 +198,11 @@ export default {
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.divIcon({
       className: "fas fa-envelope fa-2x",
+      iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
+      iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
+    });
+    this.strippedMessageFilteredIcon = L.divIcon({
+      className: "fas fa-envelope fa-2x filtered",
       iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
       iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     }); 
