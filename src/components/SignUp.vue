@@ -37,7 +37,8 @@ export default {
         .post(sessionStorage.urlHost + "/users", {
           email: this.email,
           password: this.password,
-          nickname: this.nickname
+          nickname: this.nickname,
+          name : this.name
         })
         .then(response => {
           console.log(response);
