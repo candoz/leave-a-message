@@ -90,14 +90,15 @@ export default {
       console.log("like to message " + this.$refs['heart-button'+id][0]);
     },
     addComment(id) {
+      let commentMsg = this.commentText;
+      this.commentText = "";
       axios
         .post(sessionStorage.urlHost + "/messages/comment", {
-          text: this.commentText,
+          text: commentMsg,
           messageId: id
         })
         .then(response => {
           console.log(response);
-          this.commentText = "";
         })
         .catch(error => {
           if (error.response) {
