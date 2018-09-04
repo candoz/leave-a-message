@@ -9,7 +9,7 @@ const MAX_DISTANCE_FULL_MESSAGES = 500; // 500 meters radius
 const MAX_DISTANCE_STRIPPED_MESSAGES = 10000; // 10 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 const LOG_CLIENT_ERRORS = true;
-const LOG_SERVER_EVENTS = true;
+const LOG_SERVER_EVENTS = false;
 
 const BADGE_BETA_TESTER = "beta-tester";
 const BADGE_EXPLORER = "explorer";
@@ -135,7 +135,6 @@ module.exports = (function () {
     }
 
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, location: 1, km_covered: 1, badges: 1}}, function (err, dbResUserInfo) {
-      console.log(dbResUserInfo);
       if (err) return next(boom.badImplementation(err));
       let dataToUpdate = {
         location: {
@@ -246,10 +245,20 @@ module.exports = (function () {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to like a message without specifying the message id"); }
       return next(boom.badRequest("Cannot like an unknown message"));
     }
+
+    // if (LOG_SERVER_EVENTS) {console.log("Someone wants to like a message");}
+    console.log("Someone wants to like a message");
+
+
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err) {
       if (err) return next(boom.badImplementation(err));
       dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId)}, { $addToSet: { likes: req.session.userId } }, function(err, dbResLikedBy) {
         if (err) return next(boom.badImplementation(err));
+
+        // if (LOG_SERVER_EVENTS) {console.log("Modified cont :  "+dbResLikedBy.modifiedCount);}
+        console.log("Modified cont :  "+dbResLikedBy.modifiedCount);
+
+
         if (dbResLikedBy.modifiedCount > 0) {
           res.send("Message " + req.body.messageId + " liked");
           if (LOG_SERVER_EVENTS) { console.log("Like added for message " + req.body.messageId); }

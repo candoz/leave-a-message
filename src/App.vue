@@ -40,6 +40,11 @@ export default {
       this.logged = false;
       sessionStorage.logged = JSON.stringify(false);
     });
+    EventBus.$on("forceFullMessagesUpdate", () => {
+      if (this.logged === true) {
+        this.getFullMessages();
+      }
+    });
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition((position) => {
         this.located.lat = position.coords.latitude;
@@ -57,25 +62,7 @@ export default {
             })
             .then(response => {
               console.log("coordinates updated in server")
-              axios.get(sessionStorage.urlHost + "/messages/full")
-                .then(response => {
-                  console.log(response.data);
-                  this.messagesAround = response.data;
-                }).catch(error => {
-                  if (error.response) {
-                    console.log("Response");
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                  } else if (error.request) {
-                    console.log("Request");
-                    console.log(error.request);
-                  } else {
-                    console.log("Setting up");
-                    console.log("Error", error.message);
-                  }
-                  console.log(error.config);
-                });
+              this.getFullMessages();
             })
             .catch(error => {
               if (error.response) {
@@ -103,27 +90,32 @@ export default {
     // Polling for new messages if the user isn't moving
     setInterval(function () {
       if (this.logged === true) {
-        axios.get(sessionStorage.urlHost + "/messages/full")
-          .then(response => {
-            console.log(response.data);
-            this.messagesAround = response.data;
-          }).catch(error => {
-            if (error.response) {
-              console.log("Response");
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              console.log("Request");
-              console.log(error.request);
-            } else {
-              console.log("Setting up");
-              console.log("Error", error.message);
-            }
-            console.log(error.config);
-          });
+        this.getFullMessages();
       }
     }.bind(this), POLLING_INTERVAL); 
+  },
+  methods: {
+    getFullMessages: function() {
+      axios.get(sessionStorage.urlHost + "/messages/full")
+        .then(response => {
+          console.log(response.data);
+          this.messagesAround = response.data;
+        }).catch(error => {
+          if (error.response) {
+            console.log("Response");
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log("Request");
+            console.log(error.request);
+          } else {
+            console.log("Setting up");
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
+        });
+    }
   }
 }
 </script>

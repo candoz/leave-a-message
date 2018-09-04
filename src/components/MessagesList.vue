@@ -114,20 +114,22 @@ export default {
     likeUnlike(id, likesArray) {
       let likeUnlike = "";
       let likeIcon = this.$refs["heart-"+id][0];
-      if(likesArray.includes(sessionStorage.nickname)) {
+      if(likesArray.includes(sessionStorage.myUserID)) {
         likeUnlike = "/messages/unlike";
-        
+        likeIcon.style.color = "#393939";
       } else {
         likeUnlike = "/messages/like";
-
+        likeIcon.style.color = "#ff652f";
       }
       axios
-        .put(sessionStorage.urlHost + likeUnlike)
+        .put(sessionStorage.urlHost + likeUnlike, {messageId: id})
         .then(response => {
           console.log(response);
+          EventBus.$emit("forceFullMessagesUpdate");
         })
         .catch(error => {
           console.log(error);
+          EventBus.$emit("forceFullMessagesUpdate");
         });
     }
   },
