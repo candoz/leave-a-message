@@ -51,7 +51,7 @@ module.exports = (function () {
           badges: [BADGE_BETA_TESTER],
           registration_date: new Date(),
           // location,
-          km_covered: 0.0,
+          km_covered: 0.0000001,
           reputation: 0,
           profile_image: ""
         }
