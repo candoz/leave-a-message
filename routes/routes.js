@@ -177,6 +177,8 @@ module.exports = (function () {
       return next(boom.unauthorized("Cannot post a message if not logged-in"));
     }
 
+
+
     let messageData = {
       author_id: req.session.userId,
       text: req.body.text,
@@ -191,6 +193,7 @@ module.exports = (function () {
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
       if (err) return next(boom.badImplementation(err));
       messageData.location = dbResLoggedUser.location;
+      messageData.author_nickname = dbResLoggedUser.author_nickname;
       dbPoolConnection.collection("Messages").insertOne(messageData, function (err, dbResPublishedMessage) {
         if (err) return next(boom.badImplementation(err));
         res.send("Message succesfully published");
