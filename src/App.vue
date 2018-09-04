@@ -134,8 +134,7 @@ export default {
 .fa-heart
   color: $dark-color
   display: inline-block
-  &:hover, &:active, &:focus
-    color: $dark-color-mod
+  cursor: pointer
 
 .liked
   color: $accent-color
@@ -149,16 +148,12 @@ export default {
   padding-top: 12%
   cursor: pointer
   font-size: 24px 
-  color: $base-color
-  &:hover, &:active, &:focus
-    color: $base-color-mod
+  color: $accent-color
 
 .fa-comment
   color: $dark-color
   cursor: pointer
   display: inline-block
-  &:hover, &:active, &:focus
-    color: $dark-color-mod
 
 .fa-envelope
   color: $dark-color

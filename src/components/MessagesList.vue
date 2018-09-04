@@ -12,12 +12,11 @@
         <div class="panel" :ref="'panel-'+msg._id">
           <p><b>@{{ msg.author_nickname }}</b></p>
           <p>{{msg.text}}</p>          
-          <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" :ref="'heart-'+msg._id">{{ msg.likes.length }}</i> 
+          <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id">{{ msg.likes.length }}</i> 
           <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments">{{ msg.comments.length }}</i>
 
           <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
             <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
-            <h4>Comments:</h4> 
             <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
               <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
             </div>
@@ -114,28 +113,29 @@ export default {
     likeUnlike(id, likesArray) {
       let likeUnlike = "";
       let likeIcon = this.$refs["heart-"+id][0];
-      if(likesArray.includes(sessionStorage.myUserID)) {
+      if(likesArray.includes(sessionStorage.myUserId)) {
         likeUnlike = "/messages/unlike";
-        likeIcon.style.color = "#393939";
       } else {
         likeUnlike = "/messages/like";
-        likeIcon.style.color = "#ff652f";
       }
       axios
         .put(sessionStorage.urlHost + likeUnlike, {messageId: id})
         .then(response => {
-          console.log(response);
           EventBus.$emit("forceFullMessagesUpdate");
         })
         .catch(error => {
           console.log(error);
-          EventBus.$emit("forceFullMessagesUpdate");
         });
+    },
+    checkIfLiked(likesArray) {
+      if(likesArray.includes(sessionStorage.myUserId)) {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
-  mount: {
-
-  }
+  
 };
 </script>
 
@@ -195,6 +195,7 @@ export default {
 
 .comment-section
   background: #FFFFFF
+  text-align: right;
   max-width: 360px
   margin: auto
   padding: 3%
@@ -204,13 +205,11 @@ export default {
   width: 40%
   height: 40%
   top: 0
-  left: 0
   overflow: auto 
-  @media only screen and (max-width: 600px)
+  @media only screen and (max-width: 700px)
     width: 80%
     padding: 3%
     height: 60%
-    left: 0
 
 form
   text-align: center
@@ -227,7 +226,7 @@ form
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      background: $base-color-mod
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
 
 textarea
   outline: 0
