@@ -71,6 +71,7 @@ export default {
   margin: auto
 
 .form
+  border-radius: 4px
   z-index: 0
   background: $light-color
   max-width: 360px

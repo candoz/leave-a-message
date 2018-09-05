@@ -20,9 +20,10 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-.app-view 
+.app-view
+
   background-color: $base-color
   width: 100%
-  height: 100%
+  min-height: 100%
 
 </style>

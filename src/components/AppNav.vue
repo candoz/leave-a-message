@@ -36,6 +36,7 @@ nav
   position: fixed
   li
     display: inline-block
+    border-radius: 4px 4px 0px 0px
     color: white
     padding: 14px 16px
     margin: 0px

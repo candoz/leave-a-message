@@ -109,16 +109,18 @@ export default {
   height: 100%
   display: flex
   flex-wrap: wrap
-  padding: 52px 3px 3px 3px
+  padding: 2%
   background-color: orange
 
 %card
   background: #FFFFFF
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
   z-index: 0
-  margin: 4px
-  min-width: 240px
-  flex-grow: 1
+  min-width: 300px
+  min-height: 300px
+  border-radius: 4px
+  flex: 1
+  margin: 2%
 
 #map
   @extend %card
@@ -126,22 +128,22 @@ export default {
 
 form
   @extend %card
-  max-width: 480px
-  max-height: 240px
+  max-height: 500px
+  height: 100%
   padding: 2%
   text-align: center
-  flex-basis: 20%
 
 textarea
   outline: 0
   background: #f2f2f2
   width: 100%
+  height: 60%
   border: 0
   margin: 0 0 15px
-  padding: 15px
+  padding: 12px
   box-sizing: border-box
   font-size: 14px
-  // max-width: 360px
+  resize: none
 
 button
   text-transform: uppercase
@@ -149,7 +151,7 @@ button
   background: $base-color
   width: 100%
   border: 0
-  padding: 15px
+  padding: 12px
   color: #FFFFFF
   font-size: 14px
   transition: all 0.3 ease
