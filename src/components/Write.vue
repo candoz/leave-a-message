@@ -105,34 +105,32 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
+.write-component
+  height: 100%
+  display: flex
+  flex-wrap: wrap
+  padding: 52px 3px 3px 3px
+  background-color: orange
+
 %card
   background: #FFFFFF
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
-  margin-right: 1%
-  margin-left: 1%
-
-.write-component
-  margin: auto
-  height: 100%
-  padding: 15vh 0 0
-  display: flex
-  flex-wrap: wrap
-  align-items: flex-start
-  background-color: red
+  z-index: 0
+  margin: 4px
+  min-width: 240px
+  flex-grow: 1
 
 #map
   @extend %card
-  height: 70%
-  max-width: 70%
-  z-index: 0
+  flex-basis: 50%
 
 form
   @extend %card
-  z-index: 0
-  max-width: 30%
-  min-width: 360px
+  max-width: 480px
+  max-height: 240px
   padding: 2%
   text-align: center
+  flex-basis: 20%
 
 textarea
   outline: 0
@@ -143,7 +141,7 @@ textarea
   padding: 15px
   box-sizing: border-box
   font-size: 14px
-  max-width: 360px
+  // max-width: 360px
 
 button
   text-transform: uppercase
