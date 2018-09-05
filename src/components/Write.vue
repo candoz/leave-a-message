@@ -3,13 +3,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
-    <div id="map"></div>
     <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
-      <h3>Write a message</h3>
-        <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
+      <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
       <button :disabled="loading === true" type="submit" class="">Publish message</button>
       <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
     </form>
+    <div id="map"></div>
   </div>
 </template>
 
@@ -110,26 +109,24 @@ export default {
   display: flex
   flex-wrap: wrap
   padding: 2%
-  background-color: orange
+  padding: 10vh 0 0
+  justify-content: center
 
 %card
   background: #FFFFFF
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
-  z-index: 0
+  box-shadow: $shadow
+  max-width: 400px
   min-width: 300px
   min-height: 300px
-  border-radius: 4px
+  border-radius: $radius
   flex: 1
-  margin: 2%
+  margin: 0 2% 2% 2%
 
 #map
   @extend %card
-  flex-basis: 50%
 
 form
   @extend %card
-  max-height: 500px
-  height: 100%
   padding: 2%
   text-align: center
 
@@ -137,7 +134,7 @@ textarea
   outline: 0
   background: #f2f2f2
   width: 100%
-  height: 60%
+  height: 80%
   border: 0
   margin: 0 0 15px
   padding: 12px
