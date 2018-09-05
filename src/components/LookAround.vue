@@ -1,7 +1,7 @@
 <template>
 <div id="look-around-component">
   <messages-map :logged="logged" :located="located" :filter="filter"></messages-map>
-  <input type="text" v-model="filter" placeholder="filter by hashtag" />
+  <input type="text" v-model="filter" placeholder="filter by hashtag or by nickname" />
   <messages-list :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
 </div>
 </template>

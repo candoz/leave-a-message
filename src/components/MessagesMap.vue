@@ -78,36 +78,24 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        if (this.filter === "") {
-          let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageIcon, id: message.id}).bindPopup(
-            '<p><b>Hashtags:</b> ' +  
-            this.hashtagFormatter(message.hashtags) + 
-            '<br /><b>Likes:</b> ' +
-            message.likes.length +
-            '<br /><b>Written by:</b> ' +
-            message.author_nickname +
-            '</p>');
-          this.strippedGroup.addLayer(messageMarker);
-
+        const filterAbsent = this.filter === "";
+        let filterSatisfied = false;
+        let properMessageIcon;
+        if (filterAbsent) {
+          properMessageIcon = this.strippedMessageIcon;
         } else {
-          let filterSatisfied = false;
-          message.hashtags.forEach(hashtag => {
-            if (hashtag.toLowerCase().startsWith(this.filter.toLowerCase())) {
-              filterSatisfied = true;
-            }
-          });
-          if (filterSatisfied) {
-            let messageMarker = L.marker(message.latLng, {icon: this.strippedMessageFilteredIcon, id: message.id}).bindPopup(
-              '<p><b>Hashtags:</b> ' +  
-              this.hashtagFormatter(message.hashtags) + 
-              '<br /><b>Likes:</b> ' +
-              message.likes.length +
-              '<br /><b>Written by:</b> ' +
-              message.author_nickname +
-              '</p>'
-            );
-            this.strippedGroup.addLayer(messageMarker);
-          }
+          properMessageIcon = this.strippedMessageFilteredIcon;
+          filterSatisfied = (message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase()) ||
+                            (message.hashtags.some(hashtag => {
+                              return (hashtag.toLowerCase().startsWith(this.filter.toLowerCase()))
+                            })));
+        }
+        if (filterAbsent || filterSatisfied) {
+          const popupString = "<p><b>Hashtags:</b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
+                              "<b>Likes:</b> " + message.likes.length + "<br />" +
+                              "<b>Written by:</b> " + message.author_nickname + "</p>";
+          const messageMarker = L.marker(message.latLng, {icon: properMessageIcon, id: message.id}).bindPopup(popupString);
+          this.strippedGroup.addLayer(messageMarker);
         }
       });
     },
