@@ -69,9 +69,13 @@ export default {
           let markers = [];
           this.userMessages.forEach(message => {
             let messageMarker = L.marker([message.location.coordinates[1], message.location.coordinates[0]], {icon: this.userFullMessagesIcon}).bindPopup(
-              "Tags:" + message.tags + "\n" +
-              "Votes: " + message.votes + "\n" +
-              "Text: " + message.text + "\n"
+              '<p><b>Hashtags:</b> ' +  
+              this.hashtagFormatter(message.hashtags) + 
+              '<br /><b>Likes:</b> ' +
+              message.likes.length +
+              '<br /><b>Written by:</b> ' +
+              message.author_nickname +
+              '</p>'
             ).addTo(this.myMap);
             markers.push(messageMarker);
           this.myMap.fitBounds(new L.featureGroup(markers).getBounds().pad(0.5));
@@ -80,6 +84,15 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    hashtagFormatter(hashtagsArray) {
+      let result = [ ];
+      if(hashtagsArray) {
+        hashtagsArray.forEach(hashtag => {
+          result.push("#"+hashtag)
+        });
+      }
+      return result;
     },
     doLogout(event) {
       axios
