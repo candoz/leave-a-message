@@ -21,8 +21,8 @@ export default {
 @import './vars.sass'
 
 .app-view 
-  min-height: 100vh
   background-color: $base-color
   width: 100%
+  height: 100%
 
 </style>

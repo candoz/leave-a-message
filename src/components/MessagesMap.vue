@@ -14,7 +14,7 @@ import { } from "leaflet-easybutton"
 import { } from "leaflet-maskcanvas"
 import { EventBus } from "../main.js"
 const axios = require("axios");
-const FULL_MESSAGES_RADIUS = 7500;  // meters
+const FULL_MESSAGES_RADIUS = 5000;  // meters
 const POLLING_INTERVAL = 10000;
 const USER_LOCATION_ICON_WIDTH = 18;
 const USER_LOCATION_ICON_HEIGHT = 24;

@@ -27,7 +27,6 @@ export default {
     return {
       logged: (sessionStorage.getItem("logged") === null) ? false : JSON.parse(sessionStorage.logged),
       located: (sessionStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(sessionStorage.located),
-      // selectedMessageId,
       messagesAround:[ ]
     }
   },
@@ -130,6 +129,7 @@ export default {
   -moz-osx-font-smoothing: grayscale
   text-align: center
   color: #2c3e50
+  height: 100%
 
 .fa-heart
   color: $dark-color

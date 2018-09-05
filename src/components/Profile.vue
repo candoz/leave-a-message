@@ -122,8 +122,7 @@ export default {
 
 #map
   width: 30%
-  height: 40vh
-  max-height: 30%
+  height: 50%
   max-width: 1100px
   z-index: 0
   display: inline-block
@@ -133,6 +132,7 @@ export default {
 
 .profile
   width: 100%
+  height: 100%
   padding: 10vh 0 0
   margin: auto
 

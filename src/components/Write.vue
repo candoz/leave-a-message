@@ -1,16 +1,16 @@
 <template>
-    <div class=write-component>
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
-        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
-        crossorigin=""/>
-      <div id="map"></div>
-      <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
-        <h3>Write a message</h3>
-          <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
-        <button :disabled="loading === true" type="submit" class="">Publish message</button>
-        <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
-      </form>
-    </div>
+  <div class=write-component>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+      integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+      crossorigin=""/>
+    <div id="map"></div>
+    <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
+      <h3>Write a message</h3>
+        <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
+      <button :disabled="loading === true" type="submit" class="">Publish message</button>
+      <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -105,30 +105,34 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-#map
-  width: 50%
-  height: 50vh
-  max-height: 30%
-  max-width: 1100px
-  margin: auto
-  z-index: 0
+%card
+  background: #FFFFFF
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+  margin-right: 1%
+  margin-left: 1%
 
 .write-component
   margin: auto
-  background: #FFFFFF
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
-  width: 90%
+  height: 100%
   padding: 15vh 0 0
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-start
+  background-color: red
+
+#map
+  @extend %card
+  height: 70%
+  max-width: 70%
+  z-index: 0
 
 form
+  @extend %card
   z-index: 0
-  background: #FFFFFF
-  max-width: 360px
-  width: 80%
-  margin: 1% auto auto auto
+  max-width: 30%
+  min-width: 360px
   padding: 2%
   text-align: center
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
 
 textarea
   outline: 0
