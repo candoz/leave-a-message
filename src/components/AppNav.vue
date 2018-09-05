@@ -1,7 +1,7 @@
 <template>
     <div>
       <nav>
-        <router-link tag="li" :to="'/'" exact>Look Around</router-link>
+        <router-link tag="li" :to="'/'" exact>Explore</router-link>
         <router-link tag="li" v-if="logged === false" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" v-if="logged === false" :to="'/signup'" exact>Signup</router-link>
         <router-link tag="li" v-if="logged === true" :to="'/write'" exact>Write</router-link>
@@ -30,14 +30,17 @@ nav
   top: 0
   left: 0
   width: 100%
-  z-index: 10
-  overflow: hidden
   background-color: $dark-color
   position: fixed
+  display: flex
+  flex-wrap: nowrap
+  list-style: none
+  justify-content: center
   li
-    display: inline-block
     border-radius: 4px 4px 0px 0px
     color: white
+    flex: 1
+    max-width: 75px
     padding: 14px 16px
     margin: 0px
     text-decoration: none

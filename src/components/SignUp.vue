@@ -67,10 +67,11 @@ export default {
 #signup-component
   width: 80%
   max-width: 500px
-  padding: 15vh 0 0
+  padding: 10vh 0 0
   margin: auto
 
 .form
+  border-radius: $radius
   z-index: 0
   background: $light-color
   max-width: 360px
@@ -78,10 +79,10 @@ export default {
   margin: auto
   padding: 5%
   text-align: center
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+  box-shadow: $shadow
   input
     outline: 0
-    background: #f2f2f2
+    background: $light-color-mod
     width: 100%
     border: 0
     margin: 0 0 15px
@@ -100,9 +101,9 @@ export default {
     -webkit-transition: all 0.3 ease
     transition: all 0.3 ease
     cursor: pointer
+    margin-bottom: 10px
     &:hover, &:active, &:focus
-      // background: $accent-color-mod
-      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
+      box-shadow: $shadow
   .message
     margin: 15px 0 0
     color: #b3b3b3
