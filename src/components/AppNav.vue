@@ -37,6 +37,7 @@ nav
   list-style: none
   justify-content: center
   z-index: 1
+  overflow-x: auto
   li
     border-radius: 4px 4px 0px 0px
     color: white

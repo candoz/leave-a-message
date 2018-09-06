@@ -108,15 +108,14 @@ export default {
   height: 100%
   display: flex
   flex-wrap: wrap
-  padding: 2%
-  padding: 10vh 0 0
+  padding: 4vh 2vw
   justify-content: center
 
 %card
   background: #FFFFFF
   box-shadow: $shadow
   max-width: 400px
-  min-width: 300px
+  min-width: 180px
   min-height: 300px
   border-radius: $radius
   flex: 1

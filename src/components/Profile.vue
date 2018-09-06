@@ -202,6 +202,5 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    // background: $primary-color-mod
     box-shadow: $shadow
 </style>

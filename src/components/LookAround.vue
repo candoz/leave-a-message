@@ -30,45 +30,44 @@ export default {
 @import './vars.sass'
 
 .look-around-component
-  padding: 4vh 2vw
+  padding: 4vh
   display: flex
   // flex-wrap: wrap
   flex-direction: row
   justify-content: center
   align-items: flex-start
-  min-height: 100%
-  background: blue
-  @media screen and (max-width: 768px)
+  min-height: 100vh
+  @media screen and (max-width: $media-width-first)
     flex-direction: column
 
 %card
   background: $light-color
   box-shadow: $shadow
-  min-width: 300px
-  min-height: 300px
+  min-width: 180px
+  min-height: 180px
   border-radius: $radius
   padding: 1%
   margin: 0 1%
-  display: inline-block
-  vertical-align: top
   flex-grow: 1
+  @media screen and (max-width: $media-width-first)
+    margin: auto
   
 .messages-map-card
   @extend %card
   flex-basis: 50vw
-  height: 90vh
-  @media screen and (max-width: 768px)
-    width: 90vw
-    height: 70vh
+  height: 80vh
   // also a flex container
   display: flex
   flex-direction: column
+  @media screen and (max-width: $media-width-first)
+    width: 95%
+    height: 70%
 
 .messages-list-card
   @extend %card
   flex-basis: 15vw
-  @media screen and (max-width: 768px)
-    width: 90vw
+  @media screen and (max-width: $media-width-first)
+    width: 95%
     margin-top: 2vh
 
 </style>
