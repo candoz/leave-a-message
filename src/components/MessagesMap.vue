@@ -4,6 +4,9 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
     <div id="map"></div>
+    <div class="filter-input">
+      <input type="text" v-model="filter" placeholder="filter by hashtag or by nickname" />
+    </div>
   </div>
 </template>
 
@@ -230,18 +233,22 @@ export default {
 
 <style lang="sass" scoped>
 
-#map
-  width: 100%
-  height: 50vh
-  max-height: 40%
-  max-width: 1100px
-  margin: auto
-  z-index: 0
-
 .messages-map
   width: 60%
   display: inline-block
-  @media only screen and (max-width: 1100px)
-    width: 100%
+  background: blue
+
+#map
+  height: 70vh
+  z-index: 0
+
+.filter-input
+  margin-top: 1%
+  width: 100%
+  text-align: center
+  background: green
+
+input
+  // width: 100%
 
 </style>

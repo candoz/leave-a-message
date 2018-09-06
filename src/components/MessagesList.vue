@@ -1,6 +1,7 @@
 <template>
   <div class="messages-list">
 
+    <!-- <div v-if="logged === true" > -->
     <div v-if="logged === true" >
       <h4>Messages nearby:</h4>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->

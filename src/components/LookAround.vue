@@ -1,8 +1,7 @@
 <template>
 <div id="look-around-component">
-  <messages-map :logged="logged" :located="located" :filter="filter"></messages-map>
-  <input type="text" v-model="filter" placeholder="filter by hashtag or by nickname" />
-  <messages-list :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
+  <messages-map class="messages-map-card" :logged="logged" :located="located" :filter="filter"></messages-map>
+  <messages-list class="messages-list-card" :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
 </div>
 </template>
 
@@ -31,12 +30,23 @@ export default {
 @import './vars.sass'
 
 #look-around-component
-  margin: auto
+  height: 100%
+  padding: 4vh 2vw
+
+%card
   background: $light-color
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
-  width: 90%
-  padding: 10vh 0 0
-  @media only screen and (max-width: 600px)
-    width: 100%
+  box-shadow: $shadow
+  min-width: 300px
+  min-height: 300px
+  border-radius: $radius
+  padding: 1%
+
+.messages-map-card
+  @extend %card
+  margin: 2px
+
+.messages-list-card
+  @extend %card
+  margin: 0 2% 2% 2%
 
 </style>
