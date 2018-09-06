@@ -30,13 +30,12 @@ export default {
 @import './vars.sass'
 
 .look-around-component
-  padding: 4vh 0
+  padding: 4vh 2vw
   display: flex
   // flex-wrap: wrap
   flex-direction: row
   justify-content: center
   align-items: flex-start
-  padding: 4%
   @media screen and (max-width: 768px)
     flex-direction: column
 
@@ -47,7 +46,7 @@ export default {
   min-height: 300px
   border-radius: $radius
   padding: 1%
-  margin: 1%
+  margin: 0 1%
   display: inline-block
   vertical-align: top
   flex-grow: 1
