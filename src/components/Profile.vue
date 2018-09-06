@@ -5,8 +5,8 @@
         crossorigin=""/>
       <div class="profile-card">
         <h4>{{ name }}</h4>
-        <img v-bind:src="profilePic" style="width:50%">
-        <h3>{{ nickname }}</h3>
+        <img v-bind:src="profilePic" style="width:30%">
+        <h5>@{{ nickname }}</h5>
         <button @click="doLogout()">Logout</button>
       </div>
       <div class="badges-card">
@@ -139,46 +139,50 @@ export default {
 
 .profile
   padding: 4vh 2vw
-  background-color: orange
   display: flex
   flex-wrap: wrap
   justify-content: center
+  align-items: flex-start
 
 %card
-  max-width: 400px
-  min-width: 100px
-  min-height: 300px
-  max-height: 500px
   background: #FFFFFF
   box-shadow: $shadow
   border-radius: $radius
   margin: 0 2% 2% 2%
   padding: 10px
-  flex: 1
   
 .profile-card
   @extend %card
+  flex-basis: 20%
+  flex-grow: 2
 
 .badges-card
   @extend %card
+  flex-basis: 100px
+  flex-grow: 1
 
 .badges-container
   display: flex
   flex-wrap: wrap
-  flex-direction: column
-  justify-content: flex-start
-  max-height: 400px
+  flex-direction: row
+  justify-content: center
+  overflow-y: auto
+  max-height: 300px
 
 .badge-image
   width: 80px
-  align-self: stretch
   flex: 1
   
 .map-card
   @extend %card
+  flex-basis: 40%
+  flex-grow: 2
+  align-self: stretch
+  min-height: 400px
 
 #map
   height: 80%
+  z-index: 0
 
 .mail
   color: grey

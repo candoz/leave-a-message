@@ -36,6 +36,7 @@ nav
   flex-wrap: nowrap
   list-style: none
   justify-content: center
+  z-index: 1
   li
     border-radius: 4px 4px 0px 0px
     color: white
