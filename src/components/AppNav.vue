@@ -46,7 +46,7 @@ nav
     margin: 0px
     text-decoration: none
     &.router-link-active
-      background-color: $base-color
+      background-color: $primary-color
       cursor: pointer
     &:hover:not(.router-link-active)
       background-color: $dark-color-mod

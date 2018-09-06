@@ -88,7 +88,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    background: $base-color
+    background: $primary-color
     width: 100%
     border: 0
     padding: 15px

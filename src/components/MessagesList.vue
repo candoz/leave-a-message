@@ -1,5 +1,5 @@
 <template>
-  <div class="messages-list">
+  <div>
 
     <!-- <div v-if="logged === true" > -->
     <div v-if="logged === true" >
@@ -143,20 +143,11 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-.messages-list
-  width: 39%
-  display: inline-block
-  vertical-align: top
-  padding-bottom: 2%
-  @media only screen and (max-width: 1100px)
-    width: 100%
-
 .accordion
-  background-color: #eee
+  background-color: $light-color-mod
   color: #444
   cursor: pointer
-  padding-right: 5px
-  /* width: 100% */
+  padding: 5px
   border: none
   text-align: center
   outline: none
@@ -164,11 +155,11 @@ export default {
   transition: 0.4s
 
 .active
-  background-color: #ccc
+  background-color: $light-color-mod-two
 
 .accordion
   &:hover
-    background-color: #ccc
+    background-color: $light-color-mod-two
   &:after
     content: '\002B'
     color: #777
@@ -200,7 +191,7 @@ export default {
   max-width: 360px
   margin: auto
   padding: 3%
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
+  box-shadow: $shadow
   position: fixed
   z-index: 1
   width: 40%
@@ -218,7 +209,7 @@ form
   button
     text-transform: uppercase
     outline: 0
-    background: $base-color
+    background: $primary-color
     width: 100%
     border: 0
     padding: 15px

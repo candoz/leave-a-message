@@ -30,8 +30,7 @@ export default {
 @import './vars.sass'
 
 #look-around-component
-  height: 100%
-  padding: 4vh 2vw
+  padding: 4vh 0
 
 %card
   background: $light-color
@@ -40,13 +39,21 @@ export default {
   min-height: 300px
   border-radius: $radius
   padding: 1%
-
+  margin: 4px
+  display: inline-block
+  vertical-align: top
+  
 .messages-map-card
   @extend %card
-  margin: 2px
-
+  width: 55vw
+  @media screen and (max-width: 768px)
+    width: 95vw
+    height: 50vh
+  
 .messages-list-card
   @extend %card
-  margin: 0 2% 2% 2%
+  @media screen and (max-width: 768px)
+    width: 95vw
+    // height: 10vh
 
 </style>

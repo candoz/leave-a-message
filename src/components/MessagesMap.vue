@@ -1,5 +1,5 @@
 <template>
-  <div class="messages-map">
+  <div>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
@@ -234,12 +234,8 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-.messages-map
-  width: 60%
-  display: inline-block
-
 #map
-  height: 70vh
+  height: 88%  // debito tecnico
   z-index: 0
 
 .filter-input
@@ -250,7 +246,6 @@ export default {
     outline: 0
     background: $light-color-mod
     border: 0
-    margin: 0 0 15px
     padding: 5px
     box-sizing: border-box
     font-size: 14px

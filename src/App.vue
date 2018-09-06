@@ -245,10 +245,10 @@ export default {
   cursor: pointer
 
 .liked
-  color: $accent-color
+  color: $secondary-color
 
 .fa-pen
-  color: $base-color
+  color: $primary-color
   width: 100%
 
 .fa-times-circle
@@ -256,7 +256,7 @@ export default {
   padding-top: 12%
   cursor: pointer
   font-size: 24px 
-  color: $accent-color
+  color: $secondary-color
 
 .fa-comment
   color: $dark-color
@@ -267,10 +267,10 @@ export default {
   color: $dark-color
 
 .filtered
-  color: $accent-color
+  color: $secondary-color
 
 .logged-in
-  color: $base-color
+  color: $primary-color
 
 .logged-out
   color: $dark-color

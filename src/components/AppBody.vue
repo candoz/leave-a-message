@@ -22,9 +22,9 @@ export default {
 
 .app-view
 
-  background-color: $base-color
+  background-color: $primary-color
   width: 100%
-  min-height: 100%
+  min-height: 100%  // do not change!!
   margin-top: 45px
 
 </style>

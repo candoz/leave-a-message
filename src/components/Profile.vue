@@ -191,7 +191,7 @@ export default {
 button
   text-transform: uppercase
   outline: 0
-  background: $accent-color
+  background: $secondary-color
   width: 100%
   max-width: 200px
   margin: 3% auto auto auto
@@ -202,6 +202,6 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    // background: $base-color-mod
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
+    // background: $primary-color-mod
+    box-shadow: $shadow
 </style>

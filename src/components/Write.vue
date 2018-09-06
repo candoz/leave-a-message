@@ -145,7 +145,7 @@ textarea
 button
   text-transform: uppercase
   outline: 0
-  background: $base-color
+  background: $primary-color
   width: 100%
   border: 0
   padding: 12px
@@ -166,7 +166,7 @@ button
     position: absolute
     left: 6px
     width: 13px
-    background: $accent-color
+    background: $secondary-color
     animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite
     &:nth-child(1)
       left: 6px
