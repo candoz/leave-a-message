@@ -36,6 +36,8 @@ export default {
   flex-direction: row
   justify-content: center
   align-items: flex-start
+  min-height: 100%
+  background: blue
   @media screen and (max-width: 768px)
     flex-direction: column
 
@@ -67,5 +69,6 @@ export default {
   flex-basis: 15vw
   @media screen and (max-width: 768px)
     width: 90vw
+    margin-top: 2vh
 
 </style>
