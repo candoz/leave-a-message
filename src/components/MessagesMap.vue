@@ -232,11 +232,11 @@ export default {
 
 
 <style lang="sass" scoped>
+@import './vars.sass'
 
 .messages-map
   width: 60%
   display: inline-block
-  background: blue
 
 #map
   height: 70vh
@@ -244,11 +244,15 @@ export default {
 
 .filter-input
   margin-top: 1%
-  width: 100%
-  text-align: center
-  background: green
-
-input
-  // width: 100%
+  input
+    width: 100%
+    text-align: center
+    outline: 0
+    background: $light-color-mod
+    border: 0
+    margin: 0 0 15px
+    padding: 5px
+    box-sizing: border-box
+    font-size: 14px
 
 </style>
