@@ -1,5 +1,5 @@
 <template>
-<div id="look-around-component">
+<div class="look-around-component">
   <messages-map class="messages-map-card" :logged="logged" :located="located" :filter="filter"></messages-map>
   <messages-list class="messages-list-card" :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
 </div>
@@ -29,8 +29,16 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-#look-around-component
+.look-around-component
   padding: 4vh 0
+  display: flex
+  // flex-wrap: wrap
+  flex-direction: row
+  justify-content: center
+  align-items: flex-start
+  padding: 4%
+  @media screen and (max-width: 768px)
+    flex-direction: column
 
 %card
   background: $light-color
@@ -39,21 +47,26 @@ export default {
   min-height: 300px
   border-radius: $radius
   padding: 1%
-  margin: 4px
+  margin: 1%
   display: inline-block
   vertical-align: top
+  flex-grow: 1
   
 .messages-map-card
   @extend %card
-  width: 55vw
+  flex-basis: 50vw
+  height: 90vh
   @media screen and (max-width: 768px)
-    width: 95vw
-    height: 50vh
-  
+    width: 90vw
+    height: 70vh
+  // also a flex container
+  display: flex
+  flex-direction: column
+
 .messages-list-card
   @extend %card
+  flex-basis: 15vw
   @media screen and (max-width: 768px)
-    width: 95vw
-    // height: 10vh
+    width: 90vw
 
 </style>
