@@ -3,17 +3,24 @@
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
         integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
         crossorigin=""/>
-      <div class="card">
-        <img v-bind:src="profilePic" style="width:80%">
+      <div class="profile-card">
+        <h4>{{ name }}</h4>
+        <img v-bind:src="profilePic" style="width:50%">
         <h3>{{ nickname }}</h3>
-        <p class="mail">{{ email }}</p>
-        <p class="reputation">{{ reputation }}</p>
-        <div class="badges" v-for="badge in badges" :key=badge>
-          {{badge}}
-        </div>
-        <button @click="doLogout()">logout</button>
+        <button @click="doLogout()">Logout</button>
       </div>
-      <div id="map"></div>
+      <div class="badges-card">
+        <h4>Your badges</h4>
+        <div class="badges-container">
+          <div v-for="badge in badgesPic" :key=badge >
+            <img class="badge-image" v-bind:src="badge">
+          </div>
+        </div>
+      </div>
+      <div class="map-card">
+        <h4>Your messages around the world</h4>
+        <div id="map"></div>
+      </div>
     </div>
 </template>
 
@@ -29,9 +36,8 @@ export default {
     return {
       nickname: "Example Nickname",
       email: "Example@example.it",
-      writedMessages: [],
-      reputation: "15",
-      badges: ["badge1", "badge2"],
+      name: "Example",
+      badges: [ "beta-tester", "explorer", "certified", "one-year", "beta-tester", "explorer", "certified", "one-year"  ],
       profilePic: require("../assets/profile-pic.png"),
       myMap: null,
       tileLayer: null,
@@ -39,12 +45,23 @@ export default {
       userFullMessagesIcon: null
     };
   },
+  computed: {
+    badgesPic: function() {
+      let badgesPic = [ ];
+      this.badges.forEach(badge => {
+        badgesPic.push(require('../assets/'+badge+'.png'));
+      });
+      return badgesPic;
+    }
+  },
   methods: {
     initProfile() { 
       axios.get(sessionStorage.urlHost + "/users")
       .then(response => {
-        this.nickname = response.data.nickname || "Nickname non trovato";
-        this.email = response.data.email || "Email non trovata";
+        this.email = response.data.email;
+        this.nickname = response.data.nickname;
+        this.name = response.data.name;
+        this.badges = response.data.badges;
         this.getUserMessages();
       }).catch(error => {
           console.log(error);
@@ -120,35 +137,48 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-#map
-  width: 30%
-  height: 50%
-  max-width: 1100px
-  z-index: 0
-  display: inline-block
-  @media only screen and (max-width: 600px)
-    width: 80%
-    margin-top: 4%
-
 .profile
-  width: 100%
-  height: 100%
-  padding: 10vh 0 0
-  margin: auto
+  padding: 4vh 2vw
+  background-color: orange
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
 
-.card 
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
-  max-width: 300px
-  width: 40%
+%card
+  max-width: 400px
+  min-width: 100px
+  min-height: 300px
+  max-height: 500px
   background: #FFFFFF
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24)
-  margin-top: 1%
-  text-align: center
-  padding: 2%
-  display: inline-block
-  @media only screen and (max-width: 600px)
-    width: 100%
+  box-shadow: $shadow
+  border-radius: $radius
+  margin: 0 2% 2% 2%
+  padding: 10px
+  flex: 1
+  
+.profile-card
+  @extend %card
 
+.badges-card
+  @extend %card
+
+.badges-container
+  display: flex
+  flex-wrap: wrap
+  flex-direction: column
+  justify-content: flex-start
+  max-height: 400px
+
+.badge-image
+  width: 80px
+  align-self: stretch
+  flex: 1
+  
+.map-card
+  @extend %card
+
+#map
+  height: 80%
 
 .mail
   color: grey
