@@ -25,6 +25,6 @@ export default {
   background-color: $base-color
   width: 100%
   min-height: 100%
-  margin-top: 45px
+  margin-top: 50px
 
 </style>

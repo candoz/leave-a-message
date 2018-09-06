@@ -65,19 +65,15 @@ export default {
 @import './vars.sass'
 
 #login-component
-  width: 80%
-  max-width: 500px
-  padding: 10vh 0 0
-  margin: auto
+  padding: 4vh 2vw
 
 .form
   border-radius: $radius
   z-index: 0
   background: $light-color
-  max-width: 360px
-  width: 80%
+  max-width: 500px
   margin: auto
-  padding: 5%
+  padding: 3%
   text-align: center
   box-shadow: $shadow
   input
