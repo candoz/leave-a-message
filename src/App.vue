@@ -3,7 +3,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" 
         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" 
         crossorigin="">
-    <link href="https://fonts.googleapis.com/css?family=Alegreya|Lato" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css?family=Alegreya|Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Tammudu" rel="stylesheet">
     <app-nav :logged="logged"></app-nav>
     <app-body :logged="logged" :located="located" :messagesAround="messagesAround"></app-body>
   </div>

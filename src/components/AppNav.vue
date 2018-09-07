@@ -38,7 +38,12 @@ nav
   justify-content: center
   z-index: 1
   overflow-x: auto
+  // vertical-align: center
+
+  
   li
+    // height: $navbar-height
+    // vertical-align: center
     border-radius: 4px 4px 0px 0px
     color: white
     flex: 1
