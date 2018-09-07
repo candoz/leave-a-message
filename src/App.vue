@@ -89,9 +89,10 @@ export default {
 
     // Polling for new messages if the user isn't moving
     setInterval(function () {
-      // if (this.logged === true) {
-      if (this.logged === false) {
+      if (this.logged === true) {
         this.getFullMessages();
+      } else {
+        this.getStrippedMessages();
       }
     }.bind(this), POLLING_INTERVAL); 
   },
@@ -264,6 +265,15 @@ export default {
   display: inline-block
 
 .fa-envelope
+  color: $dark-color
+
+.fa-envelope-square
+  color: $dark-color
+
+.fa-comment-alt
+  color: $dark-color
+
+.fa-sad-cry
   color: $dark-color
 
 .filtered

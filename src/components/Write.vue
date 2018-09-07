@@ -6,9 +6,11 @@
     <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
       <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
       <button :disabled="loading === true" type="submit" class="">Publish message</button>
-      <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
     </form>
-    <div id="map"></div>
+    <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
+    <div class="map-card">
+      <div id="map"></div>
+    </div>
   </div>
 </template>
 
@@ -64,6 +66,7 @@ export default {
           console.log(response);
           self.messageText = "";
           self.loading = false;
+          self.$router.push('/');
         })
         .catch(error => {
           if (error.response) {
@@ -112,22 +115,25 @@ export default {
   justify-content: center
 
 %card
-  background: #FFFFFF
+  background: $light-color
   box-shadow: $shadow
   max-width: 400px
   min-width: 180px
-  min-height: 300px
+  min-height: 350px
   border-radius: $radius
   flex: 1
   margin: 0 2% 2% 2%
+  padding: 2.5% 
+
+.map-card
+  @extend %card
 
 #map
-  @extend %card
   z-index: 0
+  height: 100%
 
 form
   @extend %card
-  padding: 2%
   text-align: center
 
 textarea
@@ -145,16 +151,18 @@ textarea
 
 button
   text-transform: uppercase
+  font-size: 100%
+  font-family: $primary-font
   outline: 0
-  font-family: $secondary-font
   background: $primary-color
   width: 100%
   border: 0
-  padding: 12px
+  padding: 15px
   color: #FFFFFF
-  font-size: 14px
+  -webkit-transition: all 0.3 ease
   transition: all 0.3 ease
   cursor: pointer
+  margin-bottom: 10px
   &:hover, &:active, &:focus
     box-shadow: $shadow
 

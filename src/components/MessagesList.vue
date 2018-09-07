@@ -4,34 +4,41 @@
     <!-- <div v-if="logged === true" > -->
     <div v-if="logged === true" >
       <h4>Messages nearby:</h4>
-      <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-        <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
-          <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
-            &nbsp; #{{ value }}
-          </p>
-        </div>
-        <div class="panel" :ref="'panel-'+msg._id">
-          <p>@{{ msg.author_nickname }}</p>
-          <p>{{msg.text}}</p>          
-          <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id">{{ msg.likes.length }}</i> 
-          <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments">{{ msg.comments.length }}</i>
-
-          <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
-            <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
-            <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
-              <p>{{ comment.author_nickname }}: {{ comment.text }}</p>
+      <div v-if="messagesAround > 1">
+        <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+          <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
+            <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
+              &nbsp; #{{ value }}
+            </p>
+          </div>
+          <div class="panel" :ref="'panel-'+msg._id">
+            <p>{{msg.text}}</p>          
+            <p class="meta-message"><b>by:</b> {{ msg.author_nickname }}
+              <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
+              {{ msg.likes.length }}
+              <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
+              {{ msg.comments.length }}
+            </p>
+            <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
+              <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
+              <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
+                <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+              </div>
+              <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
+                <p class="internal-subtitle">Write a comment</p>
+                  <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
+                <button type="submit" class="">Publish comment</button>
+              </form>
             </div>
-            <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-              <h3>Write a comment</h3>
-                <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
-              <button type="submit" class="">Publish comment</button>
-            </form>
           </div>
         </div>
       </div>
+      <div v-else>
+        <i class="fas fa-sad-cry fa-3x"></i>
+        <p>Ops! There aren't messages here, do you want to write the first?</p>
+      </div>
     </div>
     
-    <!--    W O R K   I N   P R O G R E S S   ! ! !    -->
     <div v-else>
       <p>Messages nearby</p>
       <p class="to-open-message">
@@ -39,25 +46,24 @@
         or
         <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
         <!-- <br/> -->
-        to open them
+        to see them
       </p>
-      <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-        <div class="accordion">
-          <button class=" -button">
-            <img class="heart" v-bind:src="likeButton" :ref="'heart-image' + msg._id"/> <!-- v-if sull'id? 2 image differenti-->
-          </button>
-          <p class="votes">{{msg.votes}}</p>
-          <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
-            &nbsp; #{{ value }}
-          </p>
-        </div>
-        <div class="panel" :ref="'panel-'+msg._id">
-          {{msg.text}}
-        </div>
-      </div>
     </div>
 
   </div>
+
+    <!--    W O R K   I N   P R O G R E S S   ! ! !    DENTRO ALL'ELSE--> 
+    <!-- <div v-for="msg in messagesAround" :key=msg._id >  <!\-\- :class="{selected: msg._id === selectedMessage._id"} -\->
+      <div class="accordion">
+        <p class="votes">{{msg.votes}}</p>
+        <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
+          &nbsp; #{{ value }}
+        </p>
+      </div>
+      <div class="panel" :ref="'panel-'+msg._id">
+        {{msg.text}}
+      </div>
+    </div> -->
 </template>
 
 <script>
@@ -158,6 +164,12 @@ a
 .a-signup
   color: $secondary-color
 
+.meta-message
+  font-family: $primary-font
+
+.internal-subtitle
+  font-family: $primary-font
+
 .accordion
   background-color: $light-color-mod
   color: #444
@@ -187,7 +199,7 @@ a
 
 .panel
   padding: 0 18px
-  background-color: white
+  background-color: $light-color-mod
   max-height: 0
   overflow: hidden
   transition: max-height 0.2s ease-out
@@ -228,7 +240,7 @@ form
     text-transform: uppercase
     outline: 0
     background: $primary-color
-    font-family: $secondary-font
+    font-family: $primary-font
     width: 100%
     border: 0
     padding: 15px

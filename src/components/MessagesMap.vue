@@ -182,24 +182,23 @@ export default {
       this.strippedGroup.getLayers().forEach(message => {
         if(message.options.id == idMessage) {
           this.myMap.setView(message.getLatLng(), 13);
-          message.openPopup();
         }
       });
     });
   },
   mounted() {  // do NOT change to "created"
     this.strippedMessageIcon = L.divIcon({
-      className: "fas fa-envelope fa-2x",
+      className: "fas fa-comment-alt fa-2x",
       iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
       iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     });
     this.strippedMessageFilteredIcon = L.divIcon({
-      className: "fas fa-envelope fa-2x filtered",
+      className: "fas fa-comment-alt fa-2x filtered",
       iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
       iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     }); 
     this.fullMessageIcon = L.divIcon({
-      className: "fas fa-envelope fa-2x"
+      className: "fas fa-comment-alt fa-2x"
     });
     
     if (this.logged === true) {
