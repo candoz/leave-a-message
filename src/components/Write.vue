@@ -123,6 +123,7 @@ export default {
 
 #map
   @extend %card
+  z-index: 0
 
 form
   @extend %card
@@ -153,7 +154,7 @@ button
   transition: all 0.3 ease
   cursor: pointer
   &:hover, &:active, &:focus
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
+    box-shadow: $shadow
 
 .lds-facebook
   display: inline-block

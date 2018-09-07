@@ -65,7 +65,9 @@ export default {
 @import './vars.sass'
 
 #signup-component
-  padding: 4vh 2vw
+  padding: 4vh 1%
+  display: flex
+  flex-direction: column
 
 .form
   border-radius: $radius
@@ -73,15 +75,17 @@ export default {
   background: $light-color
   max-width: 500px
   margin: auto
-  padding: 3%
+  padding: 2.5%
   text-align: center
   box-shadow: $shadow
+  width: 90%
+  
   input
     outline: 0
     background: $light-color-mod
     width: 100%
     border: 0
-    margin: 0 0 15px
+    margin: 0 0 2.9%
     padding: 15px
     box-sizing: border-box
     font-size: 14px
