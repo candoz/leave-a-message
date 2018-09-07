@@ -25,6 +25,6 @@ export default {
   background-color: $primary-color
   width: 100%
   min-height: 100%  // do not change!!
-  margin-top: 45px
+  margin-top: $margin-for-navbar
 
 </style>

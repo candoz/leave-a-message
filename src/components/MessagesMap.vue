@@ -243,6 +243,7 @@ export default {
   margin-bottom: 8px
   input
     font-family: $secondary-font
+    color: $dark-color
     width: 100%
     text-align: center
     outline: 0

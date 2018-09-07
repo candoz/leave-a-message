@@ -38,24 +38,22 @@ nav
   justify-content: center
   z-index: 1
   overflow-x: auto
-  // vertical-align: center
-
   
   li
-    // height: $navbar-height
-    // vertical-align: center
     border-radius: 4px 4px 0px 0px
-    color: white
+    color: $light-color
     flex: 1
     max-width: 75px
-    padding: 14px 16px
-    margin: 0px
+    padding: 8px 16px
     text-decoration: none
+    font-size: $navbar-font-size
+
     &.router-link-active
       background-color: $primary-color
       cursor: pointer
     &:hover:not(.router-link-active)
       background-color: $dark-color-mod
       cursor: pointer
+      
 
 </style>

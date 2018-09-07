@@ -11,7 +11,7 @@
           </p>
         </div>
         <div class="panel" :ref="'panel-'+msg._id">
-          <p><b>@{{ msg.author_nickname }}</b></p>
+          <p>@{{ msg.author_nickname }}</p>
           <p>{{msg.text}}</p>          
           <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id">{{ msg.likes.length }}</i> 
           <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments">{{ msg.comments.length }}</i>
@@ -19,7 +19,7 @@
           <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
             <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
             <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
-              <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+              <p>{{ comment.author_nickname }}: {{ comment.text }}</p>
             </div>
             <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
               <h3>Write a comment</h3>
@@ -32,12 +32,15 @@
     </div>
     
     <!--    W O R K   I N   P R O G R E S S   ! ! !    -->
-    <div v-else> 
-      <h4>To open the messages nearby please
-        <router-link :to="'/login'" class="message" exact> login </router-link>
+    <div v-else>
+      <p>Messages nearby</p>
+      <p class="to-open-message">
+        <router-link :to="'/login'" class="a-login" exact> login </router-link>
         or
-        <router-link :to="'/signup'" class="message" exact> signup </router-link>
-      </h4>
+        <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
+        <!-- <br/> -->
+        to open them
+      </p>
       <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
         <div class="accordion">
           <button class=" -button">
@@ -143,6 +146,18 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
+p
+  color: $dark-color
+
+a
+  text-decoration: none
+
+.a-login
+  color: $primary-color
+
+.a-signup
+  color: $secondary-color
+
 .accordion
   background-color: $light-color-mod
   color: #444
@@ -236,5 +251,9 @@ textarea
   box-sizing: border-box
   font-size: 14px
   max-width: 360px
+
+.to-open-message
+  color: #b3b3b3
+  font-size: 85%
 
 </style>

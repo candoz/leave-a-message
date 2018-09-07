@@ -93,13 +93,13 @@ export default {
   button
     text-transform: uppercase
     outline: 0
-    font-family: $secondary-font
+    font-family: $primary-font
+    font-size: 100%
     background: $secondary-color
     width: 100%
     border: 0
     padding: 15px
     color: #FFFFFF
-    font-size: 14px
     -webkit-transition: all 0.3 ease
     transition: all 0.3 ease
     cursor: pointer
