@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" 
         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" 
         crossorigin="">
+    <link href="https://fonts.googleapis.com/css?family=Alegreya|Lato" rel="stylesheet">  
     <app-nav :logged="logged"></app-nav>
     <app-body :logged="logged" :located="located" :messagesAround="messagesAround"></app-body>
   </div>
@@ -96,7 +97,7 @@ export default {
   },
   methods: {
     getFullMessages: function() {
-      this.messagesAround = [
+      /* this.messagesAround = [
         {
           "_id": {
               "$oid": "5b900a60e2469c00d879ef2d"
@@ -202,26 +203,26 @@ export default {
               ]
            }
         }
-      ]
-      // axios.get(sessionStorage.urlHost + "/messages/full")
-      //   .then(response => {
-      //     console.log(response.data);
-      //     this.messagesAround = response.data;
-      //   }).catch(error => {
-      //     if (error.response) {
-      //       console.log("Response");
-      //       console.log(error.response.data);
-      //       console.log(error.response.status);
-      //       console.log(error.response.headers);
-      //     } else if (error.request) {
-      //       console.log("Request");
-      //       console.log(error.request);
-      //     } else {
-      //       console.log("Setting up");
-      //       console.log("Error", error.message);
-      //     }
-      //     console.log(error.config);
-      //   });
+      ] */
+      axios.get(sessionStorage.urlHost + "/messages/full")
+        .then(response => {
+          console.log(response.data);
+          this.messagesAround = response.data;
+        }).catch(error => {
+          if (error.response) {
+            console.log("Response");
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log("Request");
+            console.log(error.request);
+          } else {
+            console.log("Setting up");
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
+        });
     }
   }
 }
@@ -232,7 +233,7 @@ export default {
 @import './components/vars.sass'
 
 #app
-  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  font-family: $primary-font
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   text-align: center
@@ -253,7 +254,6 @@ export default {
 
 .fa-times-circle
   text-align: right
-  padding-top: 12%
   cursor: pointer
   font-size: 24px 
   color: $secondary-color

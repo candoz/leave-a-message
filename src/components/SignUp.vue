@@ -82,6 +82,7 @@ export default {
   
   input
     outline: 0
+    font-family: $secondary-font
     background: $light-color-mod
     width: 100%
     border: 0
@@ -92,6 +93,7 @@ export default {
   button
     text-transform: uppercase
     outline: 0
+    font-family: $secondary-font
     background: $secondary-color
     width: 100%
     border: 0
@@ -105,6 +107,7 @@ export default {
     &:hover, &:active, &:focus
       box-shadow: $shadow
   .message
+    font-family: $secondary-font
     margin: 15px 0 0
     color: #b3b3b3
     font-size: 12px

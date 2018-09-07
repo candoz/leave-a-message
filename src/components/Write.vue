@@ -132,7 +132,8 @@ form
 
 textarea
   outline: 0
-  background: #f2f2f2
+  font-family: $secondary-font
+  background: $light-color-mod
   width: 100%
   height: 80%
   border: 0
@@ -145,6 +146,7 @@ textarea
 button
   text-transform: uppercase
   outline: 0
+  font-family: $secondary-font
   background: $primary-color
   width: 100%
   border: 0

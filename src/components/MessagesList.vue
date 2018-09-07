@@ -177,6 +177,7 @@ export default {
   overflow: hidden
   transition: max-height 0.2s ease-out
   border: 1px
+  font-family: $secondary-font
 
 .votes
   display: inline-block
@@ -187,21 +188,23 @@ export default {
 
 .comment-section
   background: #FFFFFF
-  text-align: right;
   max-width: 360px
   margin: auto
-  padding: 3%
+  padding: 1%
   box-shadow: $shadow
   position: fixed
   z-index: 1
   width: 40%
   height: 40%
+  font-family: $secondary-font
   top: 0
+  left: 0
   overflow: auto 
   @media only screen and (max-width: 700px)
     width: 80%
     padding: 3%
     height: 60%
+    margin: auto
 
 form
   text-align: center
@@ -210,6 +213,7 @@ form
     text-transform: uppercase
     outline: 0
     background: $primary-color
+    font-family: $secondary-font
     width: 100%
     border: 0
     padding: 15px
@@ -222,6 +226,8 @@ form
 
 textarea
   outline: 0
+  resize: none
+  font-family: $secondary-font
   background: #f2f2f2
   width: 100%
   border: 0

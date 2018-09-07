@@ -80,9 +80,9 @@ export default {
   box-shadow: $shadow
   align-self: center
   width: 90%
-    
   input
     outline: 0
+    font-family: $secondary-font
     background: $light-color-mod
     width: 100%
     border: 0
@@ -92,6 +92,7 @@ export default {
     font-size: 14px
   button
     text-transform: uppercase
+    font-family: $secondary-font
     outline: 0
     background: $primary-color
     width: 100%
@@ -109,6 +110,7 @@ export default {
     margin: 15px 0 0
     color: #b3b3b3
     font-size: 12px
+    font-family: $secondary-font
     a
       color: #4CAF50
       text-decoration: none

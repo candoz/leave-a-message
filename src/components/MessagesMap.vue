@@ -242,6 +242,7 @@ export default {
 .filter-input
   margin-bottom: 8px
   input
+    font-family: $secondary-font
     width: 100%
     text-align: center
     outline: 0
