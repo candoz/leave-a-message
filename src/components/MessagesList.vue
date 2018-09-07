@@ -4,7 +4,7 @@
     <!-- <div v-if="logged === true" > -->
     <div v-if="logged === true" >
       <h4>Messages nearby:</h4>
-      <div v-if="messagesAround > 1">
+      <div v-if="messagesIsPresent === true">
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
           <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
             <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
@@ -75,6 +75,7 @@ export default {
   data() {
     return {
       commentText: null,
+      messagesIsPresent: false,
     };
   },
   methods: {
@@ -145,7 +146,18 @@ export default {
       }
     }
   },
-  
+  watch: {
+    messagesAround: {
+      handler(newMessages) {
+        if(newMessages.length > 0) {
+          this.messagesIsPresent = true;
+        } else {
+          this.messagesIsPresent = false;
+        }
+      },
+      deep: true
+    },
+  }
 };
 </script>
 
