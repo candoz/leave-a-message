@@ -19,7 +19,6 @@ import L from "leaflet";
 const axios = require("axios");
 const DEFAULT_ZOOM_LEVEL = 13
 const MIN_ZOOM_LEVEL = 5;
-const MAX_ZOOM_LEVEL = 16;
 const POPUP_TEXT = "Your message will be published here"
 
 export default {
@@ -46,10 +45,7 @@ export default {
       });
       this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        // attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        // subdomains: 'abcd',
         minZoom: MIN_ZOOM_LEVEL,
-        maxZoom: MAX_ZOOM_LEVEL,
         ext: 'png'
       }).addTo(this.myMap);
       this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap);
@@ -84,7 +80,7 @@ export default {
   },
   mounted() {
     this.pencilIcon = L.divIcon({
-      className: "fas fa-pen fa-2x",
+      className: "fas fa-pencil-alt fa-2x",  // "fas fa-pen fa-2x"
       iconAnchor: [0, 24],
       iconSize: [18, 24],
     }); 

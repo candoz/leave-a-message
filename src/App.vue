@@ -91,120 +91,11 @@ export default {
     setInterval(function () {
       if (this.logged === true) {
         this.getFullMessages();
-      } else {
-        this.getStrippedMessages();
       }
     }.bind(this), POLLING_INTERVAL); 
   },
   methods: {
     getFullMessages: function() {
-      /* this.messagesAround = [
-        {
-          "_id": {
-              "$oid": "5b900a60e2469c00d879ef2d"
-          },
-          "author_id": "5b8e98c5279ee175e040d78d",
-          "text": "Ciao da Lizzano in Belvedere\n#belvedere #montanari #holiday",
-          "comments": [
-              {
-                  "author_nickname": "euge",
-                  "author_name": "Eugenio",
-                  "text": "belvedere è veramente un bel paese, consigliatissimo"
-              }
-          ],
-          "likes": [
-              "5b8e98c5279ee175e040d78d"
-          ],
-          "date": {
-              "$date": "2018-09-05T16:54:56.718Z"
-          },
-          "hashtags": [
-              "belvedere",
-              "montanari",
-              "holiday"
-          ],
-          "location": {
-              "type": "Point",
-              "coordinates": [
-                  12.2808,
-                  44.1959
-              ]
-          },
-          "author_nickname": "euge"
-        },
-        {
-          "_id": {
-              "$oid": "5b8f7e55594c6e37f0df36d0"
-          },
-          "author_id": "5b8e98c5279ee175e040d78d",
-          "text": "Vediamo se funzionano i messaggi  #yo",
-          "comments": [
-              {
-                  "author_nickname": "euge",
-                  "author_name": "Eugenio",
-                  "text": "i commenti sono stati un po strani da implementare"
-              }
-          ],
-          "likes": [
-              "5b8e98c5279ee175e040d78d"
-          ],
-          "date": {
-              "$date": "2018-09-05T06:57:25.056Z"
-          },
-          "hashtags": [
-              "yo"
-          ],
-          "location": {
-              "type": "Point",
-              "coordinates": [
-                  12.2805,
-                  44.198
-              ]
-          },
-          "author_nickname": "euge"
-        },
-        {
-          "_id": {
-              "$oid": "5b8e9498d8594867d4307e02"
-          },
-          "author_id": "5b8e437fb4677f37e2f6dbac",
-          "text": "Prova dall' #alfa\n",
-          "comments": [
-              {
-                  "author_nickname": "euge",
-                  "author_name": "Eugenio",
-                  "text": "test commento "
-              },
-              {
-                  "author_nickname": "euge",
-                  "author_name": "Eugenio",
-                  "text": "test commento "
-              },
-              {
-                  "author_nickname": "euge",
-                  "author_name": "Eugenio",
-                  "text": "test commento "
-              }
-          ],
-          "likes": [
-              "5b8e437fb4677f37e2f6dbac",
-              "5b8e98c5279ee175e040d78d"
-          ],
-          "date": {
-              "$date": "2018-09-04T14:20:08.605Z"
-          },
-          "hashtags": [
-              "alfa"
-          ],
-          "location": {
-              "type": "Point",
-              "coordinates": [
-                  12.2806,
-                  44.196
-              ]
-           }
-        }
-      ] */
       axios.get(sessionStorage.urlHost + "/messages/full")
         .then(response => {
           console.log(response.data);
@@ -276,14 +167,20 @@ export default {
 .fa-sad-cry
   color: $dark-color
 
-.filtered
-  color: $secondary-color
-
 .logged-in
   color: $primary-color
 
 .logged-out
   color: $dark-color
+
+.regular-envelope
+  color: $light-color
+
+.stripped-envelope
+  color: $light-color
+
+.filtered-envelope
+  color: $tertiary-color
 
 .fa-map-marker-alt
   z-index: 500 !important

@@ -24,21 +24,24 @@ const USER_LOCATION_ICON_WIDTH = 18;
 const USER_LOCATION_ICON_HEIGHT = 24;
 const MESSAGE_ICON_WIDTH = 24;
 const MESSAGE_ICON_HEIGHT = 25;
+const MIN_ZOOM_LEVEL = 5;
 
 export default {
   props: ["located", "logged","filter"],
   data() {
     return {
       myMap: null,
-      strippedMessages: [ ],
+      strippedMessages: [],
+      fullMessages: [],
       tileLayer: null,
       maskLayer: null,
       strippedGroup : null,
-      strippedMessageIcon : null,
-      fg: null,
+      envelopeOutline : null,
       userLocationIcon: null,
+      messageBackgroundIcon: null,
       userLocationMarker: null,
-      strippedPollingId: null
+      strippedPollingId: null,
+      fg: null,
     }
   },
   methods: {
@@ -53,7 +56,7 @@ export default {
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        minZoom: 5,
+        minZoom: MIN_ZOOM_LEVEL,
         ext: 'png'
       }).addTo(this.myMap);
 
@@ -82,9 +85,9 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        const filterAbsent = this.filter === "";
         let filterSatisfied = false;
         let properMessageIcon;
+        const filterAbsent = this.filter === "";
         if (filterAbsent) {
           properMessageIcon = this.strippedMessageIcon;
         } else {
@@ -99,6 +102,8 @@ export default {
                               "<b>Likes:</b> " + message.likes.length + "<br />" +
                               "<b>Written by:</b> " + message.author_nickname + "</p>";
           const messageMarker = L.marker(message.latLng, {icon: properMessageIcon, id: message.id}).bindPopup(popupString);
+          const messageBackgroundMarker = L.marker(message.latLng, {icon: this.messageBackgroundIcon, id: message.id});
+          this.strippedGroup.addLayer(messageBackgroundMarker);
           this.strippedGroup.addLayer(messageMarker);
         }
       });
@@ -187,18 +192,21 @@ export default {
     });
   },
   mounted() {  // do NOT change to "created"
-    this.strippedMessageIcon = L.divIcon({
-      className: "fas fa-comment-alt fa-2x",
+    this.envelopeOutline = L.divIcon({
+      className: "far fa-envelope fa-2x",
       iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
-      iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     });
     this.strippedMessageFilteredIcon = L.divIcon({
       className: "fas fa-comment-alt fa-2x filtered",
       iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
-      iconSize: [MESSAGE_ICON_WIDTH, MESSAGE_ICON_HEIGHT],
     }); 
     this.fullMessageIcon = L.divIcon({
-      className: "fas fa-comment-alt fa-2x"
+      className: "far fa-envelope fa-2x",
+      iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
+    });
+    this.messageBackgroundIcon = L.divIcon({
+      className: "fas fa-envelope fa-stack-2x filtered",
+      iconAnchor: [MESSAGE_ICON_WIDTH / 2, MESSAGE_ICON_HEIGHT / 2],
     });
     
     if (this.logged === true) {
