@@ -23,7 +23,7 @@ const FULL_MESSAGES_RADIUS = 5000;  // meters
 const POLLING_INTERVAL = 10000;
 
 const MIN_ZOOM_LEVEL = 5;
-const MASK_OPACITY = 6;
+const MASK_OPACITY = 0.65;
 
 const USER_LOCATION_ICON_WIDTH = 18;
 const USER_LOCATION_ICON_HEIGHT = 24;
@@ -39,15 +39,48 @@ export default {
       tileLayer: null,
       maskLayer: null,
       strippedGroup: null,
-      envelopeOutlineIcon,
-      userLocationIcon,
-      userLocationMarker,
-      strippedPolling
+      fullGroup: null,
+      envelopeOutlineIcon: null,
+      regularMessageIcon: null,
+      strippedEnvelopeIcon: null,
+      filteredEnvelopeIcon: null,
+      userLocationIconLoggedIn: null,
+      userLocationIconLoggedOut: null,
+      userLocationMarker: null,
+      strippedPolling: null
+    }
+  },
+  computed: {
+    filterAbsent: function() {
+      return this.filter === "";
     }
   },
   methods: {
     setupIcons() {
-
+      this.userLocationIconLoggedIn = L.divIcon({
+        className: "fas fa-map-marker-alt fa-2x logged-in",
+        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+      });
+      this.userLocationIconLoggedOut = L.divIcon({
+        className: "fas fa-map-marker-alt fa-2x logged-out",
+        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
+      });
+      this.envelopeOutlineIcon = L.divIcon({
+        className: "far fa-envelope fa-2x envelope-outline",
+        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
+      });
+      this.RegularEnvelopeIcon = L.divIcon({
+        className: "fas fa-envelope fa-stack-2x regular-envelope",
+        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
+      });
+      this.StrippedEnvelopeIcon = L.divIcon({
+        className: "fas fa-envelope fa-stack-2x stripped-envelope",
+        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
+      });
+      this.FilteredEnvelopeIcon = L.divIcon({
+        className: "fas fa-envelope fa-stack-2x filtered-envelope",
+        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
+      });
     },
     initMap() {
       this.myMap = L.map('map', {
@@ -64,7 +97,7 @@ export default {
         ext: 'png'
       }).addTo(this.myMap);
 
-      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.userLocationIcon })
+      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.userLocationIconLoggedOut })
         .bindPopup("You are here")
         .addTo(this.myMap);
 
@@ -76,8 +109,8 @@ export default {
       this.maskLayer = L.TileLayer.maskCanvas({
         radius: FULL_MESSAGES_RADIUS,  // radius in pixels or in meters (see useAbsoluteRadius)
         useAbsoluteRadius: true,       // true: r in meters, false: r in pixels
-        color: black,
-        opacity: MASK_OPACITY  ,
+        color: "#000",
+        opacity: MASK_OPACITY,
         noMask: false,
         minZoom: MIN_ZOOM_LEVEL
       }).addTo(this.myMap);
@@ -93,45 +126,38 @@ export default {
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        let filterSatisfied = false;
-        let properMessageIcon;
-        const 
-        if (this.filter === "") {  // filter absent
-          properMessageIcon = this.strippedMessageIcon;
-        } else {
-          properMessageIcon = this.strippedMessageFilteredIcon;
-        }
-        if (filterAbsent || satisfiesFilter(message)) {
-          const popupString = "<p><b>Hashtags:</b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
-                              "<b>Likes:</b> " + message.likes.length + "<br />" +
-                              "<b>By:</b> " + message.author_nickname + "</p>";
-          const messageMarker = L.marker(message.latLng, {icon: properMessageIcon, id: message.id})
-            .bindPopup(popupString);
-          this.strippedGroup.addLayer(messageMarker);
+        if (this.filterAbsent || satisfiesFilter(message)) {
+          const popupString = "<p><b>Hashtags: </b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
+                              "<b>By: </b> " + message.author_nickname + "</p>" +
+                              "<b>&#f004 </b> " + message.likes.length + "<br />";
+          const envelopeMarker = L.marker(message.latLng, {id: message.id}).bindPopup(popupString);
+          if (this.filterAbsent) {
+            envelopeMarker.setIcon(this.strippedEnvelopeIcon);
+          } else {
+            envelopeMarker.setIcon(this.filteredEnvelopeIcon);
+          }
+          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id});
+          this.strippedGroup.addLayer(envelopeMarker);
+          this.strippedGroup.addLayer(envelopeOutlineMarker);
         }
       });
     },
     updateFullLayer() {
       this.FullGroup.clearLayers();
       this.messagesAround.forEach(message => {
-        const filterAbsent = this.filter === "";
-        let filterSatisfied = false;
-        if (filterAbsent) {
-          properMessageIcon = this.strippedMessageIcon;
-        } else {
-          properMessageIcon = this.strippedMessageFilteredIcon;
-          filterSatisfied = message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase() ||
-                            message.hashtags.some(hashtag => {
-                              return (hashtag.toLowerCase().startsWith(this.filter.toLowerCase()))
-                            }));
-        }
-        if (filterAbsent || filterSatisfied) {
-          const popupString = "<p><b>Hashtags:</b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
-                              "<b>Likes:</b> " + message.likes.length + "<br />" +
-                              "<b>By:</b> " + message.author_nickname + "</p>";
-          const messageMarker = L.marker(message.latLng, {icon: properMessageIcon, id: message.id})
-            .bindPopup(popupString);
-          this.strippedGroup.addLayer(messageMarker);
+        if (this.filterAbsent || satisfiesFilter(message)) {
+          const popupString = "<p>" + message.text + "<br />" +
+                              "<b>By: </b> " + message.author_nickname + "</p>" +
+                              "<b>&#f004 </b> " + message.likes.length + "<br />";
+          const envelopeMarker = L.marker(message.latLng, {id: message.id}).bindPopup(popupString);
+          if (this.filterAbsent) {
+            envelopeMarker.setIcon(this.regularEnvelopeIcon);
+          } else {
+            envelopeMarker.setIcon(this.filteredEnvelopeIcon);
+          }
+          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id});
+          this.fullGroup.addLayer(envelopeMarker);
+          this.fullGroup.addLayer(envelopeOutlineMarker);
         }
       });
     },
@@ -154,8 +180,8 @@ export default {
     getStripped(cornerSouthWest, cornerNorthEast) {
       axios.get(sessionStorage.urlHost + "/messages/stripped", {
           params: {
-            cornerBottomLeft: [ cornerSouthWest.lng , cornerSouthWest.lat ],
-            cornerUpperRight: [ cornerNorthEast.lng , cornerNorthEast.lat ],
+            cornerBottomLeft: [cornerSouthWest.lng, cornerSouthWest.lat],
+            cornerUpperRight: [cornerNorthEast.lng, cornerNorthEast.lat],
           }
         }).then(response => {
           this.strippedMessages.length = 0;
@@ -186,32 +212,26 @@ export default {
     logged: {
       handler(newValue) {
         if (newValue === true) {
-          this.userLocationIcon = L.divIcon({
-            className: "fas fa-map-marker-alt fa-2x logged-in",
-            iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
-          });
+          this.userLocationMarker.setIcon(this.userLocationIconLoggedIn);
         } else {
-          this.userLocationIcon = L.divIcon({
-            className: "fas fa-map-marker-alt fa-2x logged-out",
-            iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
-          });
+          this.userLocationMarker.setIcon(this.userLocationIconLoggedOut);
         }
-        this.userLocationMarker.setIcon(this.userLocationIcon)
       },
       deep: true
     },
     filter: {
       handler() {
         this.updateStrippedLayer();
-        this.updateFullLayer();
+        // this.updateFullLayer();
       }
     }
   },
   created() {
     EventBus.$on("selectedFullMessage", (idMessage) => {
       this.strippedGroup.getLayers().forEach(message => {
-        if(message.options.id == idMessage) {
+        if(message.options.id === idMessage) {
           this.myMap.setView(message.getLatLng(), 13);
+          // change icon to open envelope
         }
       });
     });
@@ -220,7 +240,7 @@ export default {
     this.setupIcons();
     this.initMap();
     this.strippedGroup = L.layerGroup().addTo(this.myMap);
-    this.fullGroup = L.layerGroup().addTo(this.myMap)
+    // this.fullGroup = L.layerGroup().addTo(this.myMap)
     this.watchMapMovement();
     this.strippedPolling = setInterval(function() {
       this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
