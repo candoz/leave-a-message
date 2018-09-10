@@ -47,8 +47,8 @@ export default {
       myMap: null,
       tileLayer: null,
       maskLayer: null,
-      strippedGroup: null,
-      fullGroup: null,
+      strippedGroup: L.layerGroup(),
+      fullGroup: L.layerGroup(),
       userLocationMarker: null
     }
   },
@@ -93,8 +93,8 @@ export default {
         .bindPopup("You are here")
         .addTo(this.myMap);
 
-      this.strippedGroup = L.layerGroup().addTo(this.myMap);
-      this.fullGroup = L.layerGroup().addTo(this.myMap)      
+      this.strippedGroup.addTo(this.myMap);
+      this.fullGroup.addTo(this.myMap)      
     },
     satisfiesFilter(message) {
       return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase() ||
@@ -108,14 +108,14 @@ export default {
         if (this.filterAbsent || satisfiesFilter(message)) {
           const popupString = "<p><b>Hashtags: </b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
                               "<b>By: </b> " + message.author_nickname + "</p>" +
-                              "<b>&#f004 </b> " + message.likes.length + "<br />";
-          const envelopeMarker = L.marker(message.latLng, {id: message.id}).bindPopup(popupString);
+                              "<b>Likes: </b> " + message.likes.length + "<br />";
+          const envelopeMarker = L.marker(message.latLng, {id: message.id});
           if (this.filterAbsent) {
             envelopeMarker.setIcon(this.strippedEnvelopeIcon);
           } else {
             envelopeMarker.setIcon(this.filteredEnvelopeIcon);
           }
-          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id});
+          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id}).bindPopup(popupString);
           this.strippedGroup.addLayer(envelopeMarker);
           this.strippedGroup.addLayer(envelopeOutlineMarker);
         }
@@ -198,10 +198,16 @@ export default {
       },
       deep: true
     },
+    messagesAround: {
+      handler() {
+        this.updateFullLayer();
+      },
+      deep: true
+    },
     filter: {
       handler() {
         this.updateStrippedLayer();
-        // this.updateFullLayer();
+        this.updateFullLayer();
       }
     }
   },
