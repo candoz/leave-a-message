@@ -137,12 +137,10 @@ export default {
   display: inline-block
   cursor: pointer
 
-.liked
-  color: $secondary-color
-
 .fa-pen
   color: $primary-color
-  width: 100%
+.fa-pencil
+  color: $primary-color
 
 .fa-times-circle
   text-align: right
@@ -155,34 +153,30 @@ export default {
   cursor: pointer
   display: inline-block
 
-.fa-envelope
-  color: $dark-color
-
-.fa-envelope-square
-  color: $dark-color
-
 .fa-comment-alt
   color: $dark-color
 
 .fa-sad-cry
   color: $dark-color
 
+.fa-map-marker-alt
+  z-index: 500 !important
+
+.liked
+  color: $secondary-color
+
 .logged-in
   color: $primary-color
-
 .logged-out
   color: $dark-color
 
+.envelope-outline
+  color: $dark-color
 .regular-envelope
   color: $light-color
-
 .stripped-envelope
-  color: $light-color
-
+  color: $dark-color
 .filtered-envelope
   color: $tertiary-color
-
-.fa-map-marker-alt
-  z-index: 500 !important
 
 </style>

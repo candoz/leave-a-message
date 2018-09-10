@@ -1,6 +1,6 @@
 <template>
 <div class="look-around-component">
-  <messages-map class="messages-map-card" :logged="logged" :located="located" :filter="filter"></messages-map>
+  <messages-map class="messages-map-card" :logged="logged" :located="located" :messagesAround="messagesAround" :filter="filter"></messages-map>
   <messages-list class="messages-list-card" :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
 </div>
 </template>
