@@ -25,8 +25,8 @@ const POLLING_INTERVAL = 10000;
 const MIN_ZOOM_LEVEL = 5;
 const MASK_OPACITY = 0.65;
 
-const USER_LOCATION_ICON_WIDTH = 18;
-const USER_LOCATION_ICON_HEIGHT = 24;
+const PIN_ICON_WIDTH = 18;
+const PIN_ICON_HEIGHT = 24;
 const ENVELOPE_ICON_WIDTH = 24;
 const ENVELOPE_ICON_HEIGHT = 25;
 
@@ -34,20 +34,22 @@ export default {
   props: ["located", "logged", "filter", "messagesAround"],
   data() {
     return {
+      strippedMessages: [],
+      strippedPolling: null,
+
+      pinIconLoggedIn: L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-in", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] }),
+      pinIconLoggedOut: L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-out", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] }),
+      envelopeOutlineIcon: L.divIcon({ className: "far fa-envelope fa-2x envelope-outline", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
+      regularEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
+      strippedEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2], }),
+      filteredEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2], }),
+      
       myMap: null,
-      strippedMessages: [ ],
       tileLayer: null,
       maskLayer: null,
       strippedGroup: null,
       fullGroup: null,
-      envelopeOutlineIcon: null,
-      regularMessageIcon: null,
-      strippedEnvelopeIcon: null,
-      filteredEnvelopeIcon: null,
-      userLocationIconLoggedIn: null,
-      userLocationIconLoggedOut: null,
-      userLocationMarker: null,
-      strippedPolling: null
+      userLocationMarker: null
     }
   },
   computed: {
@@ -56,33 +58,8 @@ export default {
     }
   },
   methods: {
-    setupIcons() {
-      this.userLocationIconLoggedIn = L.divIcon({
-        className: "fas fa-map-marker-alt fa-2x logged-in",
-        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
-      });
-      this.userLocationIconLoggedOut = L.divIcon({
-        className: "fas fa-map-marker-alt fa-2x logged-out",
-        iconAnchor: [USER_LOCATION_ICON_WIDTH / 2, USER_LOCATION_ICON_HEIGHT],
-      });
-      this.envelopeOutlineIcon = L.divIcon({
-        className: "far fa-envelope fa-2x envelope-outline",
-        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
-      });
-      this.RegularEnvelopeIcon = L.divIcon({
-        className: "fas fa-envelope fa-stack-2x regular-envelope",
-        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
-      });
-      this.StrippedEnvelopeIcon = L.divIcon({
-        className: "fas fa-envelope fa-stack-2x stripped-envelope",
-        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
-      });
-      this.FilteredEnvelopeIcon = L.divIcon({
-        className: "fas fa-envelope fa-stack-2x filtered-envelope",
-        iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2],
-      });
-    },
     initMap() {
+
       this.myMap = L.map('map', {
         attributionControl: false,
         doubleClickZoom: false,
@@ -92,18 +69,14 @@ export default {
       });
       this.myMap.setView([this.located.lat, this.located.lng], 13);
 
-      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        minZoom: MIN_ZOOM_LEVEL,
-        ext: 'png'
-      }).addTo(this.myMap);
-
-      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.userLocationIconLoggedOut })
-        .bindPopup("You are here")
-        .addTo(this.myMap);
-
       let self = this;
       L.easyButton('fa-crosshairs fa-lg', (btn, map) => {
         map.setView([self.located.lat, self.located.lng]);
+      }).addTo(this.myMap);
+
+      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
+        minZoom: MIN_ZOOM_LEVEL,
+        ext: 'png'
       }).addTo(this.myMap);
 
       this.maskLayer = L.TileLayer.maskCanvas({
@@ -115,7 +88,13 @@ export default {
         minZoom: MIN_ZOOM_LEVEL
       }).addTo(this.myMap);
       this.maskLayer.setData([[self.located.lat, self.located.lng]]);
-      
+
+      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.pinIconLoggedOut })
+        .bindPopup("You are here")
+        .addTo(this.myMap);
+
+      this.strippedGroup = L.layerGroup().addTo(this.myMap);
+      this.fullGroup = L.layerGroup().addTo(this.myMap)      
     },
     satisfiesFilter(message) {
       return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase() ||
@@ -147,15 +126,15 @@ export default {
       this.messagesAround.forEach(message => {
         if (this.filterAbsent || satisfiesFilter(message)) {
           const popupString = "<p>" + message.text + "<br />" +
-                              "<b>By: </b> " + message.author_nickname + "</p>" +
-                              "<b>&#f004 </b> " + message.likes.length + "<br />";
-          const envelopeMarker = L.marker(message.latLng, {id: message.id}).bindPopup(popupString);
+                              "<b>By: </b> " + message.author_nickname + "<br />" +
+                              "<b>Likes: </b> " + message.likes.length + "</p>";
+          const envelopeMarker = L.marker(message.latLng, {id: message.id});
           if (this.filterAbsent) {
             envelopeMarker.setIcon(this.regularEnvelopeIcon);
           } else {
             envelopeMarker.setIcon(this.filteredEnvelopeIcon);
           }
-          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id});
+          const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id}).bindPopup(popupString);
           this.fullGroup.addLayer(envelopeMarker);
           this.fullGroup.addLayer(envelopeOutlineMarker);
         }
@@ -212,9 +191,9 @@ export default {
     logged: {
       handler(newValue) {
         if (newValue === true) {
-          this.userLocationMarker.setIcon(this.userLocationIconLoggedIn);
+          this.userLocationMarker.setIcon(this.pinIconLoggedIn);
         } else {
-          this.userLocationMarker.setIcon(this.userLocationIconLoggedOut);
+          this.userLocationMarker.setIcon(this.pinIconLoggedOut);
         }
       },
       deep: true
@@ -237,10 +216,7 @@ export default {
     });
   },
   mounted() {
-    this.setupIcons();
     this.initMap();
-    this.strippedGroup = L.layerGroup().addTo(this.myMap);
-    // this.fullGroup = L.layerGroup().addTo(this.myMap)
     this.watchMapMovement();
     this.strippedPolling = setInterval(function() {
       this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())

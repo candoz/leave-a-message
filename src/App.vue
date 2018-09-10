@@ -15,6 +15,7 @@ import AppNav from "./components/AppNav.vue"
 import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
+
 const POLLING_INTERVAL = 10000;
 const DEFAULT_LAT = 44.148020;
 const DEFAULT_LNG = 12.235375;
@@ -175,7 +176,7 @@ export default {
 .regular-envelope
   color: $light-color
 .stripped-envelope
-  color: $dark-color
+  color: $light-color-mod-two
 .filtered-envelope
   color: $tertiary-color
 
