@@ -4,8 +4,17 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
     <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
-      <textarea form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
-      <button :disabled="loading === true" type="submit" class="">Publish message</button>
+      <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
+      <div v-if="logged === false" class="login-to-write">
+        <p class="text-align-middle">
+          <router-link :to="'/login'" class="a-login" exact> login </router-link>
+          or
+          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
+          <!-- <br/> -->
+          to write
+        </p>
+      </div>
+      <button :disabled="loading === true || logged === false" type="submit" class="">Publish message</button>
     </form>
     <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
     <div class="map-card">
@@ -22,7 +31,7 @@ const MIN_ZOOM_LEVEL = 5;
 const POPUP_TEXT = "Your message will be published here"
 
 export default {
-  props: ["located"],
+  props: ["located", "logged"],
   data() {
     return {
       myMap: null,
@@ -80,9 +89,8 @@ export default {
   },
   mounted() {
     this.pencilIcon = L.divIcon({
-      className: "fas fa-pencil-alt fa-2x",  // "fas fa-pen fa-2x"
-      iconAnchor: [0, 24],
-      iconSize: [18, 24],
+      className: "fas fa-pencil-alt fa-3x",  // "fas fa-pen fa-2x"
+      iconAnchor: [0, 36]
     }); 
     this.initMap();
   },  
@@ -145,6 +153,17 @@ textarea
   font-size: 14px
   resize: none
 
+.login-to-write
+  width: 100%
+  height: 80%
+  background-color: $light-color-mod
+  display: table
+
+.text-align-middle
+  text-align: center
+  vertical-align: middle
+  display: table-cell
+
 button
   text-transform: uppercase
   font-size: 100%
@@ -161,6 +180,12 @@ button
   margin-bottom: 10px
   &:hover, &:active, &:focus
     box-shadow: $shadow
+
+.a-login
+  color: $primary-color
+
+.a-signup
+  color: $secondary-color
 
 .lds-facebook
   display: inline-block
