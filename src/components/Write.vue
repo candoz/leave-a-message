@@ -88,10 +88,17 @@ export default {
     }
   },
   mounted() {
-    this.pencilIcon = L.divIcon({
-      className: "fas fa-pencil-alt fa-3x",  // "fas fa-pen fa-2x"
-      iconAnchor: [0, 36]
-    }); 
+    if (this.logged === true) {
+      this.pencilIcon = L.divIcon({
+        className: "fas fa-pencil-alt fa-3x logged-in",  // "fas fa-pen fa-3x"
+        iconAnchor: [0, 36]
+      });
+    } else {
+      this.pencilIcon = L.divIcon({
+        className: "fas fa-pencil-alt fa-3x",  // "fas fa-pen fa-3x"
+        iconAnchor: [0, 36]
+      });
+    }
     this.initMap();
   },  
   watch: {
@@ -164,6 +171,9 @@ textarea
   vertical-align: middle
   display: table-cell
 
+a
+  text-decoration: none
+
 button
   text-transform: uppercase
   font-size: 100%
@@ -178,8 +188,11 @@ button
   transition: all 0.3 ease
   cursor: pointer
   margin-bottom: 10px
-  &:hover, &:active, &:focus
+  &:hover:enabled, &:active:enabled, &:focus:enabled
     box-shadow: $shadow
+  &:disabled
+    background: $dark-color
+    cursor: auto
 
 .a-login
   color: $primary-color
