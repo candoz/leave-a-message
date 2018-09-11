@@ -35,7 +35,7 @@
       </div>
       <div v-else>
         <i class="fas fa-sad-cry fa-3x"></i>
-        <p>Ops! There aren't messages here, do you want to write the first?</p>
+        <p>Ops! There aren't messages here, do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first?</p>
       </div>
     </div>
     

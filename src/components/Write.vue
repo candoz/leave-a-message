@@ -163,6 +163,11 @@ textarea
 .login-to-write
   width: 100%
   height: 80%
+  outline: 0
+  border: 0
+  margin: 0 0 15px
+  padding: 12px
+  box-sizing: border-box
   background-color: $light-color-mod
   display: table
 
