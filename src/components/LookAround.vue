@@ -21,6 +21,20 @@ export default {
     return {
       filter: ""
     };
+  },
+  watch: {
+    logged: {
+      handler(newValue) {
+        console.log("logged handler inside lookaround, logged= " + newValue);
+      },
+      deep: true
+    },
+    located: {
+      handler(newValue) {
+        console.log("located handler inside lookaround, located= " + newValue);
+      },
+      deep: true
+    }
   }
 };
 </script>

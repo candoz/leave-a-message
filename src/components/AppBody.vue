@@ -13,6 +13,14 @@ export default {
       
     };
   },
+  watch: {
+    logged: {
+      handler(newValue) {
+        console.log("logged handler inside appbody, logged= " + newValue);
+      },
+      // deep: true
+    }
+  }
 };
 </script>
 

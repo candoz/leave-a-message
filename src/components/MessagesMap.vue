@@ -30,6 +30,11 @@ const PIN_ICON_HEIGHT = 24;
 const ENVELOPE_ICON_WIDTH = 24;
 const ENVELOPE_ICON_HEIGHT = 25;
 
+const Z_INDEX_USER_LOCATION = 1;
+const Z_INDEX_MASK = 1;
+const Z_INDEX_STRIPPED = 1;
+const Z_INDEX_FULL = 1;
+
 export default {
   props: ["located", "logged", "filter", "messagesAround"],
   data() {
@@ -94,7 +99,7 @@ export default {
         .addTo(this.myMap);
 
       this.strippedGroup.addTo(this.myMap);
-      this.fullGroup.addTo(this.myMap)      
+      this.fullGroup.addTo(this.myMap);     
     },
     satisfiesFilter(message) {
       return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase() ||
@@ -122,7 +127,7 @@ export default {
       });
     },
     updateFullLayer() {
-      this.FullGroup.clearLayers();
+      this.fullGroup.clearLayers();
       this.messagesAround.forEach(message => {
         if (this.filterAbsent || satisfiesFilter(message)) {
           const popupString = "<p>" + message.text + "<br />" +
@@ -170,7 +175,7 @@ export default {
               author_nickname: element.author_nickname,
               hashtags: element.hashtags,
               likes: element.likes,
-              latLng: [element.location.coordinates[1], element.location.coordinates[0]], //NB: lat and lng are inverted server side
+              latLng: [element.location.coordinates[1], element.location.coordinates[0]],  //NB: lat and lng are inverted server side
             });
           }
           this.updateStrippedLayer();
@@ -190,7 +195,8 @@ export default {
     },
     logged: {
       handler(newValue) {
-        if (newValue === true) {
+        console.log("logged handler, logged= " + newValue);
+        if (newValue == true) {
           this.userLocationMarker.setIcon(this.pinIconLoggedIn);
         } else {
           this.userLocationMarker.setIcon(this.pinIconLoggedOut);
@@ -200,14 +206,14 @@ export default {
     },
     messagesAround: {
       handler() {
-        this.updateFullLayer();
+        // this.updateFullLayer();
       },
       deep: true
     },
     filter: {
       handler() {
         this.updateStrippedLayer();
-        this.updateFullLayer();
+        // this.updateFullLayer();
       }
     }
   },
