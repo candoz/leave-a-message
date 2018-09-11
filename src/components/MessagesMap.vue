@@ -30,8 +30,6 @@ const PIN_ICON_HEIGHT = 24;
 const ENVELOPE_ICON_WIDTH = 24;
 const ENVELOPE_ICON_HEIGHT = 25;
 
-const Z_INDEX_TILE = 1;
-const Z_INDEX_MASK = 2;
 const Z_INDEX_STRIPPED_FILL = 3;
 const Z_INDEX_STRIPPED_OUTLINE = 4;
 const Z_INDEX_FULL_FILL = 5;
@@ -87,7 +85,6 @@ export default {
         minZoom: MIN_ZOOM_LEVEL,
         ext: 'png'
       });
-      // this.tileLayer.setZIndex(Z_INDEX_TILE);
       this.tileLayer.addTo(this.myMap);
     },
     initMaskLayer() {
@@ -100,12 +97,11 @@ export default {
         minZoom: MIN_ZOOM_LEVEL
       });
       this.maskLayer.setData([[this.located.lat, this.located.lng]]);
-      // this.tileLayer.setZIndex(Z_INDEX_MASK);
       this.maskLayer.addTo(this.myMap);
     },
     initUserLocationMarker() {
       this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.pinIconLoggedOut })
-        // .setZIndex(Z_INDEX_USER_LOCATION)
+        .setZIndexOffset(Z_INDEX_USER_LOCATION)
         .bindPopup("You are here")
         .addTo(this.myMap);
     },
@@ -130,7 +126,7 @@ export default {
           } else {
             envelopeMarker.setIcon(this.filteredEnvelopeIcon);
           }
-          // envelopeMarker.setZIndex(Z_INDEX_STRIPPED_FILL);
+          envelopeMarker.setZIndexOffset(Z_INDEX_STRIPPED_FILL);
           this.strippedGroup.addLayer(envelopeMarker);
           
           const popupString = "<p><b>Hashtags: </b> " + this.hashtagFormatter(message.hashtags) + "<br />" +
@@ -138,7 +134,7 @@ export default {
                               "<b>Likes: </b> " + message.likes.length + "<br />";
           const envelopeOutlineMarker = L.marker(message.latLng, {icon: this.envelopeOutlineIcon, id: message.id});
           envelopeOutlineMarker.bindPopup(popupString);
-          // envelopeOutlineMarker.setZIndex(Z_INDEX_STRIPPED_OUTLINE);
+          envelopeOutlineMarker.setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE);
           this.strippedGroup.addLayer(envelopeOutlineMarker);
         }
       });
@@ -155,7 +151,7 @@ export default {
           } else {
             envelopeMarker.setIcon(this.filteredEnvelopeIcon);
           }
-          // envelopeMarker.setZIndex(Z_INDEX_FULL_FILL);
+          envelopeMarker.setZIndexOffset(Z_INDEX_FULL_FILL);
           this.fullGroup.addLayer(envelopeMarker);
           
           const popupString = "<p>" + message.text + "<br />" +
@@ -163,7 +159,7 @@ export default {
                               "<b>Likes: </b> " + message.likes.length + "</p>";
           const envelopeOutlineMarker = L.marker(msgLatLng, {icon: this.envelopeOutlineIcon, id: message.id});
           envelopeOutlineMarker.bindPopup(popupString);
-          // envelopeOutlineMarker.setZIndex(Z_INDEX_FULL_OUTLINE);
+          envelopeOutlineMarker.setZIndexOffset(Z_INDEX_FULL_OUTLINE);
           this.fullGroup.addLayer(envelopeOutlineMarker);
         }
       });
