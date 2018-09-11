@@ -1,5 +1,5 @@
 <template>
-    <div class=app-view>
+    <div class=app-body>
       <router-view :logged="logged" :located="located" :messagesAround="messagesAround"/>
     </div>
 </template>
@@ -8,19 +8,6 @@
 <script>
 export default {
   props: ["logged", "located", "messagesAround"],
-  data() {
-    return {
-      
-    };
-  },
-  watch: {
-    logged: {
-      handler(newValue) {
-        console.log("logged handler inside appbody, logged= " + newValue);
-      },
-      // deep: true
-    }
-  }
 };
 </script>
 
@@ -28,7 +15,7 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-.app-view
+.app-body
 
   background-color: $primary-color
   width: 100%

@@ -34,7 +34,6 @@ export default {
   },
   created() {
     EventBus.$on("loggedIn", () => {
-      console.log("loggedIn event received in app");
       this.logged = true;
       sessionStorage.logged = JSON.stringify(true);
     });
