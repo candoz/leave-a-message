@@ -193,17 +193,6 @@ export default {
       },
       deep: true
     },
-    logged: {
-      handler(newValue) {
-        console.log("logged handler, logged= " + newValue);
-        if (newValue == true) {
-          this.userLocationMarker.setIcon(this.pinIconLoggedIn);
-        } else {
-          this.userLocationMarker.setIcon(this.pinIconLoggedOut);
-        }
-      },
-      deep: true
-    },
     messagesAround: {
       handler() {
         // this.updateFullLayer();
@@ -233,6 +222,11 @@ export default {
     this.strippedPolling = setInterval(function() {
       this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
     }.bind(this), POLLING_INTERVAL);
+    if(this.logged) {
+      this.userLocationMarker.setIcon(this.pinIconLoggedIn);
+    } else {
+      this.userLocationMarker.setIcon(this.pinIconLoggedOut);
+    }
   },
   destroyed() {
     clearInterval(this.strippedPolling);
