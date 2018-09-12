@@ -34,13 +34,22 @@
           -->
           
           <div class="message-panel">
-            <p>{{msg.text}}</p>
-            <p class="meta-message">by <b>{{ msg.author_nickname }}</b>    |    
-            <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
-            {{ msg.likes.length }}
-            <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
-            {{ msg.comments.length }}
-            </p>
+            <div>
+              <p>{{msg.text}}</p>
+              <div class="bottom-text">
+                <div>
+                  <p>by <b>{{ msg.author_nickname }}</b></p>
+                </div>
+                <div>
+                  <p>
+                    <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
+                    {{ msg.likes.length }}
+                    <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
+                    {{ msg.comments.length }}
+                  </p>
+                </div>
+              </div>
+            </div>
             <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
@@ -206,6 +215,7 @@ h4
 
 .meta-message
   font-family: $primary-font
+  display: inline-block
 
 .internal-subtitle
   font-family: $primary-font
@@ -242,6 +252,9 @@ h4
     font-size: 85%
     font-family: $secondary-font
     text-align: left
+  .bottom-text
+    display: flex
+    justify-content: space-between
 
 .votes
   display: inline-block
