@@ -1,11 +1,11 @@
 <template>
   <div>
-
-    <!-- <div v-if="logged === true" > -->
-    <div v-if="logged === true" >
+    <div class="scrollable" v-if="logged === true" >
       <h4>Messages nearby:</h4>
       <div v-if="messagesIsPresent === true">
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+
+          <!--
           <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
             <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
               &nbsp; #{{ value }}
@@ -31,6 +31,29 @@
               </form>
             </div>
           </div>
+          -->
+          
+          <div class="message-panel">
+            <p>{{msg.text}}</p>
+            <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
+            {{ msg.likes.length }}
+            <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
+            {{ msg.comments.length }}
+            <p class="meta-message"><b>by:</b> {{ msg.author_nickname }}</p>
+            <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
+              <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
+              <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
+                <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+              </div>
+              <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
+                <p class="internal-subtitle">Write a comment</p>
+                  <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
+                <button type="submit" class="">Publish comment</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- fine for -->
         </div>
       </div>
       <div v-else>
@@ -49,7 +72,6 @@
         to see them
       </p>
     </div>
-
   </div>
 
     <!--    W O R K   I N   P R O G R E S S   ! ! !    DENTRO ALL'ELSE--> 
@@ -170,6 +192,9 @@ p
 a
   text-decoration: none
 
+h4
+  margin: 0
+
 .a-login
   color: $primary-color
 
@@ -181,6 +206,10 @@ a
 
 .internal-subtitle
   font-family: $primary-font
+
+.scrollable
+  overflow-y: auto
+  max-height: 80vh
 
 .accordion
   background-color: $light-color-mod
@@ -217,6 +246,17 @@ a
   transition: max-height 0.2s ease-out
   border: 1px
   font-family: $secondary-font
+
+.message-panel
+  transition: font-size 0.3s ease, background-color 0.3s ease
+  display: block
+  border-bottom: 1px solid #ccc
+  font-family: $secondary-font
+  &:hover
+    background-color: $light-color-mod
+  p
+    margin: 0
+    padding: 20px
 
 .votes
   display: inline-block
