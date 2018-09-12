@@ -166,6 +166,8 @@ export default {
 .liked
   color: $secondary-color
 
+.disabled
+  color: $light-color-mod-two
 .logged-in
   color: $primary-color
 .logged-out

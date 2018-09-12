@@ -10,8 +10,7 @@
           <router-link :to="'/login'" class="a-login" exact> login </router-link>
           or
           <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
-          <!-- <br/> -->
-          to write
+          to write something
         </p>
       </div>
       <button :disabled="loading === true || logged === false" type="submit" class="">Publish message</button>
@@ -26,8 +25,8 @@
 <script>
 import L from "leaflet";
 const axios = require("axios");
-const DEFAULT_ZOOM_LEVEL = 13
-const MIN_ZOOM_LEVEL = 5;
+const DEFAULT_ZOOM_LEVEL = 16
+const MIN_ZOOM_LEVEL = 6;
 const POPUP_TEXT = "Your message will be published here"
 
 export default {
@@ -95,7 +94,7 @@ export default {
       });
     } else {
       this.pencilIcon = L.divIcon({
-        className: "fas fa-pencil-alt fa-3x",  // "fas fa-pen fa-3x"
+        className: "fas fa-pencil-alt fa-3x disabled",  // "fas fa-pen fa-3x"
         iconAnchor: [0, 36]
       });
     }
@@ -151,6 +150,7 @@ textarea
   outline: 0
   font-family: $secondary-font
   background: $light-color-mod
+  color: $dark-color
   width: 100%
   height: 80%
   border: 0
@@ -170,6 +170,7 @@ textarea
   box-sizing: border-box
   background-color: $light-color-mod
   display: table
+  color: $dark-color
 
 .text-align-middle
   text-align: center
@@ -196,7 +197,7 @@ button
   &:hover:enabled, &:active:enabled, &:focus:enabled
     box-shadow: $shadow
   &:disabled
-    background: $dark-color
+    background: $light-color-mod-two
     cursor: auto
 
 .a-login
