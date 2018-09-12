@@ -68,6 +68,7 @@ export default {
 
 .messages-list-card
   @extend %card
+  max-height: 80vh
   @media screen and (max-width: $media-width-first)
     margin-top: 3vh
 
