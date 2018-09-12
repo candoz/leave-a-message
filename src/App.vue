@@ -173,12 +173,14 @@ export default {
 .logged-out
   color: $dark-color
 
-.envelope-outline
+.envelope-outline-dark
   color: $dark-color
+.envelope-outline-light
+  color: $light-color-mod
 .regular-envelope
   color: $light-color
 .stripped-envelope
-  color: $light-color-mod-two
+  color: $dark-color
 .filtered-envelope
   color: $tertiary-color
 

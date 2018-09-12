@@ -35,7 +35,7 @@
           
           <div class="message-panel">
             <p>{{msg.text}}</p>
-            <p class="meta-message">by <b>{{ msg.author_nickname }}</b>  |  
+            <p class="meta-message">by <b>{{ msg.author_nickname }}</b>    |    
             <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
             {{ msg.likes.length }}
             <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
