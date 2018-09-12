@@ -2,9 +2,9 @@
     <div>
       <nav>
         <router-link tag="li" :to="'/'" exact>Explore</router-link>
+        <router-link tag="li" :to="'/write'" exact>Write</router-link>
         <router-link tag="li" v-if="logged === false" :to="'/login'" exact>Login</router-link>
         <router-link tag="li" v-if="logged === false" :to="'/signup'" exact>Signup</router-link>
-        <router-link tag="li" :to="'/write'" exact>Write</router-link>
         <router-link tag="li" v-if="logged === true" :to="'/profile'" exact>MyProfile</router-link>
       </nav>
     </div>

@@ -134,7 +134,7 @@ export default {
   border-radius: $radius
   flex: 1
   margin: 0 2% 2% 2%
-  padding: 2.5% 
+  padding: 1% 
 
 .map-card
   @extend %card

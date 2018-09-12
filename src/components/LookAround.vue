@@ -45,7 +45,7 @@ export default {
   min-width: 180px
   min-height: 180px
   border-radius: $radius
-  padding: 2.5%
+  padding: 1%
   margin: 0 1%
   flex-grow: 1
   font-size: 100%
@@ -57,13 +57,13 @@ export default {
   
 .messages-map-card
   @extend %card
-  flex-basis: 70vw
+  flex-basis: 40vw
   height: 80vh
   display: flex    // also a flex container
   flex-direction: column
 
   @media screen and (max-width: $media-width-first)
-    flex-basis: 65vh
+    flex-basis: 70vh
     height: auto
 
 .messages-list-card

@@ -3,11 +3,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
+    <div id="map"></div>
     <div class="filter-input">
       <input type="text" v-model="filter" placeholder="filter by hashtag or by nickname" />
     </div>
-    <div id="map"></div>
-    
   </div>
 </template>
 
@@ -275,7 +274,7 @@ export default {
   flex: 1
 
 .filter-input
-  margin-bottom: 8px
+  margin-top: 8px
   input
     font-family: $secondary-font
     color: $dark-color
