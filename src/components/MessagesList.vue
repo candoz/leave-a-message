@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="scrollable" v-if="logged === true" >
-      <h4>Messages nearby:</h4>
+      <h4>Messages nearby</h4>
       <div v-if="messagesIsPresent === true">
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
 
@@ -35,11 +35,12 @@
           
           <div class="message-panel">
             <p>{{msg.text}}</p>
+            <p class="meta-message">by <b>{{ msg.author_nickname }}</b>  |  
             <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
             {{ msg.likes.length }}
             <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
             {{ msg.comments.length }}
-            <p class="meta-message"><b>by:</b> {{ msg.author_nickname }}</p>
+            </p>
             <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
@@ -193,7 +194,9 @@ a
   text-decoration: none
 
 h4
-  margin: 0
+  margin: 0px 0px 10px 0px
+  color: $dark-color
+  font-size: 110%
 
 .a-login
   color: $primary-color
@@ -211,29 +214,8 @@ h4
   overflow-y: auto
   max-height: 80vh
 
-.accordion
-  background-color: $light-color-mod
-  color: #444
-  cursor: pointer
-  padding: 5px
-  border: none
-  text-align: center
-  outline: none
-  font-size: 15px
-  transition: 0.4s
-
 .active
   background-color: $light-color-mod-two
-
-.accordion
-  &:hover
-    background-color: $light-color-mod-two
-  &:after
-    content: '\002B'
-    color: #777
-    font-weight: bold
-    float: right
-    margin-left: 5px
 
 .active:after
   content: "\2212"
@@ -250,13 +232,16 @@ h4
 .message-panel
   transition: font-size 0.3s ease, background-color 0.3s ease
   display: block
-  border-bottom: 1px solid #ccc
+  border-top: 1px solid #ccc
   font-family: $secondary-font
   &:hover
     background-color: $light-color-mod
   p
     margin: 0
-    padding: 20px
+    padding: 10px
+    font-size: 85%
+    font-family: $secondary-font
+    text-align: left
 
 .votes
   display: inline-block

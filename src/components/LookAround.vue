@@ -49,7 +49,6 @@ export default {
   margin: 0 1%
   flex-grow: 1
   font-size: 100%
-
   @media screen and (max-width: $media-width-first)
     align-self: center
     width: 90%
@@ -57,19 +56,21 @@ export default {
   
 .messages-map-card
   @extend %card
-  flex-basis: 40vw
+  flex-basis: 60vw
   height: 80vh
   display: flex    // also a flex container
   flex-direction: column
-
   @media screen and (max-width: $media-width-first)
     flex-basis: 70vh
     height: auto
 
 .messages-list-card
   @extend %card
+  flex-basis: 30vw
   max-height: 80vh
+  max-width: 40vw
   @media screen and (max-width: $media-width-first)
     margin-top: 3vh
+    max-width: 100%
 
 </style>

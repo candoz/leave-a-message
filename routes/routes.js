@@ -333,7 +333,6 @@ module.exports = (function () {
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, messages_id: 1 }}, function (err, dbResUserFullMessagesId) {
       if (err) return next(boom.badImplementation(err));
-      console.log(dbResUserFullMessagesId);
       dbPoolConnection.collection("Messages").find( {_id : {$in : dbResUserFullMessagesId.messages_id }})
       .toArray(function (err, dbResUserFullMessages) {
         if (err) return next(boom.badImplementation(err));
