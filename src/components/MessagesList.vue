@@ -277,7 +277,11 @@ textarea
   top: 12px
   right: 12px
   cursor: pointer
-  font-size: 24px 
+  font-size: 24px
   color: $secondary-color
+  // color: $dark-color
+  // transition: color .6s
+  // &:hover
+  //   color: $secondary-color
 
 </style>

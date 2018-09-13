@@ -86,7 +86,7 @@ export default {
     background: $light-color-mod
     width: 100%
     border: 0
-    margin: 0 0 2.9%
+    margin: 0 0 3.3%
     padding: 15px
     box-sizing: border-box
     font-size: 14px
@@ -103,12 +103,11 @@ export default {
     -webkit-transition: all 0.3 ease
     transition: all 0.3 ease
     cursor: pointer
-    margin-bottom: 10px
+    margin-bottom: 8px
     &:hover, &:active, &:focus
       box-shadow: $shadow
   .message
     font-family: $secondary-font
-    margin: 15px 0 0
     color: #b3b3b3
     font-size: 12px
     a
