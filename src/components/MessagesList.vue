@@ -218,8 +218,8 @@ h4
   padding: 1%
   box-shadow: $shadow
   z-index: 1
-  display: flex;
-  flex-direction: column;
+  display: flex
+  flex-direction: column
   @media only screen and (max-width: $media-width-first)
     max-width: 80vw
     padding: 3%
@@ -268,7 +268,9 @@ textarea
   font-size: 85%
 
 .fa-times-circle
-  display: inline-block
+  position: absolute
+  top: 10px
+  right: 10px
   cursor: pointer
   font-size: 24px 
   color: $secondary-color
