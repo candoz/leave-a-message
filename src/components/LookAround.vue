@@ -49,6 +49,8 @@ export default {
   margin: 0 1%
   flex-grow: 1
   font-size: 100%
+  display: flex    // also a flex container
+  flex-direction: column
   @media screen and (max-width: $media-width-first)
     align-self: center
     width: 90%
@@ -58,8 +60,6 @@ export default {
   @extend %card
   flex-basis: 60vw
   height: 80vh
-  display: flex    // also a flex container
-  flex-direction: column
   @media screen and (max-width: $media-width-first)
     flex-basis: 70vh
     height: auto
@@ -71,6 +71,7 @@ export default {
   max-width: 40vw
   @media screen and (max-width: $media-width-first)
     margin-top: 3vh
+    flex-basis: 70vh
     max-width: 100%
 
 </style>

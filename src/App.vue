@@ -192,17 +192,13 @@ export default {
     text-align: left
     margin: 0 !important
   .bottom-text
+    margin-top: 10px !important
     display: flex
     justify-content: space-between
-    margin-top: 10px !important
   .fa-comment
     cursor: auto
-    .p
-      font-family: $secondary-font
   .fa-heart
     cursor: auto
-    .p
-      font-family: $secondary-font
 
 .stripped-popup
   color: $light-color

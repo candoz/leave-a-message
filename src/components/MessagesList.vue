@@ -1,38 +1,9 @@
 <template>
   <div>
-    <div class="scrollable" v-if="logged === true" >
+    <template v-if="logged === true" >
       <h4>Messages nearby</h4>
-      <div v-if="messagesIsPresent === true">
+      <div v-if="messagesIsPresent === true" class="scrollable">
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
-
-          <!--
-          <div class="accordion" @click="expandMessage(msg._id)" :ref="'button-'+ msg._id">
-            <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
-              &nbsp; #{{ value }}
-            </p>
-          </div>
-          <div class="panel" :ref="'panel-'+msg._id">
-            <p>{{msg.text}}</p>          
-            <p class="meta-message"><b>by:</b> {{ msg.author_nickname }}
-              <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
-              {{ msg.likes.length }}
-              <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
-              {{ msg.comments.length }}
-            </p>
-            <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
-              <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
-              <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
-                <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
-              </div>
-              <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-                <p class="internal-subtitle">Write a comment</p>
-                  <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
-                <button type="submit" class="">Publish comment</button>
-              </form>
-            </div>
-          </div>
-          -->
-          
           <div class="message-panel" @click="selectFullMessage(msg._id)">
             <div>
               <p>{{msg.text}}</p>
@@ -70,7 +41,7 @@
         <i class="fas fa-sad-cry fa-3x"></i>
         <p>Ops! There aren't messages here, do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first?</p>
       </div>
-    </div>
+    </template>
     
     <div v-else>
       <p>Messages nearby</p>
@@ -201,7 +172,7 @@ h4
 
 .scrollable
   overflow-y: auto
-  max-height: 80vh
+  flex: 1
 
 .active
   background-color: $light-color-mod-two
