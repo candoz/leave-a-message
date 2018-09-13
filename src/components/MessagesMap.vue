@@ -178,16 +178,17 @@ export default {
             .setContent(popupHtml)
 
           const envelopeMarker =
-            L.marker(msgLatLng, {id: message.id})
+            L.marker(msgLatLng)
              .setZIndexOffset(Z_INDEX_FULL_FILL)
              .setIcon(this.filterAbsent ? this.regularEnvelopeIcon : this.filteredEnvelopeIcon)
              .addTo(this.fullGroup);
           
           const envelopeOutlineMarker = 
-            L.marker(msgLatLng, { id: message.id })
+            L.marker(msgLatLng, { id: message._id })
              .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
              .setIcon(this.envelopeOutlineDarkIcon)
              .bindPopup(fullPopup)
+             //.on('click', TROVARE IL MODO DI LANCIARE UN EVENTO VUE);
              .addTo(this.fullGroup);
         }
       });
@@ -254,10 +255,11 @@ export default {
     }
   },
   created() {
-    EventBus.$on("selectedFullMessage", (idMessage) => {
-      this.strippedGroup.getLayers().forEach(message => {
-        if(message.options.id === idMessage) {
-          // this.myMap.setView(message.getLatLng(), 13);
+    EventBus.$on("selectedFullMessageFromList", (idMessage) => {
+      this.fullGroup.getLayers().forEach(marker => {
+        if(marker.options.id === idMessage) {
+          this.myMap.setView(marker.getLatLng(), 13);
+          marker.openPopup();
           // change icon to open envelope
         }
       });

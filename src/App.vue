@@ -99,7 +99,6 @@ export default {
     getFullMessages: function() {
       axios.get(sessionStorage.urlHost + "/messages/full")
         .then(response => {
-          console.log(response.data);
           this.messagesAround = response.data;
         }).catch(error => {
           if (error.response) {

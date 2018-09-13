@@ -33,7 +33,7 @@
           </div>
           -->
           
-          <div class="message-panel">
+          <div class="message-panel" @click="selectFullMessage(msg._id)">
             <div>
               <p>{{msg.text}}</p>
               <div class="bottom-text">
@@ -96,16 +96,8 @@ export default {
     };
   },
   methods: {
-    expandMessage(id) {
-      let button = this.$refs['button-'+id][0];  // '[0]' because we want the first element of the ref
-      button.classList.toggle("active");
-      let panel = this.$refs['panel-'+id][0];
-      if (panel.style.maxHeight){
-        panel.style.maxHeight = null;
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      }
-      EventBus.$emit("selectedFullMessage", id);
+    selectFullMessage(id) {
+      EventBus.$emit("selectedFullMessageFromList", id);
     },
     addComment(id) {
       let commentMsg = this.commentText;
