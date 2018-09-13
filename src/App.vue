@@ -169,7 +169,7 @@ export default {
 .envelope-outline-dark
   color: $dark-color
 .envelope-outline-light
-  color: $light-color-mod
+  color: $light-color-mod-two
 .regular-envelope
   color: $light-color
 .stripped-envelope
