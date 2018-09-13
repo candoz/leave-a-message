@@ -186,20 +186,23 @@ export default {
 .full-popup
   margin: 0
   padding: 0px
-  p
-    font-size: 100%
+  font-size: 100%
+  p 
     font-family: $secondary-font
     text-align: left
     margin: 0 !important
   .bottom-text
     display: flex
-    font-family: $secondary-font
     justify-content: space-between
     margin-top: 10px !important
   .fa-comment
     cursor: auto
+    .p
+      font-family: $secondary-font
   .fa-heart
     cursor: auto
+    .p
+      font-family: $secondary-font
 
 .stripped-popup
   color: $light-color

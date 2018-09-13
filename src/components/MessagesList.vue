@@ -42,9 +42,9 @@
                 </div>
                 <div>
                   <p>
-                    <i class="fas fa-comment" @click="showCommentsPopup(msg._id)"></i>
+                    <i class="far fa-comments" @click="showCommentsPopup(msg._id)"></i>
                     {{ msg.comments.length }}
-                    <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
+                    <i class="far fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
                     {{ msg.likes.length }}
                   </p>
                 </div>
