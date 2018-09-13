@@ -69,10 +69,7 @@ export default {
       this.myMap = L.map('map', {
         attributionControl: false,
         doubleClickZoom: false,
-        scrollWheelZoom: 'center',
-			  doubleClickZoom: 'center',
-			  touchZoom: 'center'
-      }).setView([this.located.lat, this.located.lng], START_ZOOM_LEVEL);
+       }).setView([this.located.lat, this.located.lng], START_ZOOM_LEVEL);
     },
     initCenterButton() {
       let self = this;
@@ -123,10 +120,18 @@ export default {
         if (this.filterAbsent || satisfiesFilter(message)) {
           
           
-          const popupHtml = "<p>By " + message.author_nickname + "<br />"+
-                              "<p class='fas fa-heart'>" + message.likes.length + "</p>"+
-                              "<b>Topics: </b> " + this.hashtagFormatter(message.hashtags) + "</p>";
+          const popupHtml = 
+          "<div class='stripped-popup'>" +
+            this.hashtagFormatter(message.hashtags) + 
+          "</div>"
           
+          const strippedPopup = 
+           L.popup({ 
+            closeButton: false, 
+            className: "stripped-popup" 
+          })
+          .setContent(popupHtml)
+
           const envelopeMarker = 
             L.marker(message.latLng, { id: message.id })
              .setZIndexOffset(Z_INDEX_STRIPPED_FILL)
@@ -137,7 +142,7 @@ export default {
             L.marker(message.latLng, { id: message.id })
              .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
              .setIcon(this.envelopeOutlineLightIcon)
-             .bindPopup(popupHtml)
+             .bindPopup(strippedPopup)
              .addTo(this.strippedGroup);
         }
       });
@@ -194,7 +199,7 @@ export default {
           result.push("#" + hashtag)
         });
       }
-      return result;
+      return result.join(" ");
     },
     watchMapMovement() {
       this.myMap.on("moveend", (event) => {  // "move" ?

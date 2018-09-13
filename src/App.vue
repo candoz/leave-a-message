@@ -191,18 +191,22 @@ export default {
     font-size: 100%
     font-family: $secondary-font
     text-align: left
-    background: $light-color-mod
-    margin: 0
+    margin: 0 !important
   .bottom-text
-    background: $light-color
     display: flex
+    font-family: $secondary-font
     justify-content: space-between
-    margin: 0
+    margin-top: 10px !important
   .fa-comment
     cursor: auto
   .fa-heart
     cursor: auto
 
-    
+.stripped-popup
+  color: $light-color
+  .leaflet-popup-content-wrapper
+    background-color: $dark-color 
+  .leaflet-popup-tip
+    background-color: $dark-color 
 
 </style>
