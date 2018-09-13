@@ -16,7 +16,7 @@ import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
 
-const POLLING_INTERVAL = 10000;
+const POLLING_INTERVAL = 30000;
 const DEFAULT_LAT = 44.148020;
 const DEFAULT_LNG = 12.235375;
 
@@ -41,7 +41,7 @@ export default {
       this.logged = false;
       sessionStorage.logged = JSON.stringify(false);
     });
-    EventBus.$on("forceFullMessagesUpdate", () => {
+    EventBus.$on("requestFullMessages", () => {
       if (this.logged === true) {
         this.getFullMessages();
       }
@@ -183,5 +183,26 @@ export default {
   color: $dark-color
 .filtered-envelope
   color: $tertiary-color
+
+.full-popup
+  margin: 0
+  padding: 0px
+  p
+    font-size: 100%
+    font-family: $secondary-font
+    text-align: left
+    background: $light-color-mod
+    margin: 0
+  .bottom-text
+    background: $light-color
+    display: flex
+    justify-content: space-between
+    margin: 0
+  .fa-comment
+    cursor: auto
+  .fa-heart
+    cursor: auto
+
+    
 
 </style>

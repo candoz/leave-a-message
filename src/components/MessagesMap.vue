@@ -19,7 +19,7 @@ import { EventBus } from "../main.js"
 const axios = require("axios");
 
 const FULL_MESSAGES_RADIUS = 5000;  // meters
-const POLLING_INTERVAL = 10000;
+const POLLING_INTERVAL = 30000;
 
 const MIN_ZOOM_LEVEL = 5;
 const START_ZOOM_LEVEL = 14;
@@ -122,7 +122,8 @@ export default {
       this.strippedMessages.forEach(message => {
         if (this.filterAbsent || satisfiesFilter(message)) {
           
-          const popupString = "<p>By " + message.author_nickname + "<br />"+
+          
+          const popupHtml = "<p>By " + message.author_nickname + "<br />"+
                               "<p class='fas fa-heart'>" + message.likes.length + "</p>"+
                               "<b>Topics: </b> " + this.hashtagFormatter(message.hashtags) + "</p>";
           
@@ -136,7 +137,7 @@ export default {
             L.marker(message.latLng, { id: message.id })
              .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
              .setIcon(this.envelopeOutlineLightIcon)
-             .bindPopup(popupString)
+             .bindPopup(popupHtml)
              .addTo(this.strippedGroup);
         }
       });
@@ -147,10 +148,30 @@ export default {
         if (this.filterAbsent || satisfiesFilter(message)) {
           
           const msgLatLng = [message.location.coordinates[1], message.location.coordinates[0]];
-          const popupString = "<p>" + message.text + "<br />" +
-                              "<b>By: </b> " + message.author_nickname + "<br />" +
-                              "<b>Likes: </b> " + message.likes.length + "</p>";
-          
+          // const popupHtml = 
+            // "<p>" + message.text + "<br />" +
+            // "<b>By: </b> " + message.author_nickname + "<br />" +
+            // "<b>Likes: </b> " + message.likes.length + "</p>";
+
+          const popupHtml =
+            "<div class='full-popup'>" +
+              "<p>" + message.text + "</p>" +
+              "<div class='bottom-text'>" +
+                "<div>" +
+                  "<p>by <b>" + message.author_nickname + "</b></p>" +
+                "</div>" +
+                "<div>" +
+                  "<p>" +
+                    "<div class='fas fa-comment'> " + message.comments.length + "</div>" + " " +
+                    "<div class='fas fa-heart'> " + message.likes.length + "</div>" +
+                  "</p>" +
+                "</div>" +
+              "</div>" +
+            "</div>";
+          const fullPopup = 
+           L.popup({ closeButton: false })
+            .setContent(popupHtml)
+
           const envelopeMarker =
             L.marker(msgLatLng, {id: message.id})
              .setZIndexOffset(Z_INDEX_FULL_FILL)
@@ -161,7 +182,7 @@ export default {
             L.marker(msgLatLng, { id: message.id })
              .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
              .setIcon(this.envelopeOutlineDarkIcon)
-             .bindPopup(popupString)
+             .bindPopup(fullPopup)
              .addTo(this.fullGroup);
         }
       });
@@ -200,7 +221,6 @@ export default {
             });
           }
           this.updateStrippedLayer();
-          this.updateFullLayer();  // FORSE DA TOGLIERE
         }).catch(error => {
           console.log(error);
         });
@@ -232,7 +252,7 @@ export default {
     EventBus.$on("selectedFullMessage", (idMessage) => {
       this.strippedGroup.getLayers().forEach(message => {
         if(message.options.id === idMessage) {
-          this.myMap.setView(message.getLatLng(), 13);
+          // this.myMap.setView(message.getLatLng(), 13);
           // change icon to open envelope
         }
       });

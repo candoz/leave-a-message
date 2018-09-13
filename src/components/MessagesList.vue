@@ -42,10 +42,10 @@
                 </div>
                 <div>
                   <p>
+                    <i class="fas fa-comment" @click="showCommentsPopup(msg._id)"></i>
+                    {{ msg.comments.length }}
                     <i class="fas fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
                     {{ msg.likes.length }}
-                    <i class="fas fa-comment" @click="showCommentsPopup(msg._id)" v-if="msg.comments"></i>
-                    {{ msg.comments.length }}
                   </p>
                 </div>
               </div>
@@ -56,8 +56,7 @@
                 <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
               </div>
               <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-                <p class="internal-subtitle">Write a comment</p>
-                  <textarea form="write-form" v-model="commentText" placeholder="Write here your message"></textarea>
+                <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea>
                 <button type="submit" class="">Publish comment</button>
               </form>
             </div>
@@ -78,24 +77,10 @@
         <router-link :to="'/login'" class="a-login" exact> login </router-link>
         or
         <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
-        <!-- <br/> -->
         to see them
       </p>
     </div>
   </div>
-
-    <!--    W O R K   I N   P R O G R E S S   ! ! !    DENTRO ALL'ELSE--> 
-    <!-- <div v-for="msg in messagesAround" :key=msg._id >  <!\-\- :class="{selected: msg._id === selectedMessage._id"} -\->
-      <div class="accordion">
-        <p class="votes">{{msg.votes}}</p>
-        <p class="hashtags" v-for="value in msg.hashtags" :key=value> 
-          &nbsp; #{{ value }}
-        </p>
-      </div>
-      <div class="panel" :ref="'panel-'+msg._id">
-        {{msg.text}}
-      </div>
-    </div> -->
 </template>
 
 <script>
@@ -132,6 +117,7 @@ export default {
         })
         .then(response => {
           console.log(response);
+          EventBus.$emit("requestFullMessages");
         })
         .catch(error => {
           if (error.response) {
@@ -164,7 +150,7 @@ export default {
       axios
         .put(sessionStorage.urlHost + likeUnlike, {messageId: id})
         .then(response => {
-          EventBus.$emit("forceFullMessagesUpdate");
+          EventBus.$emit("requestFullMessages");
         })
         .catch(error => {
           console.log(error);
@@ -230,15 +216,6 @@ h4
 .active:after
   content: "\2212"
 
-.panel
-  padding: 0 18px
-  background-color: $light-color-mod
-  max-height: 0
-  overflow: hidden
-  transition: max-height 0.2s ease-out
-  border: 1px
-  font-family: $secondary-font
-
 .message-panel
   transition: font-size 0.3s ease, background-color 0.3s ease
   display: block
@@ -246,6 +223,8 @@ h4
   font-family: $secondary-font
   &:hover
     background-color: $light-color-mod
+  // &:last-of-type
+  //   border-bottom: 1px solid #ccc
   p
     margin: 0
     padding: 10px
