@@ -50,8 +50,9 @@
                 </div>
               </div>
             </div>
-            <div class="comment-section" style="display:none" :ref="'comment-section-'+msg._id">
+            <div class="comment-section centered-screen" style="display:none" :ref="'comment-section-'+msg._id">
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
+              <h4>Comments</h4>
               <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
                 <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
               </div>
@@ -237,22 +238,25 @@ h4
 .comment-section
   background: #FFFFFF
   max-width: 360px
+  max-height: 80vh
   margin: auto
   padding: 1%
   box-shadow: $shadow
-  position: fixed
   z-index: 1
-  width: 40%
-  height: 40%
   font-family: $secondary-font
-  top: 0
-  left: 0
   overflow: auto 
   @media only screen and (max-width: 700px)
     width: 80%
     padding: 3%
     height: 60%
     margin: auto
+
+.centered-screen
+  position: fixed
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  width: 50%
 
 form
   text-align: center

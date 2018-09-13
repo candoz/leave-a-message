@@ -23,18 +23,18 @@ const POLLING_INTERVAL = 30000;
 
 const MIN_ZOOM_LEVEL = 5;
 const START_ZOOM_LEVEL = 14;
-const MASK_OPACITY = 0.7;
+const MASK_OPACITY = 0.6;
 
 const PIN_ICON_WIDTH = 18;
 const PIN_ICON_HEIGHT = 24;
 const ENVELOPE_ICON_WIDTH = 24;
 const ENVELOPE_ICON_HEIGHT = 25;
 
-const Z_INDEX_USER_LOCATION = 1000;
+// const Z_INDEX_USER_LOCATION = 1000;
 const Z_INDEX_STRIPPED_FILL = 2000;
-const Z_INDEX_STRIPPED_OUTLINE = 3000;
-const Z_INDEX_FULL_FILL = 4000;
-const Z_INDEX_FULL_OUTLINE = 5000;
+const Z_INDEX_STRIPPED_OUTLINE = 2001;
+const Z_INDEX_FULL_FILL = 3000;
+const Z_INDEX_FULL_OUTLINE = 3001;
 
 export default {
   props: ["located", "logged", "filter", "messagesAround"],
@@ -100,8 +100,8 @@ export default {
         [this.located.lat, this.located.lng],
         { icon: this.pinIconLoggedOut }
       );
-      this.userLocationMarker.setZIndexOffset(Z_INDEX_USER_LOCATION)
-                             .bindPopup("You are here")
+      this.userLocationMarker.bindPopup("You are here")
+                            //  .setZIndexOffset(Z_INDEX_USER_LOCATION)
                              .addTo(this.myMap);
     },
     initMessagesGroups() {
@@ -258,7 +258,7 @@ export default {
     EventBus.$on("selectedFullMessageFromList", (idMessage) => {
       this.fullGroup.getLayers().forEach(marker => {
         if(marker.options.id === idMessage) {
-          this.myMap.setView(marker.getLatLng(), 13);
+          this.myMap.setView(marker.getLatLng());
           marker.openPopup();
           // change icon to open envelope
         }
