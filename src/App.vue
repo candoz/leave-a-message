@@ -136,19 +136,15 @@ export default {
   color: $dark-color
   display: inline-block
   cursor: pointer
+.fa-comments
+  color: $dark-color
+  display: inline-block
+  cursor: pointer
 
 .fa-pen
   color: $primary-color
 .fa-pencil
   color: $primary-color
-
-.fa-comment
-  color: $dark-color
-  cursor: pointer
-  display: inline-block
-
-.fa-comment-alt
-  color: $dark-color
 
 .fa-sad-cry
   color: $dark-color

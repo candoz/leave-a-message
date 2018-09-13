@@ -47,7 +47,6 @@ nav
     padding: 8px 16px
     text-decoration: none
     font-size: $navbar-font-size
-
     &.router-link-active
       background-color: $primary-color
       cursor: pointer
