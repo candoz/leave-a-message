@@ -302,7 +302,7 @@ export default {
   flex: 1
 
 .filter-input
-  margin-top: 8px
+  margin-top: 13px
   input
     font-family: $secondary-font
     color: $dark-color

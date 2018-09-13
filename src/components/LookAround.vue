@@ -59,7 +59,7 @@ export default {
 .messages-map-card
   @extend %card
   flex-basis: 60vw
-  height: 80vh
+  height: 95vh
   @media screen and (max-width: $media-width-first)
     flex-basis: 70vh
     height: auto
@@ -67,11 +67,11 @@ export default {
 .messages-list-card
   @extend %card
   flex-basis: 30vw
-  max-height: 80vh
+  max-height: 95vh
   max-width: 40vw
   @media screen and (max-width: $media-width-first)
     margin-top: 3vh
-    flex-basis: 70vh
     max-width: 100%
+    flex-basis: 45vh
 
 </style>

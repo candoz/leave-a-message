@@ -193,7 +193,7 @@ button
   -webkit-transition: all 0.3 ease
   transition: all 0.3 ease
   cursor: pointer
-  margin-bottom: 10px
+  margin-bottom: 13px
   &:hover:enabled, &:active:enabled, &:focus:enabled
     box-shadow: $shadow
   &:disabled

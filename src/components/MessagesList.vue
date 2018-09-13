@@ -216,7 +216,6 @@ h4
   display: none
   font-family: $secondary-font
   background: $light-color
-  min-height: 300px
   max-height: 80vh
   width: 480px
   margin: auto
@@ -226,13 +225,13 @@ h4
   flex-direction: column
   @media only screen and (max-width: $media-width-first)
     max-width: 80vw
-    padding: 3%
     height: 60%
   .comments-list
     flex: 1
     overflow-y: auto
-
-
+    margin-bottom: 13px
+    .p
+      padding: 6px
 
 .centered-screen
   position: fixed
@@ -242,7 +241,6 @@ h4
 
 form
   text-align: center
-  padding: 2%
   button
     text-transform: uppercase
     outline: 0
@@ -256,7 +254,7 @@ form
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
-      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 3px 3px 0 rgba(0, 0, 0, 0.24)
+      box-shadow: $shadow
 
 textarea
   outline: 0
@@ -265,11 +263,10 @@ textarea
   background: #f2f2f2
   width: 100%
   border: 0
-  margin: 0 0 15px
+  margin-bottom: 14px
   padding: 15px
   box-sizing: border-box
   font-size: 14px
-  max-width: 360px
 
 .to-open-message
   color: #b3b3b3
@@ -277,8 +274,8 @@ textarea
 
 .fa-times-circle
   position: absolute
-  top: 10px
-  right: 10px
+  top: 12px
+  right: 12px
   cursor: pointer
   font-size: 24px 
   color: $secondary-color
