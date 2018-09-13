@@ -142,12 +142,6 @@ export default {
 .fa-pencil
   color: $primary-color
 
-.fa-times-circle
-  text-align: right
-  cursor: pointer
-  font-size: 24px 
-  color: $secondary-color
-
 .fa-comment
   color: $dark-color
   cursor: pointer

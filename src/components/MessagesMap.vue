@@ -167,8 +167,8 @@ export default {
                 "</div>" +
                 "<div>" +
                   "<p>" +
-                    "<div class='fas fa-comment'> </div> " + message.comments.length + " " +
-                    "<div class='fas fa-heart'> </div> " + message.likes.length +
+                    "<i class='fas fa-comment'> </i> " + message.comments.length + " " +
+                    "<i class='fas fa-heart'> </i> " + message.likes.length +
                   "</p>" +
                 "</div>" +
               "</div>" +

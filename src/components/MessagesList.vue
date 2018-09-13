@@ -21,9 +21,11 @@
                 </div>
               </div>
             </div>
+
+            
             <div class="comment-section centered-screen" style="display:none" :ref="'comment-section-'+msg._id">
-              <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <h4>Comments</h4>
+              <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
                 <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
               </div>
@@ -34,12 +36,14 @@
             </div>
           </div>
 
+
           <!-- fine for -->
         </div>
       </div>
       <div v-else>
         <i class="fas fa-sad-cry fa-3x"></i>
-        <p>Ops! There aren't messages here, do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first?</p>
+        <p>Ops! There aren't messages around here <br /> 
+          do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first one?</p>
       </div>
     </template>
     
@@ -182,13 +186,11 @@ h4
 
 .message-panel
   transition: font-size 0.3s ease, background-color 0.3s ease
-  display: block
+  // display: block
   border-top: 1px solid #ccc
   font-family: $secondary-font
   &:hover
     background-color: $light-color-mod
-  // &:last-of-type
-  //   border-bottom: 1px solid #ccc
   p
     margin: 0
     padding: 10px
@@ -207,17 +209,19 @@ h4
   display: inline-block
 
 .comment-section
-  background: #FFFFFF
-  max-width: 360px
+  font-family: $secondary-font
+  background: $light-color
+  min-height: 300px
   max-height: 80vh
+  width: 480px
   margin: auto
   padding: 1%
   box-shadow: $shadow
   z-index: 1
-  font-family: $secondary-font
-  overflow: auto 
-  @media only screen and (max-width: 700px)
-    width: 80%
+  display: flex;
+  flex-direction: column;
+  @media only screen and (max-width: $media-width-first)
+    max-width: 80vw
     padding: 3%
     height: 60%
     margin: auto
@@ -227,7 +231,6 @@ h4
   top: 50%
   left: 50%
   transform: translate(-50%, -50%)
-  width: 50%
 
 form
   text-align: center
@@ -263,5 +266,11 @@ textarea
 .to-open-message
   color: #b3b3b3
   font-size: 85%
+
+.fa-times-circle
+  display: inline-block
+  cursor: pointer
+  font-size: 24px 
+  color: $secondary-color
 
 </style>
