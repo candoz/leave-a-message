@@ -3,8 +3,11 @@
     <template v-if="logged === true" >
       <h4>Messages nearby</h4>
       <div v-if="messagesIsPresent === true" class="scrollable">
+        
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+          
           <div class="message-panel" @click="selectFullMessage(msg._id)">
+            
             <div>
               <p>{{msg.text}}</p>
               <div class="bottom-text">
@@ -22,23 +25,23 @@
               </div>
             </div>
 
-            
-            <div class="comment-section centered-screen" style="display:none" :ref="'comment-section-'+msg._id">
+            <div class="comments-window centered-screen" :ref="'comment-section-'+msg._id">
               <h4>Comments</h4>
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
-              <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
-                <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+              <div class="comments-list">
+                <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
+                  <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+                </div>
               </div>
               <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-                <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea>
+                <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea> <!-- mettere v-if WRITE YOUR FIRST COMMENT -->
                 <button type="submit" class="">Publish comment</button>
               </form>
             </div>
           </div>
 
+        </div>  <!-- fine for -->
 
-          <!-- fine for -->
-        </div>
       </div>
       <div v-else>
         <i class="fas fa-sad-cry fa-3x"></i>
@@ -101,7 +104,7 @@ export default {
     },
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
-      commentsPopup.style.display = "block";
+      commentsPopup.style.display = "flex";
     },
     hideCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
@@ -157,6 +160,7 @@ a
   text-decoration: none
 
 h4
+  font-family: $primary-font
   margin: 0px 0px 10px 0px
   color: $dark-color
   font-size: 110%
@@ -208,7 +212,8 @@ h4
 .hashtags
   display: inline-block
 
-.comment-section
+.comments-window
+  display: none
   font-family: $secondary-font
   background: $light-color
   min-height: 300px
@@ -218,13 +223,16 @@ h4
   padding: 1%
   box-shadow: $shadow
   z-index: 1
-  display: flex
   flex-direction: column
   @media only screen and (max-width: $media-width-first)
     max-width: 80vw
     padding: 3%
     height: 60%
-    margin: auto
+  .comments-list
+    flex: 1
+    overflow-y: auto
+
+
 
 .centered-screen
   position: fixed
