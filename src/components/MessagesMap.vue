@@ -91,18 +91,17 @@ export default {
         opacity: MASK_OPACITY,
         noMask: false,
         minZoom: MIN_ZOOM_LEVEL
-      });
+      }).addTo(this.myMap);
       this.maskLayer.setData([[this.located.lat, this.located.lng]]);
-      this.maskLayer.addTo(this.myMap);
     },
     initUserLocationMarker() {
       this.userLocationMarker = L.marker(
         [this.located.lat, this.located.lng],
         { icon: this.pinIconLoggedOut }
-      );
-      this.userLocationMarker.bindPopup("You are here")
-                            //  .setZIndexOffset(Z_INDEX_USER_LOCATION)
-                             .addTo(this.myMap);
+      )
+        .bindPopup("You are here")
+        // .setZIndexOffset(Z_INDEX_USER_LOCATION)
+        .addTo(this.myMap);
     },
     initMessagesGroups() {
       this.strippedGroup.addTo(this.myMap);
@@ -125,25 +124,21 @@ export default {
             this.hashtagFormatter(message.hashtags) + 
           "</div>"
           
-          const strippedPopup = 
-           L.popup({ 
+          const strippedPopup = L.popup({ 
             closeButton: false, 
             className: "stripped-popup" 
-          })
-          .setContent(popupHtml)
+          }).setContent(popupHtml)
 
-          const envelopeMarker = 
-            L.marker(message.latLng, { id: message.id })
-             .setZIndexOffset(Z_INDEX_STRIPPED_FILL)
-             .setIcon(this.filterAbsent ? this.strippedEnvelopeIcon : this.filteredEnvelopeIcon)
-             .addTo(this.strippedGroup);
+          const envelopeMarker = L.marker(message.latLng, { id: message.id })
+            .setZIndexOffset(Z_INDEX_STRIPPED_FILL)
+            .setIcon(this.filterAbsent ? this.strippedEnvelopeIcon : this.filteredEnvelopeIcon)
+            .addTo(this.strippedGroup);
 
-          const envelopeOutlineMarker =
-            L.marker(message.latLng, { id: message.id })
-             .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
-             .setIcon(this.envelopeOutlineLightIcon)
-             .bindPopup(strippedPopup)
-             .addTo(this.strippedGroup);
+          const envelopeOutlineMarker = L.marker(message.latLng, { id: message.id })
+            .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
+            .setIcon(this.envelopeOutlineLightIcon)
+            .bindPopup(strippedPopup)
+            .addTo(this.strippedGroup);
         }
       });
     },
@@ -153,43 +148,35 @@ export default {
         if (this.filterAbsent || satisfiesFilter(message)) {
           
           const msgLatLng = [message.location.coordinates[1], message.location.coordinates[0]];
-          // const popupHtml = 
-            // "<p>" + message.text + "<br />" +
-            // "<b>By: </b> " + message.author_nickname + "<br />" +
-            // "<b>Likes: </b> " + message.likes.length + "</p>";
-
           const popupHtml =
             "<div class='full-popup'>" +
               "<p>" + message.text + "</p>" +
               "<div class='bottom-text'>" +
                 "<div>" +
-                  "<p>by <b>" + message.author_nickname + "</b></p>" +
+                  "<p>by <b>" + message.author_nickname +" &nbsp; </b></p>" +
                 "</div>" +
                 "<div>" +
                   "<p>" +
-                    "<i class='fas fa-comment'> </i> " + message.comments.length + " " +
+                    " &nbsp; <i class='fas fa-comment'> </i> " + message.comments.length + " " +
                     "<i class='fas fa-heart'> </i> " + message.likes.length +
                   "</p>" +
                 "</div>" +
               "</div>" +
             "</div>";
-          const fullPopup = 
-           L.popup({ closeButton: false })
+          const fullPopup = L.popup({ closeButton: false })
             .setContent(popupHtml)
 
-          const envelopeMarker =
-            L.marker(msgLatLng)
-             .setZIndexOffset(Z_INDEX_FULL_FILL)
-             .setIcon(this.filterAbsent ? this.regularEnvelopeIcon : this.filteredEnvelopeIcon)
-             .addTo(this.fullGroup);
+          const envelopeMarker = L.marker(msgLatLng)
+            .setZIndexOffset(Z_INDEX_FULL_FILL)
+            .setIcon(this.filterAbsent ? this.regularEnvelopeIcon : this.filteredEnvelopeIcon)
+            .addTo(this.fullGroup);
           
-          const envelopeOutlineMarker = 
-            L.marker(msgLatLng, { id: message._id })
-             .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
-             .setIcon(this.envelopeOutlineDarkIcon)
-             .bindPopup(fullPopup)
-             //.on('click', TROVARE IL MODO DI LANCIARE UN EVENTO VUE);
-             .addTo(this.fullGroup);
+          const envelopeOutlineMarker = L.marker(msgLatLng, { id: message._id })
+            .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
+            .setIcon(this.envelopeOutlineDarkIcon)
+            .bindPopup(fullPopup)
+            //.on('click', TROVARE IL MODO DI LANCIARE UN EVENTO VUE);
+            .addTo(this.fullGroup);
         }
       });
     },

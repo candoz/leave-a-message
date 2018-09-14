@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
-    <form v-on:submit.prevent id="write-form" @submit.prevent="writeMessage">
+    <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
       <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
       <div v-if="logged === false" class="login-to-write">
         <p class="text-align-middle">
@@ -120,23 +120,40 @@ export default {
 .write-component
   height: 100%
   display: flex
-  flex-wrap: wrap
   padding: 4vh 2vw
   justify-content: center
+  @media screen and (max-width: $media-width-second)
+    flex-direction: column
+    padding: 4vh 0
 
 %card
+  flex-grow: 1
   background: $light-color
   box-shadow: $shadow
-  max-width: 400px
-  min-width: 180px
-  min-height: 350px
+  max-width: 450px
+  min-width: 250px
+  min-height: 250px
   border-radius: $radius
-  flex: 1
-  margin: 0 2% 2% 2%
-  padding: 1% 
+  margin: 0 1%
+  padding: 1%
+  @media screen and (max-width: $media-width-second)
+    align-self: center
+    width: 90%
+    margin: 0
+    height: auto
+
+.write-card
+  @extend %card
+  display: flex
+  flex-direction: column
+  @media screen and (max-width: $media-width-second)
+    flex-basis: 50vh
 
 .map-card
   @extend %card
+  @media screen and (max-width: $media-width-second)
+    margin-top: 3vh
+    height: auto
 
 #map
   z-index: 0
@@ -147,27 +164,25 @@ form
   text-align: center
 
 textarea
-  outline: 0
+  flex-grow: 1
+  box-sizing: border-box
+  // outline: 0
   font-family: $secondary-font
   background: $light-color-mod
   color: $dark-color
-  width: 100%
-  height: 80%
   border: 0
   margin: 0 0 15px
   padding: 12px
-  box-sizing: border-box
   font-size: 14px
   resize: none
 
 .login-to-write
+  flex-grow: 1
+  box-sizing: border-box
   width: 100%
-  height: 80%
-  outline: 0
   border: 0
   margin: 0 0 15px
   padding: 12px
-  box-sizing: border-box
   background-color: $light-color-mod
   display: table
   color: $dark-color

@@ -40,14 +40,14 @@ export default {
     padding: 4vh 0
 
 %card
+  flex-grow: 1
   background: $light-color
   box-shadow: $shadow
   min-width: 180px
   min-height: 180px
   border-radius: $radius
-  padding: 1%
   margin: 0 1%
-  flex-grow: 1
+  padding: 1%
   font-size: 100%
   display: flex    // also a flex container
   flex-direction: column
