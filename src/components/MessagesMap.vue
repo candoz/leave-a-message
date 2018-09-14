@@ -19,7 +19,7 @@ import { EventBus } from "../main.js"
 const axios = require("axios");
 
 const FULL_MESSAGES_RADIUS = 5000;  // meters
-const POLLING_INTERVAL = 30000;
+const STRIPPED_POLLING_INTERVAL = 120000;
 
 const MIN_ZOOM_LEVEL = 5;
 const START_ZOOM_LEVEL = 14;
@@ -271,7 +271,7 @@ export default {
 
     this.strippedPolling = setInterval(function() {
       this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
-    }.bind(this), POLLING_INTERVAL);
+    }.bind(this), STRIPPED_POLLING_INTERVAL);
     
   },
   destroyed() {
