@@ -118,12 +118,7 @@ export default {
       this.strippedMessages.forEach(message => {
         if (this.filterAbsent || satisfiesFilter(message)) {
           
-          
-          const popupHtml = 
-          "<div class='stripped-popup'>" +
-            this.hashtagFormatter(message.hashtags) + 
-          "</div>"
-          
+          const popupHtml = "<div class='stripped-popup'>" + this.hashtagFormatter(message.hashtags) + "</div>"
           const strippedPopup = L.popup({ 
             closeButton: false, 
             className: "stripped-popup" 
@@ -190,7 +185,7 @@ export default {
       return result.join(" ");
     },
     watchMapMovement() {
-      this.myMap.on("moveend", (event) => {  // "move" ?
+      this.myMap.on("moveend", (event) => {  // "move" instead of "moveend" for more responsiveness, but also more server requests !
         let cornerSouthWest = event.target.getBounds().getSouthWest();
         let cornerNorthEast = event.target.getBounds().getNorthEast();
         this.getStripped(cornerSouthWest, cornerNorthEast);
@@ -292,7 +287,6 @@ export default {
   margin-top: 13px
   input
     font-family: $secondary-font
-    color: $dark-color
     width: 100%
     text-align: center
     outline: 0

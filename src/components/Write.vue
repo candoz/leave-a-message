@@ -122,7 +122,7 @@ export default {
   display: flex
   padding: 4vh 2vw
   justify-content: center
-  @media screen and (max-width: $media-width-second)
+  @media screen and (max-width: $media-width-first)
     flex-direction: column
     padding: 4vh 0
 
@@ -130,28 +130,30 @@ export default {
   flex-grow: 1
   background: $light-color
   box-shadow: $shadow
-  max-width: 450px
   min-width: 250px
-  min-height: 250px
+  max-width: 450px
+  min-height: 350px
   border-radius: $radius
   margin: 0 1%
   padding: 1%
-  @media screen and (max-width: $media-width-second)
+  @media screen and (max-width: $media-width-first)
     align-self: center
     width: 90%
     margin: 0
-    height: auto
+    padding: 2%
+    min-height: 200px
 
 .write-card
   @extend %card
   display: flex
   flex-direction: column
-  @media screen and (max-width: $media-width-second)
-    flex-basis: 50vh
+  @media screen and (max-width: $media-width-first)
+    flex-basis: 40vh
 
 .map-card
   @extend %card
-  @media screen and (max-width: $media-width-second)
+  @media screen and (max-width: $media-width-first)
+    flex-basis: 40vh
     margin-top: 3vh
     height: auto
 
@@ -161,36 +163,34 @@ export default {
 
 form
   @extend %card
+  flex-grow: 1
   text-align: center
+  display: flex
+  flex-direction: column
 
 textarea
   flex-grow: 1
-  box-sizing: border-box
-  // outline: 0
   font-family: $secondary-font
-  background: $light-color-mod
-  color: $dark-color
-  border: 0
-  margin: 0 0 15px
+  background-color: $light-color-mod
+  box-sizing: border-box
+  margin: 0 0 12px
   padding: 12px
   font-size: 14px
   resize: none
 
 .login-to-write
   flex-grow: 1
+  // color: $dark-color
+  background-color: $light-color-mod
   box-sizing: border-box
   width: 100%
   border: 0
-  margin: 0 0 15px
+  margin: 0 0 12px
   padding: 12px
-  background-color: $light-color-mod
-  display: table
-  color: $dark-color
 
 .text-align-middle
   text-align: center
   vertical-align: middle
-  display: table-cell
 
 a
   text-decoration: none
@@ -208,7 +208,6 @@ button
   -webkit-transition: all 0.3 ease
   transition: all 0.3 ease
   cursor: pointer
-  margin-bottom: 13px
   &:hover:enabled, &:active:enabled, &:focus:enabled
     box-shadow: $shadow
   &:disabled
