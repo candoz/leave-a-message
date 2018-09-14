@@ -39,6 +39,7 @@
               </form>
             </div>
           </div>
+          <a href="#" class="close-popup" :ref="'close-popup-'+msg._id" @click="hideCommentsPopup(msg._id)"></a>
 
         </div>  <!-- fine for -->
 
@@ -104,11 +105,15 @@ export default {
     },
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
+      let closePopup = this.$refs["close-popup-"+id][0];
       commentsPopup.style.display = "flex";
+      closePopup.style.visibility = "visible"
     },
     hideCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
+      let closePopup = this.$refs["close-popup-"+id][0];
       commentsPopup.style.display = "none";
+      closePopup.style.visibility = "hidden" 
     },
     likeUnlike(id, likesArray) {
       let likeUnlike = "";
@@ -283,5 +288,19 @@ textarea
   // transition: color .6s
   // &:hover
   //   color: $secondary-color
+
+.close-popup
+  background: black
+  cursor: default
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  opacity: 0
+  visibility: hidden
+  /* "delay" the visibility transition */
+  -webkit-transition: opacity .5s, visibility 0s linear .5s
+  transition: opacity .5s, visibility 0s linear .5s
 
 </style>
