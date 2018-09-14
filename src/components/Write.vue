@@ -6,7 +6,7 @@
     <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
       <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
       <div v-if="logged === false" class="login-to-write">
-        <p class="text-align-middle">
+        <p>
           <router-link :to="'/login'" class="a-login" exact> login </router-link>
           or
           <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
@@ -27,7 +27,7 @@ import L from "leaflet";
 const axios = require("axios");
 const DEFAULT_ZOOM_LEVEL = 16
 const MIN_ZOOM_LEVEL = 6;
-const POPUP_TEXT = "Your message will be published here"
+const POPUP_TEXT = "Your message will be published here!"
 
 export default {
   props: ["located", "logged"],
@@ -143,13 +143,6 @@ export default {
     padding: 2%
     min-height: 200px
 
-.write-card
-  @extend %card
-  display: flex
-  flex-direction: column
-  @media screen and (max-width: $media-width-first)
-    flex-basis: 40vh
-
 .map-card
   @extend %card
   @media screen and (max-width: $media-width-first)
@@ -161,6 +154,13 @@ export default {
   z-index: 0
   height: 100%
 
+.write-card
+  @extend %card
+  display: flex
+  flex-direction: column
+  @media screen and (max-width: $media-width-first)
+    flex-basis: 40vh
+
 form
   @extend %card
   flex-grow: 1
@@ -168,29 +168,26 @@ form
   display: flex
   flex-direction: column
 
-textarea
+%write-area
   flex-grow: 1
-  font-family: $secondary-font
   background-color: $light-color-mod
-  box-sizing: border-box
   margin: 0 0 12px
   padding: 12px
   font-size: 14px
+  border: 0
+  box-sizing: border-box
+
+textarea 
+  @extend %write-area
+  font-family: $secondary-font
   resize: none
 
-.login-to-write
-  flex-grow: 1
-  // color: $dark-color
-  background-color: $light-color-mod
-  box-sizing: border-box
-  width: 100%
-  border: 0
-  margin: 0 0 12px
-  padding: 12px
-
-.text-align-middle
-  text-align: center
-  vertical-align: middle
+.login-to-write 
+  @extend %write-area
+  width: 100%  
+  p
+    text-align: center
+    vertical-align: middle
 
 a
   text-decoration: none
@@ -216,7 +213,6 @@ button
 
 .a-login
   color: $primary-color
-
 .a-signup
   color: $secondary-color
 
@@ -246,8 +242,8 @@ button
   0%
     top: 6px
     height: 51px
-
   50%, 100%
     top: 19px
     height: 26px
+
 </style>
