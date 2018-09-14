@@ -60,6 +60,7 @@ export default {
   @extend %card
   flex-basis: 60vw
   height: 83vh
+  max-width: 800px
   @media screen and (max-width: $media-width-first)
     flex-basis: 70vh
     height: auto
@@ -73,5 +74,6 @@ export default {
     margin-top: 3vh
     max-width: 100%
     flex-basis: 45vh
+    max-width: 800px
 
 </style>

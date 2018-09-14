@@ -7,9 +7,11 @@
       <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
       <div v-if="logged === false" class="login-to-write">
         <p>
+          please 
           <router-link :to="'/login'" class="a-login" exact> login </router-link>
-          or
-          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
+          <!-- or
+          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link> -->
+          <br />
           to write something
         </p>
       </div>
@@ -173,18 +175,19 @@ form
   background-color: $light-color-mod
   margin: 0 0 12px
   padding: 12px
-  font-size: 14px
   border: 0
   box-sizing: border-box
 
 textarea 
   @extend %write-area
   font-family: $secondary-font
+  font-size: 14px
   resize: none
 
 .login-to-write 
   @extend %write-area
-  width: 100%  
+  width: 100%
+  font-size: 105%
   p
     text-align: center
     vertical-align: middle
