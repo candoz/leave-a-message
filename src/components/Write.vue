@@ -4,12 +4,14 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
     <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
-      <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"></textarea>
+      <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"  maxlength="256"></textarea>
       <div v-if="logged === false" class="login-to-write">
         <p>
+          please 
           <router-link :to="'/login'" class="a-login" exact> login </router-link>
-          or
-          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
+          <!-- or
+          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link> -->
+          <br />
           to write something
         </p>
       </div>
@@ -28,6 +30,7 @@ const axios = require("axios");
 const DEFAULT_ZOOM_LEVEL = 16
 const MIN_ZOOM_LEVEL = 6;
 const POPUP_TEXT = "Your message will be published here!"
+const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)")
 
 export default {
   props: ["located", "logged"],
@@ -59,31 +62,35 @@ export default {
       this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap);
     },
     writeMessage(event) {
-      this.loading = true;
-      let self = this;
-      setTimeout(function(){
-        axios
-        .post(sessionStorage.urlHost + "/messages", {
-          text: self.messageText
-        })
-        .then(response => {
-          console.log(response);
-          self.messageText = "";
-          self.loading = false;
-          self.$router.push('/');
-        })
-        .catch(error => {
-          if (error.response) {
-            console.log("Response");
-          } else if (error.request) {
-            console.log("Richiesta");
-          } else {
-            console.log("Setting up");
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-      }, 2000);
+      if(HASHTAGS_REGEXP.test(this.messageText)) {
+        this.loading = true;
+        let self = this;
+        setTimeout(function(){
+          axios
+          .post(sessionStorage.urlHost + "/messages", {
+            text: self.messageText
+          })
+          .then(response => {
+            console.log(response);
+            self.messageText = "";
+            self.loading = false;
+            self.$router.push('/');
+          })
+          .catch(error => {
+            if (error.response) {
+              console.log("Response");
+            } else if (error.request) {
+              console.log("Richiesta");
+            } else {
+              console.log("Setting up");
+              console.log("Error", error.message);
+            }
+            console.log(error.config);
+          });
+        }, 2000);
+      } else {
+        alert("Please insert at least one hashtags");
+      }
     }
   },
   mounted() {
@@ -173,18 +180,19 @@ form
   background-color: $light-color-mod
   margin: 0 0 12px
   padding: 12px
-  font-size: 14px
   border: 0
   box-sizing: border-box
 
 textarea 
   @extend %write-area
   font-family: $secondary-font
+  font-size: 14px
   resize: none
 
 .login-to-write 
   @extend %write-area
-  width: 100%  
+  width: 100%
+  font-size: 105%
   p
     text-align: center
     vertical-align: middle
