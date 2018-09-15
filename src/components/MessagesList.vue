@@ -6,10 +6,9 @@
         
         <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
           
-          <div class="message-panel" @click="selectFullMessage(msg._id)">
-            
+          <div class="message-panel">
             <div>
-              <p>{{msg.text}}</p>
+              <p class="message-text" @click="selectFullMessage(msg._id)">{{msg.text}}</p>
               <div class="bottom-text">
                 <div>
                   <p>by <b>{{ msg.author_nickname }}</b></p>
@@ -195,7 +194,6 @@ h4
 
 .message-panel
   transition: font-size 0.3s ease, background-color 0.3s ease
-  // display: block
   border-top: 1px solid #ccc
   font-family: $secondary-font
   &:hover
@@ -206,6 +204,11 @@ h4
     font-size: 85%
     font-family: $secondary-font
     text-align: left
+  .message-text
+    cursor: pointer
+    transition: color .5s
+    &:hover
+      color: $primary-color
   .bottom-text
     display: flex
     justify-content: space-between
@@ -284,9 +287,9 @@ textarea
   cursor: pointer
   font-size: 24px
   color: $secondary-color
-  transition: color .8s
+  transition: color .5s
   &:hover
-    color: $dark-color
+    color: $secondary-color-mod
 
 .close-popup
   background: black

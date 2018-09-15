@@ -132,14 +132,13 @@ export default {
   color: $dark-color
   height: 100%
 
-.fa-heart
+.fa-comments, .fa-heart
   color: $dark-color
   display: inline-block
   cursor: pointer
-.fa-comments
-  color: $dark-color
-  display: inline-block
-  cursor: pointer
+  transition: color .5s
+  &:hover
+    color: $primary-color
 
 .fa-pen
   color: $primary-color
