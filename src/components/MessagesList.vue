@@ -4,9 +4,9 @@
       <h4>Messages nearby</h4>
       <div v-if="messagesIsPresent === true" class="scrollable">
         
-        <div v-for="msg in messagesAround" :key=msg._id >  <!-- :class="{selected: msg._id === selectedMessage._id"} -->
+        <div v-for="msg in messagesAround" :key=msg._id >
           
-          <div class="message-panel">
+          <div class="message-panel" v-bind:class="{ 'highlighted': msg._id === selectedMsgIdFromMap }">
             <div>
               <p class="message-text" @click="selectFullMessage(msg._id)">{{msg.text}}</p>
               <div class="bottom-text">
@@ -66,12 +66,16 @@
 import { EventBus } from "../main.js" 
 const axios = require("axios");
 
+const MILLIS_TO_STAY_HIGHLIGHTED_FOR = 3000;
+
 export default {
   props: ["messagesAround", "logged"],
   data() {
     return {
       commentText: null,
       messagesIsPresent: false,
+      selectedMsgIdFromMap: "",
+      lastSelectionTime: null
     };
   },
   methods: {
@@ -150,8 +154,19 @@ export default {
       },
       deep: true
     },
+  },
+  created() {
+    EventBus.$on("clickedOnEnvelopeNearby", (msgId) => {
+      this.selectedMsgIdFromMap = msgId;
+      this.lastSelectionTime = new Date();
+      setTimeout(() => {
+        if (new Date() - this.lastSelectionTime >= MILLIS_TO_STAY_HIGHLIGHTED_FOR) {
+          this.selectedMsgIdFromMap = "";
+        }
+      }, MILLIS_TO_STAY_HIGHLIGHTED_FOR);
+    });
   }
-};
+}
 </script>
 
 <style lang="sass" scoped>

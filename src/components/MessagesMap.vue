@@ -105,29 +105,29 @@ export default {
       this.strippedGroup.addTo(this.myMap);
       this.fullGroup.addTo(this.myMap);  
     },
-    satisfiesFilter(message) {
-      return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase()) ||
-              message.hashtags.some(hashtag => {
+    satisfiesFilter(msg) {
+      return msg.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase()) ||
+              msg.hashtags.some(hashtag => {
                 return hashtag.toLowerCase().startsWith(this.filter.toLowerCase());
               });
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
-      this.strippedMessages.forEach(message => {
-        if (this.filterAbsent || this.satisfiesFilter(message)) {
+      this.strippedMessages.forEach(msg => {
+        if (this.filterAbsent || this.satisfiesFilter(msg)) {
           
-          const popupHtml = "<div class='stripped-popup'>" + this.hashtagFormatter(message.hashtags) + "</div>"
+          const popupHtml = "<div class='stripped-popup'>" + this.hashtagFormatter(msg.hashtags) + "</div>"
           const strippedPopup = L.popup({ 
             closeButton: false, 
             className: "stripped-popup" 
           }).setContent(popupHtml)
 
-          const envelopeMarker = L.marker(message.latLng, { id: message.id })
+          const envelopeMarker = L.marker(msg.latLng, { id: msg.id })
             .setZIndexOffset(Z_INDEX_STRIPPED_FILL)
             .setIcon(this.filterAbsent ? this.strippedEnvelopeIcon : this.filteredEnvelopeIcon)
             .addTo(this.strippedGroup);
 
-          const envelopeOutlineMarker = L.marker(message.latLng, { id: message.id })
+          const envelopeOutlineMarker = L.marker(msg.latLng, { id: msg.id })
             .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
             .setIcon(this.filterAbsent ? this.envelopeOutlineLightIcon : this.envelopeOutlineDarkIcon)
             .bindPopup(strippedPopup)
@@ -137,21 +137,21 @@ export default {
     },
     updateFullLayer() {
       this.fullGroup.clearLayers();
-      this.messagesAround.forEach(message => {
-        if (this.filterAbsent || this.satisfiesFilter(message)) {
+      this.messagesAround.forEach(msg => {
+        if (this.filterAbsent || this.satisfiesFilter(msg)) {
           
-          const msgLatLng = [message.location.coordinates[1], message.location.coordinates[0]];
+          const msgLatLng = [msg.location.coordinates[1], msg.location.coordinates[0]];
           const popupHtml =
             "<div class='full-popup'>" +
-              "<p>" + message.text + "</p>" +
+              "<p>" + msg.text + "</p>" +
               "<div class='bottom-text'>" +
                 "<div>" +
-                  "<p>by <b>" + message.author_nickname +" &nbsp; </b></p>" +
+                  "<p>by <b>" + msg.author_nickname +" &nbsp; </b></p>" +
                 "</div>" +
                 "<div>" +
                   "<p>" +
-                    " &nbsp; <i class='fas fa-comment'> </i> " + message.comments.length + " " +
-                    "<i class='fas fa-heart'> </i> " + message.likes.length +
+                    " &nbsp; <i class='fas fa-comment'> </i> " + msg.comments.length + " " +
+                    "<i class='fas fa-heart'> </i> " + msg.likes.length +
                   "</p>" +
                 "</div>" +
               "</div>" +
@@ -164,11 +164,14 @@ export default {
             .setIcon(this.filterAbsent ? this.regularEnvelopeIcon : this.filteredEnvelopeIcon)
             .addTo(this.fullGroup);
           
-          const envelopeOutlineMarker = L.marker(msgLatLng, { id: message._id })
+          const envelopeOutlineMarker = L.marker(msgLatLng, { id: msg._id })
             .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
             .setIcon(this.envelopeOutlineDarkIcon)
             .bindPopup(fullPopup)
-            //.on('click', TROVARE IL MODO DI LANCIARE UN EVENTO VUE);
+            .on('click', function(e) {                                     // NB: do NOT change to the newer syntax!!
+              EventBus.$emit("clickedOnEnvelopeNearby", this.options.id);  // NB: 'this' refers to the marker here...
+              console.log("emittedEvent: id =" + this.options.id);
+            })
             .addTo(this.fullGroup);
         }
       });
@@ -210,7 +213,15 @@ export default {
         }).catch(error => {
           console.log(error);
         });
-    }
+    },
+    selectFullMsg(msgId) {
+      EventBus.$emit("clickedOnEnvelopeNearby", msgId);
+
+
+      console.log("emittedEvent: id ="+ msgId);
+
+
+    },
   },
   watch: {
     located: {
@@ -235,9 +246,9 @@ export default {
     }
   },
   created() {
-    EventBus.$on("selectedFullMessageFromList", (idMessage) => {
+    EventBus.$on("selectedFullMessageFromList", (msgId) => {
       this.fullGroup.getLayers().forEach(marker => {
-        if(marker.options.id === idMessage) {
+        if(marker.options.id === msgId) {
           this.myMap.setView(marker.getLatLng());
           marker.openPopup();
           // change icon to opened envelope ?
