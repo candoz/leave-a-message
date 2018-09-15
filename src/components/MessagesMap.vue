@@ -37,10 +37,11 @@ const Z_INDEX_FULL_FILL = 3000;
 const Z_INDEX_FULL_OUTLINE = 3001;
 
 export default {
-  props: ["located", "logged", "filter", "messagesAround"],
+  props: ["located", "logged", "messagesAround"],
   data() {
     return {
       strippedMessages: [],
+      filter: "",
       strippedPolling: null,
 
       pinIconLoggedIn: L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-in", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] }),
@@ -48,8 +49,8 @@ export default {
       envelopeOutlineLightIcon: L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-light", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
       envelopeOutlineDarkIcon: L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
       regularEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      strippedEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2], }),
-      filteredEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2], }),
+      strippedEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
+      filteredEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
       
       myMap: null,
       tileLayer: null,
@@ -95,11 +96,8 @@ export default {
       this.maskLayer.setData([[this.located.lat, this.located.lng]]);
     },
     initUserLocationMarker() {
-      this.userLocationMarker = L.marker(
-        [this.located.lat, this.located.lng],
-        { icon: this.pinIconLoggedOut }
-      )
-        .bindPopup("You are here")
+      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.pinIconLoggedOut })
+        .bindPopup(L.popup({ closeButton: false }).setContent("You are here"))
         // .setZIndexOffset(Z_INDEX_USER_LOCATION)
         .addTo(this.myMap);
     },
@@ -108,15 +106,15 @@ export default {
       this.fullGroup.addTo(this.myMap);  
     },
     satisfiesFilter(message) {
-      return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase() ||
-             message.hashtags.some(hashtag => {
-               return (hashtag.toLowerCase().startsWith(this.filter.toLowerCase()))
-             }));
+      return message.author_nickname.toLowerCase().startsWith(this.filter.toLowerCase()) ||
+              message.hashtags.some(hashtag => {
+                return hashtag.toLowerCase().startsWith(this.filter.toLowerCase());
+              });
     },
     updateStrippedLayer() {
       this.strippedGroup.clearLayers();
       this.strippedMessages.forEach(message => {
-        if (this.filterAbsent || satisfiesFilter(message)) {
+        if (this.filterAbsent || this.satisfiesFilter(message)) {
           
           const popupHtml = "<div class='stripped-popup'>" + this.hashtagFormatter(message.hashtags) + "</div>"
           const strippedPopup = L.popup({ 
@@ -131,7 +129,7 @@ export default {
 
           const envelopeOutlineMarker = L.marker(message.latLng, { id: message.id })
             .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
-            .setIcon(this.envelopeOutlineLightIcon)
+            .setIcon(this.filterAbsent ? this.envelopeOutlineLightIcon : this.envelopeOutlineDarkIcon)
             .bindPopup(strippedPopup)
             .addTo(this.strippedGroup);
         }
@@ -140,7 +138,7 @@ export default {
     updateFullLayer() {
       this.fullGroup.clearLayers();
       this.messagesAround.forEach(message => {
-        if (this.filterAbsent || satisfiesFilter(message)) {
+        if (this.filterAbsent || this.satisfiesFilter(message)) {
           
           const msgLatLng = [message.location.coordinates[1], message.location.coordinates[0]];
           const popupHtml =
@@ -242,7 +240,7 @@ export default {
         if(marker.options.id === idMessage) {
           this.myMap.setView(marker.getLatLng());
           marker.openPopup();
-          // change icon to open envelope
+          // change icon to opened envelope ?
         }
       });
     });
