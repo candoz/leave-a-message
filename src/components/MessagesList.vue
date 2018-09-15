@@ -284,10 +284,9 @@ textarea
   cursor: pointer
   font-size: 24px
   color: $secondary-color
-  // color: $dark-color
-  // transition: color .6s
-  // &:hover
-  //   color: $secondary-color
+  transition: color .8s
+  &:hover
+    color: $dark-color
 
 .close-popup
   background: black
