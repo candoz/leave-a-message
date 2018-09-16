@@ -39,7 +39,7 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta-tester", "explorer"],// "certified", "one-year", "beta-tester", "explorer", "certified", "one-year" ],
+      badges: [ "beta-testing", "certified", "the-explorer", "top-contributor", "one-year-club"],
       profilePic: require("../assets/profile-pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
