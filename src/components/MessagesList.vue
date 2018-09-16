@@ -50,8 +50,8 @@
       </div>
       <div v-else>
         <i class="fas fa-sad-cry fa-3x"></i>
-        <p>Ops! There aren't messages around here <br /> 
-          do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first one?</p>
+        <p>Ops! There aren't messages around here. <br /> 
+          Do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first one?</p>
       </div>
     </template>
     

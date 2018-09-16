@@ -30,8 +30,11 @@ import { EventBus } from "../main.js"
 const axios = require("axios");
 
 const DEFAULT_ZOOM_LEVEL = 13;
-const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope" });
-const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark" });
+
+const ENVELOPE_ICON_WIDTH = 24;
+const ENVELOPE_ICON_HEIGHT = 24;
+const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
+const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
 
 export default {
   props: ["located"],
@@ -42,17 +45,15 @@ export default {
       name: "Example",
       badges: [ "beta-tester", "explorer", "certified", "one-year", "beta-tester", "explorer", "certified", "one-year"  ],
       profilePic: require("../assets/profile-pic.png"),
-      myMap: null,
-      tileLayer: null,
-      userMessages: [ ],
-      userFullMessagesIcon: null
+      userMessages: [],  // not mandatory...
+      myMap: null
     };
   },
   computed: {
     badgesPic: function() {
       let badgesPic = [ ];
       this.badges.forEach(badge => {
-        badgesPic.push(require('../assets/'+badge+'.png'));
+        badgesPic.push(require('../assets/' + badge + '.png'));
       });
       return badgesPic;
     }
@@ -71,14 +72,10 @@ export default {
       });
     },
     initMap() {
-      this.myMap = L.map('map', {
-        attributionControl: false
-      });
-      this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
-      this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        // subdomains: 'abcd',
-        ext: 'png'
-      }).addTo(this.myMap);
+      this.myMap = L.map('map', { 
+        attributionControl: false,
+        layers: [ L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png',{ext:'png'}) ]
+      }).setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL)
     },
     getUserMessages() {
       axios.
@@ -110,12 +107,10 @@ export default {
               .setContent(popupHtml)
 
             const envelopeMarker = L.marker(msgLatLng)
-              // .setZIndexOffset(Z_INDEX_FULL_FILL)
               .setIcon(REGULAR_ENVELOPE_ICON)
               .addTo(messagesGroup);
             
             const envelopeOutlineMarker = L.marker(msgLatLng, { id: msg._id })
-              // .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
               .setIcon(ENVELOPE_OUTLINE_DARK_ICON)
               .bindPopup(fullPopup)
               .addTo(messagesGroup);
@@ -130,7 +125,7 @@ export default {
       let result = [ ];
       if(hashtagsArray) {
         hashtagsArray.forEach(hashtag => {
-          result.push("#"+hashtag)
+          result.push("#" + hashtag)
         });
       }
       return result;
@@ -151,9 +146,6 @@ export default {
   mounted() {
     this.initMap();
     this.initProfile();
-    this.userFullMessagesIcon = L.divIcon({
-      className: "fas fa-envelope fa-2x"
-    }); 
   },
 };
 </script>
@@ -169,7 +161,7 @@ export default {
   align-items: flex-start
 
 %card
-  background: #FFFFFF
+  background: $light-color
   box-shadow: $shadow
   border-radius: $radius
   margin: 0 2% 2% 2%
