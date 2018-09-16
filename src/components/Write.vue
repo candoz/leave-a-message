@@ -27,10 +27,17 @@
 <script>
 import L from "leaflet";
 const axios = require("axios");
+
 const DEFAULT_ZOOM_LEVEL = 16
 const MIN_ZOOM_LEVEL = 6;
 const POPUP_TEXT = "Your message will be published here!"
-const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)")
+const MILLIS_TO_PUBLISH = 2000;
+const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)");
+
+const PENGIL_ICON_WIDTH = 36;
+const PENGIL_ICON_HEIGHT = 37;
+const PENCIL_LOGGED_IN_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
+const PENCIL_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-out", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
 
 export default {
   props: ["located", "logged"],
@@ -62,7 +69,7 @@ export default {
       this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap);
     },
     writeMessage(event) {
-      if(HASHTAGS_REGEXP.test(this.messageText)) {
+      // if(HASHTAGS_REGEXP.test(this.messageText)) {
         this.loading = true;
         let self = this;
         setTimeout(function(){
@@ -87,23 +94,17 @@ export default {
             }
             console.log(error.config);
           });
-        }, 2000);
-      } else {
-        alert("Please insert at least one hashtags");
-      }
+        }, MILLIS_TO_PUBLISH);
+      // } else {
+      //   alert("Please insert at least one hashtag");
+      // }
     }
   },
   mounted() {
     if (this.logged === true) {
-      this.pencilIcon = L.divIcon({
-        className: "fas fa-pencil-alt fa-3x logged-in",  // "fas fa-pen fa-3x"
-        iconAnchor: [0, 36]
-      });
+      this.pencilIcon = PENCIL_LOGGED_IN_ICON;
     } else {
-      this.pencilIcon = L.divIcon({
-        className: "fas fa-pencil-alt fa-3x disabled",  // "fas fa-pen fa-3x"
-        iconAnchor: [0, 36]
-      });
+      this.pencilIcon = PENCIL_LOGGED_OUT_ICON;
     }
     this.initMap();
   },  
@@ -111,9 +112,9 @@ export default {
     located: {
       handler(newCoordinates, oldValue) {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
-        this.myMap.setView([this.located.lat, this.located.lng]);
         this.myMap.removeLayer(this.pencilPointer);
-        this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap); 
+        this.pencilPointer = L.marker([this.located.lat, this.located.lng], { icon: this.pencilIcon }).bindPopup(POPUP_TEXT).addTo(this.myMap);
+        this.myMap.setView([this.located.lat, this.located.lng]);
       },
       deep: true
     }

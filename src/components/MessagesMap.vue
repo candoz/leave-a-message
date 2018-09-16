@@ -27,16 +27,18 @@ const MASK_OPACITY = 0.6;
 
 const PIN_ICON_WIDTH = 18;
 const PIN_ICON_HEIGHT = 24;
+const ENVELOPE_ICON_WIDTH = 24;
+const ENVELOPE_ICON_HEIGHT = 24;
 
 const Z_INDEX_STRIPPED = 1000;
 const Z_INDEX_FULL = 2000;
 const PIN_LOGGED_IN_ICON = L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-in", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] });
 const PIN_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-out", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] });
-const ENVELOPE_OUTLINE_LIGHT_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-light" });
-const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark" });
-const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope" });
-const STRIPPED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope" });
-const FILTERED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope" });
+const ENVELOPE_OUTLINE_LIGHT_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-light", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
+const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
+const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
+const STRIPPED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
+const FILTERED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] });
 
 export default {
   props: ["located", "logged", "messagesAround"],

@@ -17,7 +17,7 @@
                   <p>
                     <i class="far fa-comments" @click="showCommentsPopup(msg._id)"></i>
                     {{ msg.comments.length }}
-                    <i class="far fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLiked(msg.likes) }" :ref="'heart-'+msg._id"></i>
+                    <i class="far fa-heart" @click="likeUnlike(msg._id, msg.likes)" v-bind:class="{ 'liked': checkIfLikedByMe(msg) }" :ref="'heart-'+msg._id"></i>
                     {{ msg.likes.length }}
                   </p>
                 </div>
@@ -29,11 +29,16 @@
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div class="comments-list">
                 <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
-                  <p><b>{{ comment.author_nickname }}:</b> {{ comment.text }}</p>
+                  <p><b>{{ comment.author_nickname }}</b> {{ comment.text }}</p>
                 </div>
               </div>
               <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
-                <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea> <!-- mettere v-if WRITE YOUR FIRST COMMENT -->
+                <template v-if="msg.comments.length === 0" >
+                  <textarea form="write-form" v-model="commentText" placeholder="There aren't any comments yet... Write here the first one"></textarea>
+                </template>
+                <template v-else>
+                  <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea>
+                </template>
                 <button type="submit" class="">Publish comment</button>
               </form>
             </div>
@@ -72,7 +77,7 @@ export default {
   props: ["messagesAround", "logged"],
   data() {
     return {
-      commentText: null,
+      commentText: "",
       messagesIsPresent: false,
       selectedMsgIdFromMap: "",
       lastSelectionTime: null
@@ -83,11 +88,9 @@ export default {
       EventBus.$emit("selectedFullMessageFromList", id);
     },
     addComment(id) {
-      let commentMsg = this.commentText;
-      this.commentText = "";
       axios
         .post(sessionStorage.urlHost + "/messages/comment", {
-          text: commentMsg,
+          text: this.commentText,
           messageId: id
         })
         .then(response => {
@@ -105,6 +108,8 @@ export default {
           }
           console.log(error.config);
         });
+        this.hideCommentsPopup(id);
+        this.commentText = "";
     },
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
@@ -135,12 +140,8 @@ export default {
           console.log(error);
         });
     },
-    checkIfLiked(likesArray) {
-      if(likesArray.includes(sessionStorage.myUserId)) {
-        return true;
-      } else {
-        return false;
-      }
+    checkIfLikedByMe(msg) {
+      return msg.likes.includes(sessionStorage.myUserId);
     }
   },
   watch: {
