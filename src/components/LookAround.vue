@@ -32,7 +32,6 @@ export default {
 .look-around-component
   padding: 4vh 1%
   display: flex
-  flex-direction: row
   align-items: flex-start
   min-height: 100vh
   @media screen and (max-width: $media-width-first)

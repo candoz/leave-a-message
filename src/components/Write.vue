@@ -37,7 +37,7 @@ const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)");
 const PENGIL_ICON_WIDTH = 36;
 const PENGIL_ICON_HEIGHT = 37;
 const PENCIL_LOGGED_IN_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
-const PENCIL_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-out", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
+const PENCIL_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x disabled", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
 
 export default {
   props: ["located", "logged"],
@@ -211,8 +211,6 @@ button
   border: 0
   padding: 15px
   color: #FFFFFF
-  -webkit-transition: all 0.3 ease
-  transition: all 0.3 ease
   cursor: pointer
   &:hover:enabled, &:active:enabled, &:focus:enabled
     box-shadow: $shadow

@@ -1,21 +1,18 @@
 <template>
-    <div class=profile>
+    <div class="profile-component">
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
         integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
         crossorigin=""/>
       <div class="profile-card">
         <h4>{{ name }}</h4>
+        <p>{{ nickname }}</p>
         <img v-bind:src="profilePic" style="width:30%">
-        <h5>@{{ nickname }}</h5>
-        <button @click="doLogout()">Logout</button>
-      </div>
-      <div class="badges-card">
-        <h4>Your badges</h4>
         <div class="badges-container">
           <div v-for="badge in badgesPic" :key=badge >
             <img class="badge-image" v-bind:src="badge">
           </div>
         </div>
+        <button @click="doLogout()">Logout</button>
       </div>
       <div class="map-card">
         <h4>Your messages around the world</h4>
@@ -40,10 +37,9 @@ export default {
   props: ["located"],
   data() {
     return {
-      nickname: "Example Nickname",
-      email: "Example@example.it",
-      name: "Example",
-      badges: [ "beta-tester", "explorer", "certified", "one-year", "beta-tester", "explorer", "certified", "one-year"  ],
+      nickname: "nickname",
+      name: "Name Surname",
+      badges: [ "beta-tester", "explorer"],// "certified", "one-year", "beta-tester", "explorer", "certified", "one-year" ],
       profilePic: require("../assets/profile-pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
@@ -62,7 +58,6 @@ export default {
     initProfile() { 
       axios.get(sessionStorage.urlHost + "/users")
       .then(response => {
-        this.email = response.data.email;
         this.nickname = response.data.nickname;
         this.name = response.data.name;
         this.badges = response.data.badges;
@@ -153,70 +148,73 @@ export default {
 <style lang="sass" scoped>
 @import './vars.sass'
 
-.profile
-  padding: 4vh 2vw
+.profile-component
+  height: 100%
   display: flex
-  flex-wrap: wrap
+  padding: 4vh 2vw
   justify-content: center
-  align-items: flex-start
+  @media screen and (max-width: $media-width-first)
+    flex-direction: column
+    padding: 4vh 0
 
 %card
+  flex-grow: 1
   background: $light-color
   box-shadow: $shadow
+  min-width: 250px
+  max-width: 450px
+  min-height: 350px
+  max-height: 500px
   border-radius: $radius
-  margin: 0 2% 2% 2%
-  padding: 10px
+  margin: 0 1%
+  padding: 1%
+  display: flex
+  flex-direction: column
+  align-items: center
+  @media screen and (max-width: $media-width-first)
+    align-self: center
+    width: 90%
+    margin: 0
+    padding: 2%
+    min-height: 200px
   
 .profile-card
   @extend %card
-  flex-basis: 20%
-  flex-grow: 2
-
-.badges-card
-  @extend %card
-  flex-basis: 100px
-  flex-grow: 1
-
-.badges-container
-  display: flex
-  flex-wrap: wrap
-  flex-direction: row
-  justify-content: center
-  overflow-y: auto
-  max-height: 300px
-
-.badge-image
-  width: 80px
-  flex: 1
+  flex-basis: 40vh
+  justify-content: space-evenly
+  .badges-container
+    max-width: 70%
+    max-height: 100px
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+    overflow-y: auto
+    max-height: 300px
+    margin: 15px 0 15px 0 
+    .badge-image
+      width: 80px
+      height: 80px
+  p
+    margin: 0 0 15px 0 
+  button
+    text-transform: uppercase
+    outline: 0
+    border: 0
+    font-family: $primary-font
+    font-size: 100%
+    background: $secondary-color
+    width: 230px
+    padding: 15px
+    color: #FFFFFF
+    cursor: pointer
+    margin-bottom: 8px
+    &:hover, &:active, &:focus
+      box-shadow: $shadow
   
 .map-card
   @extend %card
-  flex-basis: 40%
-  flex-grow: 2
-  align-self: stretch
-  min-height: 400px
+  #map
+    flex: 1
+    z-index: 0
 
-#map
-  height: 80%
-  z-index: 0
-
-.mail
-  color: grey
-  font-size: 18px
-
-button
-  text-transform: uppercase
-  outline: 0
-  background: $secondary-color
-  width: 100%
-  max-width: 200px
-  margin: 3% auto auto auto
-  border: 0
-  padding: 15px
-  color: #FFFFFF
-  font-size: 14px
-  transition: all 0.3 ease
-  cursor: pointer
-  &:hover, &:active, &:focus
-    box-shadow: $shadow
 </style>

@@ -132,6 +132,9 @@ export default {
   color: $dark-color
   height: 100%
 
+h4
+  margin: 0px 0px 11px 0px
+
 .fa-comments, .fa-heart
   color: $dark-color
   display: inline-block

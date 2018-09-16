@@ -94,14 +94,12 @@ export default {
     text-transform: uppercase
     font-size: 100%
     font-family: $primary-font
-    outline: 0
     background: $primary-color
+    outline: 0
     width: 100%
     border: 0
     padding: 15px
-    color: #FFFFFF
-    -webkit-transition: all 0.3 ease
-    transition: all 0.3 ease
+    color: $light-color
     cursor: pointer
     margin-bottom: 8px
     &:hover, &:active, &:focus

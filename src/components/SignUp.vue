@@ -99,9 +99,7 @@ export default {
     width: 100%
     border: 0
     padding: 15px
-    color: #FFFFFF
-    -webkit-transition: all 0.3 ease
-    transition: all 0.3 ease
+    color: $light-color
     cursor: pointer
     margin-bottom: 8px
     &:hover, &:active, &:focus

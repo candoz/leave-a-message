@@ -56,7 +56,7 @@
     </template>
     
     <div v-else>
-      <p>Messages nearby</p>
+      <h4>Messages nearby</h4>
       <p class="to-open-message">
         <router-link :to="'/login'" class="a-login" exact> login </router-link>
         or
@@ -180,12 +180,6 @@ p
 
 a
   text-decoration: none
-
-h4
-  font-family: $primary-font
-  margin: 0px 0px 10px 0px
-  color: $dark-color
-  font-size: 110%
 
 .a-login
   color: $primary-color
