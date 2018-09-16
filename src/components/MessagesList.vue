@@ -114,14 +114,16 @@ export default {
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
       let closePopup = this.$refs["close-popup-"+id][0];
+      closePopup.style.visibility = "visible";
+      closePopup.style.opacity = .7;
       commentsPopup.style.display = "flex";
-      closePopup.style.visibility = "visible"
     },
     hideCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
       let closePopup = this.$refs["close-popup-"+id][0];
+      closePopup.style.visibility = "hidden";
+      closePopup.style.opacity = 0;
       commentsPopup.style.display = "none";
-      closePopup.style.visibility = "hidden" 
     },
     likeUnlike(id, likesArray) {
       let likeUnlike = "";
@@ -317,8 +319,9 @@ textarea
   bottom: 0
   opacity: 0
   visibility: hidden
-  /* "delay" the visibility transition */
-  -webkit-transition: opacity .5s, visibility 0s linear .5s
-  transition: opacity .5s, visibility 0s linear .5s
+  -webkit-transition: opacity .7s linear, visibility .7s linear
+  -moz-transition: opacity .7s linear, visibility .7s linear
+  -o-transition: opacity .7s linear, visibility .7s linear
+  transition: opacity .7s linear, visibility .7s linear
 
 </style>
