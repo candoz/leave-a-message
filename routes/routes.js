@@ -53,7 +53,7 @@ module.exports = (function () {
           // location,
           km_covered: 0.0000001,
           reputation: 0,
-          profile_image: ""
+          // profile_image: ""
         }
         dbPoolConnection.collection("Users").insertOne(newUserData, function (err, dbResNewUser) {
           if (err) return next(boom.badImplementation(err));
@@ -298,11 +298,60 @@ module.exports = (function () {
     });
   });
 
+  dbRoutes.get("/messages/stripped", function (req, res, next) {
+    dbPoolConnection.collection("Messages")
+      .find({
+        "location": {
+          $geoWithin: {
+            $box: [
+              [ Number(req.query.cornerBottomLeft[0]) , Number(req.query.cornerBottomLeft[1]) ],
+              [ Number(req.query.cornerUpperRight[0]) , Number(req.query.cornerUpperRight[1]) ]
+            ]
+         }
+        }
+      })
+      .toArray(function (err, dbResMessagesStripped) {
+        if (err) return next(boom.badImplementation(err));
+        dbResMessagesStripped.forEach(function (val) {
+          delete val.author_id;  // ALTERNATIVE: si può anche costruire direttamente un nuovo oggetto
+          delete val.text;       //              solamente con i campi che sono necessari.
+          delete val.comments;
+          // delete val.date;
+        });
+        res.send(dbResMessagesStripped);
+        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages between (bottom left corner:" + req.query.cornerBottomLeft[0] + ", upper right corner:" + req.query.cornerUpperRight[1] + ")"); }
+      });
+  });
+
+  // dbRoutes.get("/messages/full", function (req, res, next) {
+  //   if (req.session.userId == null) {
+  //     if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
+  //     return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
+  //   }
+  //   dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
+  //     if (err) return next(boom.badImplementation(err));
+  //     if (!dbResLoggedUser.location) {
+  //       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
+  //       return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
+  //     }
+  //     dbPoolConnection.collection("Messages")
+  //       .find({
+  //         "location": {
+  //           $near: {
+  //             $geometry: dbResLoggedUser.location,
+  //             $maxDistance: MAX_DISTANCE_FULL_MESSAGES
+  //           }
+  //         }
+  //       })
+  //       .toArray(function (err, dbResMessagesFull) {
+  //         if (err) return next(boom.badImplementation(err));
+  //         res.send(dbResMessagesFull);
+  //         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
+  //       });
+  //   });
+  // });
+
   dbRoutes.get("/messages/full", function (req, res, next) {
-    if (req.session.userId == null) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
-      return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
-    }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
       if (err) return next(boom.badImplementation(err));
       if (!dbResLoggedUser.location) {
@@ -328,8 +377,8 @@ module.exports = (function () {
 
   dbRoutes.get("/messages/full/user", function (req, res, next) {
     if (req.session.userId == null) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
-      return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve his/her messages without being logged-in"); }
+      return next(boom.unauthorized("Cannot retrieve someone's messages if not logged-in"));
     }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, messages_id: 1 }}, function (err, dbResUserFullMessagesId) {
       if (err) return next(boom.badImplementation(err));
@@ -340,31 +389,6 @@ module.exports = (function () {
         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResUserFullMessages.length + " full message/s of user with session: " + req.session.userId); }
       })
     })
-  });
-
-  dbRoutes.get("/messages/stripped", function (req, res, next) {
-    dbPoolConnection.collection("Messages")
-      .find({
-        "location": {
-          $geoWithin: {
-            $box: [
-              [ Number(req.query.cornerBottomLeft[0]) , Number(req.query.cornerBottomLeft[1]) ],
-              [ Number(req.query.cornerUpperRight[0]) , Number(req.query.cornerUpperRight[1]) ]
-            ]
-         }
-        }
-      })
-      .toArray(function (err, dbResMessagesStripped) {
-        if (err) return next(boom.badImplementation(err));
-        dbResMessagesStripped.forEach(function (val) {
-          delete val.author_id;  // ALTERNATIVE: si può anche costruire direttamente un nuovo oggetto
-          delete val.text;       //              solamente con i campi che sono necessari.
-          delete val.comments;
-          // delete val.date;
-        });
-        res.send(dbResMessagesStripped);
-        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesStripped.length + " stripped messages between (bottom left corner:" + req.query.cornerBottomLeft[0] + ", upper right corner:" + req.query.cornerUpperRight[1] + ")"); }
-      });
   });
 
   // dbRoutes.get("/testSession", function(req, res, next) {

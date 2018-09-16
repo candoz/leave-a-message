@@ -66,7 +66,7 @@
 import { EventBus } from "../main.js" 
 const axios = require("axios");
 
-const MILLIS_TO_STAY_HIGHLIGHTED_FOR = 3000;
+const MILLIS_TO_STAY_HIGHLIGHTED_FOR = 5000;
 
 export default {
   props: ["messagesAround", "logged"],

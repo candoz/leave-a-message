@@ -27,14 +27,16 @@ const MASK_OPACITY = 0.6;
 
 const PIN_ICON_WIDTH = 18;
 const PIN_ICON_HEIGHT = 24;
-const ENVELOPE_ICON_WIDTH = 24;
-const ENVELOPE_ICON_HEIGHT = 25;
 
-// const Z_INDEX_USER_LOCATION = 1000;
-const Z_INDEX_STRIPPED_FILL = 2000;
-const Z_INDEX_STRIPPED_OUTLINE = 2001;
-const Z_INDEX_FULL_FILL = 3000;
-const Z_INDEX_FULL_OUTLINE = 3001;
+const Z_INDEX_STRIPPED = 1000;
+const Z_INDEX_FULL = 2000;
+const PIN_LOGGED_IN_ICON = L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-in", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] });
+const PIN_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-out", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] });
+const ENVELOPE_OUTLINE_LIGHT_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-light" });
+const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark" });
+const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope" });
+const STRIPPED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope" });
+const FILTERED_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope" });
 
 export default {
   props: ["located", "logged", "messagesAround"],
@@ -43,15 +45,6 @@ export default {
       strippedMessages: [],
       filter: "",
       strippedPolling: null,
-
-      pinIconLoggedIn: L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-in", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] }),
-      pinIconLoggedOut: L.divIcon({ className: "fas fa-map-marker-alt fa-2x logged-out", iconAnchor: [PIN_ICON_WIDTH / 2, PIN_ICON_HEIGHT] }),
-      envelopeOutlineLightIcon: L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-light", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      envelopeOutlineDarkIcon: L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      regularEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      strippedEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x stripped-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      filteredEnvelopeIcon: L.divIcon({ className: "fas fa-envelope fa-stack-2x filtered-envelope", iconAnchor: [ENVELOPE_ICON_WIDTH / 2, ENVELOPE_ICON_HEIGHT / 2] }),
-      
       myMap: null,
       tileLayer: null,
       maskLayer: null,
@@ -96,7 +89,7 @@ export default {
       this.maskLayer.setData([[this.located.lat, this.located.lng]]);
     },
     initUserLocationMarker() {
-      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: this.pinIconLoggedOut })
+      this.userLocationMarker = L.marker([this.located.lat, this.located.lng], { icon: PIN_LOGGED_OUT_ICON })
         .bindPopup(L.popup({ closeButton: false }).setContent("You are here"))
         // .setZIndexOffset(Z_INDEX_USER_LOCATION)
         .addTo(this.myMap);
@@ -123,13 +116,13 @@ export default {
           }).setContent(popupHtml)
 
           const envelopeMarker = L.marker(msg.latLng, { id: msg.id })
-            .setZIndexOffset(Z_INDEX_STRIPPED_FILL)
-            .setIcon(this.filterAbsent ? this.strippedEnvelopeIcon : this.filteredEnvelopeIcon)
+            .setZIndexOffset(Z_INDEX_STRIPPED)
+            .setIcon(this.filterAbsent ? STRIPPED_ENVELOPE_ICON : FILTERED_ENVELOPE_ICON)
             .addTo(this.strippedGroup);
 
           const envelopeOutlineMarker = L.marker(msg.latLng, { id: msg.id })
-            .setZIndexOffset(Z_INDEX_STRIPPED_OUTLINE)
-            .setIcon(this.filterAbsent ? this.envelopeOutlineLightIcon : this.envelopeOutlineDarkIcon)
+            .setZIndexOffset(Z_INDEX_STRIPPED)
+            .setIcon(this.filterAbsent ? ENVELOPE_OUTLINE_LIGHT_ICON : ENVELOPE_OUTLINE_DARK_ICON)
             .bindPopup(strippedPopup)
             .addTo(this.strippedGroup);
         }
@@ -160,13 +153,13 @@ export default {
             .setContent(popupHtml)
 
           const envelopeMarker = L.marker(msgLatLng)
-            .setZIndexOffset(Z_INDEX_FULL_FILL)
-            .setIcon(this.filterAbsent ? this.regularEnvelopeIcon : this.filteredEnvelopeIcon)
+            .setZIndexOffset(Z_INDEX_FULL)
+            .setIcon(this.filterAbsent ? REGULAR_ENVELOPE_ICON : FILTERED_ENVELOPE_ICON)
             .addTo(this.fullGroup);
           
           const envelopeOutlineMarker = L.marker(msgLatLng, { id: msg._id })
-            .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
-            .setIcon(this.envelopeOutlineDarkIcon)
+            .setZIndexOffset(Z_INDEX_FULL)
+            .setIcon(ENVELOPE_OUTLINE_DARK_ICON)
             .bindPopup(fullPopup)
             .on('click', function(e) {                                     // NB: do NOT change to the newer syntax!!
               EventBus.$emit("clickedOnEnvelopeNearby", this.options.id);  // NB: 'this' refers to the marker here...
@@ -268,9 +261,9 @@ export default {
     this.watchMapMovement();
 
     if(this.logged) {
-      this.userLocationMarker.setIcon(this.pinIconLoggedIn);
+      this.userLocationMarker.setIcon(PIN_LOGGED_IN_ICON);
     } else {
-      this.userLocationMarker.setIcon(this.pinIconLoggedOut);
+      this.userLocationMarker.setIcon(PIN_LOGGED_OUT_ICON);
     }
 
     this.strippedPolling = setInterval(function() {

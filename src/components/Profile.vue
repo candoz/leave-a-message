@@ -25,10 +25,13 @@
 </template>
 
 <script>
-const axios = require("axios");
-const DEFAULT_ZOOM_LEVEL = 13; 
-import { EventBus } from "../main.js" 
 import L from "leaflet";
+import { EventBus } from "../main.js" 
+const axios = require("axios");
+
+const DEFAULT_ZOOM_LEVEL = 13;
+const REGULAR_ENVELOPE_ICON = L.divIcon({ className: "fas fa-envelope fa-stack-2x regular-envelope" });
+const ENVELOPE_OUTLINE_DARK_ICON = L.divIcon({ className: "far fa-envelope fa-2x envelope-outline-dark" });
 
 export default {
   props: ["located"],
@@ -83,20 +86,41 @@ export default {
         .then(response => {
           console.log(response.data);
           this.userMessages = response.data;
-          let markers = [];
-          this.userMessages.forEach(message => {
-            let messageMarker = L.marker([message.location.coordinates[1], message.location.coordinates[0]], {icon: this.userFullMessagesIcon}).bindPopup(
-              '<p><b>Hashtags:</b> ' +  
-              this.hashtagFormatter(message.hashtags) + 
-              '<br /><b>Likes:</b> ' +
-              message.likes.length +
-              '<br /><b>Written by:</b> ' +
-              message.author_nickname +
-              '</p>'
-            ).addTo(this.myMap);
-            markers.push(messageMarker);
-          this.myMap.fitBounds(new L.featureGroup(markers).getBounds().pad(0.5));
+          const messagesGroup = L.featureGroup().addTo(this.myMap);
+          this.userMessages.forEach(msg => {
+            const msgLatLng = [msg.location.coordinates[1], msg.location.coordinates[0]];
+            
+            const popupHtml =
+              "<div class='full-popup'>" +
+                "<p>" + msg.text + "</p>" +
+                "<div class='bottom-text'>" +
+                  "<div>" +
+                    "<p>by <b>" + msg.author_nickname +" &nbsp; </b></p>" +
+                  "</div>" +
+                  "<div>" +
+                    "<p>" +
+                      " &nbsp; <i class='fas fa-comment'> </i> " + msg.comments.length + " " +
+                      "<i class='fas fa-heart'> </i> " + msg.likes.length +
+                    "</p>" +
+                  "</div>" +
+                "</div>" +
+              "</div>";
+            
+            const fullPopup = L.popup({ closeButton: false })
+              .setContent(popupHtml)
+
+            const envelopeMarker = L.marker(msgLatLng)
+              // .setZIndexOffset(Z_INDEX_FULL_FILL)
+              .setIcon(REGULAR_ENVELOPE_ICON)
+              .addTo(messagesGroup);
+            
+            const envelopeOutlineMarker = L.marker(msgLatLng, { id: msg._id })
+              // .setZIndexOffset(Z_INDEX_FULL_OUTLINE)
+              .setIcon(ENVELOPE_OUTLINE_DARK_ICON)
+              .bindPopup(fullPopup)
+              .addTo(messagesGroup);
           });
+          this.myMap.fitBounds(messagesGroup.getBounds().pad(0.5));
         })
         .catch(err => {
           console.log(err);
