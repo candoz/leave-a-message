@@ -6,7 +6,10 @@
       <div class="profile-card">
         <h4>{{ name }}</h4>
         <p>{{ nickname }}</p>
-        <img v-bind:src="profilePic" class="profile-pic">
+        <div class="profile-pic-container">
+          <img v-bind:src="profilePic" class="profile-pic">
+          <div class="edit"><a href="#" @click="changeProfilePic"><i class="fas fa-pencil-alt fa-2x logged-in"></i></a></div>
+        </div>
         <div class="badges-container">
           <div v-for="badge in badgesPic" :key=badge.badgeName >
             <div class="tooltip">
@@ -43,7 +46,7 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta_testing", "certified", "the_explorer" ], //badges: [ "beta-testing", "certified"],  "the-explorer", "top-contributor", "one-year-club"],
+      badges: [ "beta_testing", "certified", "the_explorer", "top_contributor", "one_year_club" ], //badges: [ "beta-testing", "certified"],  "the-explorer", "top-contributor", "one-year-club"],
       badgesDescription: BadgesDescription,
       profilePic: require("../assets/profile_pic.png"),
       userMessages: [],  // not mandatory...
@@ -145,6 +148,9 @@ export default {
         .catch(error => {
           console.log(error.config);
         });
+    },
+    changeProfilePic() {
+      this.profilePic = require('../assets/'+"beta_testing"+'.png');
     }
   },
   mounted() {
@@ -217,7 +223,8 @@ export default {
   display: flex
   flex-wrap: wrap
   justify-content: center
-  overflow-x: auto
+  overflow-x: hidden
+  overflow-y: auto
   margin: 15px 0 15px 0 
   .badge-image
     width: 80px
@@ -267,4 +274,19 @@ export default {
     visibility: visible
     opacity: 1
 
+.profile-pic-container
+  position: relative
+  display: inline-block
+  &:hover .edit
+    display: block
+
+.edit
+  padding-top: 7px
+  padding-right: 7px
+  position: absolute
+  right: 0
+  top: 0
+  display: none
+  a
+    color: #000
 </style>
