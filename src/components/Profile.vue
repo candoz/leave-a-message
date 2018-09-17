@@ -218,6 +218,7 @@ export default {
   @extend %card
   max-width: 550px
   max-height: 550px
+  align-items: stretch
   @media screen and (max-width: $media-width-second)
     margin-top: 3vh
   #map
