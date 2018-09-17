@@ -5,7 +5,7 @@
         <input v-model="email" type="text" placeholder="Email" required>            <!--  'v-model.lazy' ? -->
         <input v-model="password" type="password" placeholder="Password" required>  <!--  'v-model.lazy' ? -->
         <button type="submit" class="">Login</button>
-        <router-link :to="'/signup'" class="message" exact>Not registered? Create an account</router-link>
+        <router-link :to="'/signup'" class="signup-message" exact>Not registered? Create an account</router-link>
       </form>
     </div>
     <div class="form" v-else >
@@ -104,7 +104,7 @@ export default {
     margin-bottom: 8px
     &:hover, &:active, &:focus
       box-shadow: $shadow
-  .message
+  .signup-message
     color: #b3b3b3
     font-size: 75%
     font-family: $secondary-font

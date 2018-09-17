@@ -25,7 +25,7 @@
             </div>
 
             <div class="comments-window centered-screen" :ref="'comment-section-'+msg._id">
-              <h4>Comments</h4>
+              <h3>Comments</h3>
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div class="comments-list">
                 <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
@@ -207,7 +207,6 @@ a
 .message-panel
   transition: font-size 0.3s ease, background-color 0.3s ease
   border-top: 1px solid #ccc
-  font-family: $secondary-font
   &:hover
     background-color: $light-color-mod
   p
@@ -234,7 +233,6 @@ a
 
 .comments-window
   display: none
-  font-family: $secondary-font
   background: $light-color
   max-height: 80vh
   width: 480px
@@ -251,6 +249,7 @@ a
     overflow-y: auto
     margin-bottom: 13px
     .p
+      font-family: $secondary-font
       padding: 6px
 
 .centered-screen
@@ -266,11 +265,11 @@ form
     outline: 0
     background: $primary-color
     font-family: $primary-font
+    font-size: 100%
     width: 100%
     border: 0
     padding: 15px
     color: #FFFFFF
-    font-size: 14px
     transition: all 0.3 ease
     cursor: pointer
     &:hover, &:active, &:focus
@@ -294,8 +293,8 @@ textarea
 
 .fa-times-circle
   position: absolute
-  top: 12px
-  right: 12px
+  top: 11px
+  right: 11px
   cursor: pointer
   font-size: 24px
   color: $secondary-color
