@@ -9,7 +9,10 @@
         <img v-bind:src="profilePic" class="profile-pic">
         <div class="badges-container">
           <div v-for="badge in badgesPic" :key=badge.badgeName >
-            <img class="badge-image" v-bind:src="badge.badgeUrl" @mouseover="showBadgeDescription(badge.badgeName)">
+            <div class="tooltip">
+              <img class="badge-image" v-bind:src="badge.badgeUrl">
+              <span class="tooltiptext"> {{ badgesDescription[badge.badgeName] }} </span>
+            </div>
           </div>
         </div>
         <button @click="doLogout()">Logout</button>
@@ -41,6 +44,7 @@ export default {
       nickname: "nickname",
       name: "Name Surname",
       badges: [ "beta_testing", "certified", "the_explorer" ], //badges: [ "beta-testing", "certified"],  "the-explorer", "top-contributor", "one-year-club"],
+      badgesDescription: BadgesDescription,
       profilePic: require("../assets/profile_pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
@@ -141,9 +145,6 @@ export default {
         .catch(error => {
           console.log(error.config);
         });
-    },
-    showBadgeDescription(badgeName) {
-      console.log(BadgesDescription[badgeName]);
     }
   },
   mounted() {
@@ -232,5 +233,38 @@ export default {
   #map
     z-index: 0
     flex: 1
+
+.tooltip
+  position: relative
+  display: block
+  .tooltiptext
+    visibility: hidden
+    width: 120px
+    background-color: $dark-color
+    font-family: $secondary-font
+    font-size: 80%
+    color: #fff
+    text-align: center
+    padding: 5px 0
+    border-radius: 6px
+    position: absolute
+    z-index: 1000
+    left: 50%
+    margin-left: -60px
+    opacity: 0
+    transition: opacity 0.3s
+    /* &::after
+      content: ""
+      position: absolute
+      top: 100%
+      left: 50%
+      margin-left: -5px
+      border-width: 5px
+      border-style: solid
+      border-color: #555 transparent transparent transparent
+       */
+  &:hover .tooltiptext
+    visibility: visible
+    opacity: 1
 
 </style>

@@ -22,7 +22,6 @@
     "leaflet-easybutton": "^2.3.0",
     "leaflet-maskcanvas": "^1.0.0",
     "mongodb": "^3.1.1",
-    "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
