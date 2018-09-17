@@ -6,7 +6,7 @@
       <div class="profile-card">
         <h4>{{ name }}</h4>
         <p>{{ nickname }}</p>
-        <img v-bind:src="profilePic" style="width:30%">
+        <img v-bind:src="profilePic" class="profile-pic">
         <div class="badges-container">
           <div v-for="badge in badgesPic" :key=badge >
             <img class="badge-image" v-bind:src="badge">
@@ -15,7 +15,7 @@
         <button @click="doLogout()">Logout</button>
       </div>
       <div class="map-card">
-        <h4>Your messages around the world</h4>
+        <h4>My messages around the world</h4>
         <div id="map"></div>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta-testing", "certified"], //"the-explorer", "top-contributor", "one-year-club"],
+      badges: [ "beta-testing", "certified"], // "the-explorer", "top-contributor", "one-year-club"],
       profilePic: require("../assets/profile-pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
@@ -153,7 +153,7 @@ export default {
   display: flex
   padding: 4vh 2vw
   justify-content: center
-  @media screen and (max-width: $media-width-first)
+  @media screen and (max-width: $media-width-second)
     flex-direction: column
     padding: 4vh 0
 
@@ -162,26 +162,26 @@ export default {
   background: $light-color
   box-shadow: $shadow
   min-width: 250px
-  max-width: 450px
-  min-height: 350px
-  max-height: 500px
+  min-height: 450px
   border-radius: $radius
   margin: 0 1%
   padding: 1%
   display: flex
   flex-direction: column
   align-items: center
-  @media screen and (max-width: $media-width-first)
+  @media screen and (max-width: $media-width-second)
     align-self: center
     width: 90%
-    margin: 0
     padding: 2%
-    min-height: 200px
   
 .profile-card
   @extend %card
   flex-basis: 40vh
+  max-width: 300px
+  max-height: 450px
   justify-content: space-evenly
+  @media screen and (max-width: $media-width-second)
+    margin: 0
   p
     margin: 0 0 15px 0 
   button
@@ -198,22 +198,30 @@ export default {
     margin-bottom: 8px
     &:hover, &:active, &:focus
       box-shadow: $shadow
-  .badges-container
-    max-width: 70%
-    max-height: 200px
-    display: flex
-    flex-wrap: wrap
-    justify-content: center
-    overflow-y: auto
-    margin: 15px 0 15px 0 
-    .badge-image
-      width: 80px
-      height: 80px
+
+.profile-pic
+  width: 175px
+
+.badges-container
+  width: 70%
+  max-height: 180px
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+  overflow-x: auto
+  margin: 15px 0 15px 0 
+  .badge-image
+    width: 80px
+    height: 80px
   
 .map-card
   @extend %card
+  max-width: 550px
+  max-height: 550px
+  @media screen and (max-width: $media-width-second)
+    margin-top: 3vh
   #map
-    flex: 1
     z-index: 0
+    flex: 1
 
 </style>
