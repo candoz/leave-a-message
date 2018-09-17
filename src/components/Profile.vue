@@ -39,7 +39,7 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta-testing", "certified", "the-explorer", "top-contributor", "one-year-club"],
+      badges: [ "beta-testing", "certified"], //"the-explorer", "top-contributor", "one-year-club"],
       profilePic: require("../assets/profile-pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
@@ -182,18 +182,6 @@ export default {
   @extend %card
   flex-basis: 40vh
   justify-content: space-evenly
-  .badges-container
-    max-width: 70%
-    max-height: 100px
-    display: flex
-    flex-wrap: wrap
-    justify-content: center
-    overflow-y: auto
-    max-height: 300px
-    margin: 15px 0 15px 0 
-    .badge-image
-      width: 80px
-      height: 80px
   p
     margin: 0 0 15px 0 
   button
@@ -203,13 +191,24 @@ export default {
     font-family: $primary-font
     font-size: 100%
     background: $secondary-color
-    width: 230px
+    width: 220px
     padding: 15px
     color: #FFFFFF
     cursor: pointer
     margin-bottom: 8px
     &:hover, &:active, &:focus
       box-shadow: $shadow
+  .badges-container
+    max-width: 70%
+    max-height: 200px
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+    overflow-y: auto
+    margin: 15px 0 15px 0 
+    .badge-image
+      width: 80px
+      height: 80px
   
 .map-card
   @extend %card
