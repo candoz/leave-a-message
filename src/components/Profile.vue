@@ -8,8 +8,8 @@
         <p>{{ nickname }}</p>
         <img v-bind:src="profilePic" class="profile-pic">
         <div class="badges-container">
-          <div v-for="badge in badgesPic" :key=badge >
-            <img class="badge-image" v-bind:src="badge">
+          <div v-for="badge in badgesPic" :key=badge.badgeName >
+            <img class="badge-image" v-bind:src="badge.badgeUrl" @mouseover="showBadgeDescription(badge.badgeName)">
           </div>
         </div>
         <button @click="doLogout()">Logout</button>
@@ -25,6 +25,7 @@
 import L from "leaflet";
 import { EventBus } from "../main.js" 
 const axios = require("axios");
+import BadgesDescription from './BadgesDescription.js'
 
 const DEFAULT_ZOOM_LEVEL = 13;
 
@@ -39,8 +40,8 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta-testing", "certified"], // "the-explorer", "top-contributor", "one-year-club"],
-      profilePic: require("../assets/profile-pic.png"),
+      badges: [ "beta_testing", "certified", "the_explorer" ], //badges: [ "beta-testing", "certified"],  "the-explorer", "top-contributor", "one-year-club"],
+      profilePic: require("../assets/profile_pic.png"),
       userMessages: [],  // not mandatory...
       myMap: null
     };
@@ -49,7 +50,11 @@ export default {
     badgesPic: function() {
       let badgesPic = [ ];
       this.badges.forEach(badge => {
-        badgesPic.push(require('../assets/' + badge + '.png'));
+        let badgeTuple = {
+          "badgeName" : badge,
+          "badgeUrl" : require('../assets/'+badge+'.png')
+        }
+        badgesPic.push(badgeTuple);
       });
       return badgesPic;
     }
@@ -136,6 +141,9 @@ export default {
         .catch(error => {
           console.log(error.config);
         });
+    },
+    showBadgeDescription(badgeName) {
+      console.log(BadgesDescription[badgeName]);
     }
   },
   mounted() {
@@ -178,7 +186,7 @@ export default {
   @extend %card
   flex-basis: 40vh
   max-width: 300px
-  max-height: 450px
+  max-height: 500px
   justify-content: space-evenly
   @media screen and (max-width: $media-width-second)
     margin: 0
