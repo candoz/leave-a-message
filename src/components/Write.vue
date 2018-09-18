@@ -4,15 +4,22 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
     <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
-      <textarea v-if="logged" form="write-form" v-model="messageText" placeholder="Write here your message"  maxlength="256"></textarea>
-      <div v-if="!logged" class="login-to-write">
+      
+      <div v-if="!logged" class="cannot-write-motivation">
         <p>
           please 
           <router-link :to="'/login'" class="a-login" exact> login </router-link> <br />
           to write something
         </p>
       </div>
-      <button :disabled="loading || !logged" type="submit" class="">Publish message</button>
+      
+      <div v-if="logged && !located" class="cannot-write-motivation">
+        <p> Waiting to acquire your current location ... </p>
+      </div>
+
+      <textarea v-if="logged && located" form="write-form" v-model="messageText" placeholder="Write here your message"  maxlength="256"></textarea>
+      
+      <button :disabled="loading || !logged || !located" type="submit" class="">Publish message</button>
     </form>
     <div class="lds-facebook" v-if="loading"><div></div><div></div><div></div></div>
     <div class="map-card">
@@ -187,13 +194,14 @@ textarea
   font-size: 14px
   resize: none
 
-.login-to-write 
+.cannot-write-motivation 
   @extend %write-area
   width: 100%
   font-size: 105%
   p
     text-align: center
     vertical-align: middle
+    font-family: $primary-font
 
 a
   text-decoration: none
