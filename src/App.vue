@@ -48,38 +48,46 @@ export default {
     });
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition((position) => {
-        this.located.lat = position.coords.latitude;
-        this.located.lng = position.coords.longitude;
+        if (this.located && this.located.lat === position.coords.latitude && this.located.lng === position.coords.longitude) {
+          console.log("Same position as before...");
+        } else {
+          this.located = { 
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
 
-        // (DEBUGGING) Uncomment the following lines to simulate random movements
-        // this.located.lat = Math.random()*50;
-        // this.located.lng = Math.random()*50;
-        // console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
+          // (DEBUGGING) Uncomment the following lines to simulate random movements
+          // this.located = { 
+          //   lat: position.coords.latitude,
+          //   lng: position.coords.longitude
+          // };
+          // console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
 
-        if (this.logged === true) {
-          axios.put(sessionStorage.urlHost + "/users/location", {
-              lng: position.coords.longitude,
-              lat: position.coords.latitude
-            })
-            .then(response => {
-              console.log("coordinates updated in server")
-              this.getFullMessages();
-            })
-            .catch(error => {
-              if (error.response) {
-                console.log("Response");
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-              } else if (error.request) {
-                console.log("Request");
-                console.log(error.request);
-              } else {
-                console.log("Setting up");
-                console.log("Error", error.message);
-              }
-              console.log(error.config);
-            });
+          if (this.logged === true) {
+            axios.put(sessionStorage.urlHost + "/users/location", {
+                lng: position.coords.longitude,
+                lat: position.coords.latitude
+              })
+              .then(response => {
+                console.log("coordinates updated in server")
+                this.getFullMessages();
+              })
+              .catch(error => {
+                if (error.response) {
+                  console.log("Response");
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  console.log("Request");
+                  console.log(error.request);
+                } else {
+                  console.log("Setting up");
+                  console.log("Error", error.message);
+                }
+                console.log(error.config);
+              });
+          }
         }
       }, function() {
         noGeolocation('Error: The Geolocation service failed.');
