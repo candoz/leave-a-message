@@ -36,6 +36,31 @@ export default {
     EventBus.$on("loggedIn", () => {
       this.logged = true;
       sessionStorage.logged = JSON.stringify(true);
+      if (this.located) {
+        axios.put(sessionStorage.urlHost + "/users/location", {
+          lng: this.located.lng,
+          lat: this.located.lat
+        })
+        .then(response => {
+          console.log("coordinates updated in server")
+          this.getFullMessages();
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log("Response");
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log("Request");
+            console.log(error.request);
+          } else {
+            console.log("Setting up");
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
+        });
+      }
     });
     EventBus.$on("loggedOut", () => {
       this.logged = false;
@@ -63,10 +88,10 @@ export default {
           // };
           // console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
 
-          if (this.logged === true) {
+          if (this.logged) {
             axios.put(sessionStorage.urlHost + "/users/location", {
-                lng: position.coords.longitude,
-                lat: position.coords.latitude
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
               })
               .then(response => {
                 console.log("coordinates updated in server")

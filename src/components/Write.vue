@@ -4,20 +4,17 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
     <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
-      <textarea v-if="logged === true" form="write-form" v-model="messageText" placeholder="Write here your message"  maxlength="256"></textarea>
-      <div v-if="logged === false" class="login-to-write">
+      <textarea v-if="logged" form="write-form" v-model="messageText" placeholder="Write here your message"  maxlength="256"></textarea>
+      <div v-if="!logged" class="login-to-write">
         <p>
           please 
-          <router-link :to="'/login'" class="a-login" exact> login </router-link>
-          <!-- or
-          <router-link :to="'/signup'" class="a-signup" exact> signup </router-link> -->
-          <br />
+          <router-link :to="'/login'" class="a-login" exact> login </router-link> <br />
           to write something
         </p>
       </div>
-      <button :disabled="loading === true || logged === false" type="submit" class="">Publish message</button>
+      <button :disabled="loading || !logged" type="submit" class="">Publish message</button>
     </form>
-    <div class="lds-facebook" v-if="loading === true"><div></div><div></div><div></div></div>
+    <div class="lds-facebook" v-if="loading"><div></div><div></div><div></div></div>
     <div class="map-card">
       <div id="map"></div>
     </div>
@@ -36,8 +33,8 @@ const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)");
 
 const PENGIL_ICON_WIDTH = 36;
 const PENGIL_ICON_HEIGHT = 37;
-const PENCIL_LOGGED_IN_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
-const PENCIL_LOGGED_OUT_ICON = L.divIcon({ className: "fas fa-pencil-alt fa-3x disabled", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
+const PENCIL_ICON_LOGGED_IN = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
+const PENCIL_ICON_LOGGED_OUT = L.divIcon({ className: "fas fa-pencil-alt fa-3x disabled", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
 
 export default {
   props: ["located", "logged"],
@@ -66,7 +63,9 @@ export default {
         minZoom: MIN_ZOOM_LEVEL,
         ext: 'png'
       }).addTo(this.myMap);
-      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon}).bindPopup(POPUP_TEXT).addTo(this.myMap);
+      this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon})
+        .bindPopup(L.popup({ closeButton: false }).setContent(POPUP_TEXT))
+        .addTo(this.myMap);
     },
     writeMessage(event) {
       // if(HASHTAGS_REGEXP.test(this.messageText)) {
@@ -101,11 +100,7 @@ export default {
     }
   },
   mounted() {
-    if (this.logged === true) {
-      this.pencilIcon = PENCIL_LOGGED_IN_ICON;
-    } else {
-      this.pencilIcon = PENCIL_LOGGED_OUT_ICON;
-    }
+    this.pencilIcon = this.logged ? PENCIL_ICON_LOGGED_IN : PENCIL_ICON_LOGGED_OUT;
     this.initMap();
   },  
   watch: {
@@ -113,7 +108,9 @@ export default {
       handler(newCoordinates, oldValue) {
         console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
         this.myMap.removeLayer(this.pencilPointer);
-        this.pencilPointer = L.marker([this.located.lat, this.located.lng], { icon: this.pencilIcon }).bindPopup(POPUP_TEXT).addTo(this.myMap);
+        this.pencilPointer = L.marker([this.located.lat, this.located.lng], { icon: this.pencilIcon })
+          .bindPopup(L.popup({ closeButton: false }).setContent(POPUP_TEXT))
+          .addTo(this.myMap);
         this.myMap.setView([this.located.lat, this.located.lng]);
       },
       deep: true
@@ -220,8 +217,6 @@ button
 
 .a-login
   color: $primary-color
-.a-signup
-  color: $secondary-color
 
 .lds-facebook
   display: inline-block

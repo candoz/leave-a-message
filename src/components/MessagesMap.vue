@@ -185,7 +185,6 @@ export default {
               .bindPopup(fullPopup)
               .on('click', function(e) {                                     // NB: do NOT change to the newer syntax!!
                 EventBus.$emit("clickedOnEnvelopeNearby", this.options.id);  // NB: 'this' refers to the marker here...
-                console.log("emittedEvent: id =" + this.options.id);
               })
               .addTo(this.fullGroup);
           }
