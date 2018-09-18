@@ -16,9 +16,9 @@ import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
 
-const POLLING_INTERVAL = 30000;
-const DEFAULT_LAT = 44.148020;
-const DEFAULT_LNG = 12.235375;
+const POLLING_INTERVAL = 60000;
+// const DEFAULT_LAT = 44.148020;
+// const DEFAULT_LNG = 12.235375;
 
 export default {
   components: {
@@ -28,8 +28,8 @@ export default {
   data() {
     return {
       logged: (sessionStorage.getItem("logged") === null) ? false : JSON.parse(sessionStorage.logged),
-      located: (sessionStorage.getItem("located") === null) ? {lat: DEFAULT_LAT, lng: DEFAULT_LNG} : JSON.parse(sessionStorage.located),
-      messagesAround:[ ]
+      located: (sessionStorage.getItem("located") === null) ? null : JSON.parse(sessionStorage.located),
+      messagesAround:[]
     }
   },
   created() {
@@ -42,9 +42,9 @@ export default {
       sessionStorage.logged = JSON.stringify(false);
     });
     EventBus.$on("requestFullMessages", () => {
-      if (this.logged === true) {
+      // if (this.logged === true) {
         this.getFullMessages();
-      }
+      // }
     });
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition((position) => {
@@ -97,7 +97,8 @@ export default {
   },
   methods: {
     getFullMessages: function() {
-      axios.get(sessionStorage.urlHost + "/messages/full")
+      if (this.located) {
+        axios.get(sessionStorage.urlHost + "/messages/full")
         .then(response => {
           this.messagesAround = response.data;
         }).catch(error => {
@@ -115,6 +116,9 @@ export default {
           }
           console.log(error.config);
         });
+      } else {
+        console.log("Cannot download full messages around you: unknown location");
+      }   
     }
   }
 }

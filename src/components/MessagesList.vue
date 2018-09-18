@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="logged === true" >
+    <!-- <template v-if="logged === true" > -->
       <h4>Messages nearby</h4>
       <div v-if="messagesIsPresent === true" class="scrollable">
         
@@ -53,9 +53,9 @@
         <p>Ops! There aren't messages around here. <br /> 
           Do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first one?</p>
       </div>
-    </template>
+    <!-- </template> -->
     
-    <div v-else>
+    <!-- <div v-else>
       <h4>Messages nearby</h4>
       <p class="to-open-message">
         <router-link :to="'/login'" class="a-login" exact> login </router-link>
@@ -63,7 +63,7 @@
         <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
         to see them
       </p>
-    </div>
+    </div> -->
   </div>
 </template>
 
