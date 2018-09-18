@@ -71,7 +71,7 @@ export default {
       if (this.located) {
         mapCenter = this.located;
         zoomLevel = ZOOM_LEVEL_FIRST_LOCATION
-        firstLocationInfo = false;
+        this.firstLocationInfo = false;
       } else {
         mapCenter = MAP_CENTER_NO_LOCATION_AVAIL;
         zoomLevel = ZOOM_LEVEL_NO_LOCATION_AVAIL;
@@ -282,8 +282,25 @@ export default {
     this.initMaskLayer();
     this.initMessagesGroups();
     this.watchMapMovement();
+
+    if (this.located) {
+      this.firstLocationInfo = false;
+      const currentLatLng = L.latLng(this.located.lat, this.located.lng);
+      
+      this.initUserLocationMarker();
+      this.initCenterButton();
+      
+      this.myMap.flyTo(currentLatLng, ZOOM_LEVEL_FIRST_LOCATION);
+      this.maskLayer.setData([currentLatLng]);  // array of coordinates
+      this.userLocationMarker.setLatLng(currentLatLng);
+    }
+    
+    // get stripped messages now
+    this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast());
+    
+    // get stripped messages in the future with stripped polling
     this.strippedPolling = setInterval(function() {
-      this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast())
+      this.getStripped(this.myMap.getBounds().getSouthWest(), this.myMap.getBounds().getNorthEast());
     }.bind(this), STRIPPED_POLLING_INTERVAL);
   },
   destroyed() {
