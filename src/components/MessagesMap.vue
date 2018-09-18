@@ -286,6 +286,8 @@ export default {
     if (this.located) {
       this.firstLocationInfo = false;
       const currentLatLng = L.latLng(this.located.lat, this.located.lng);
+
+      EventBus.$emit("requestFullMessages");
       
       this.initUserLocationMarker();
       this.initCenterButton();
