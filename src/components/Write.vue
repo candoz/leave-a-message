@@ -32,6 +32,10 @@
 import L from "leaflet";
 const axios = require("axios");
 
+const MAP_CENTER_NO_LOCATION_AVAIL = [44.498955, 11.327591];  // Bologna
+const ZOOM_LEVEL_NO_LOCATION_AVAIL = 7;
+const ZOOM_LEVEL_FIRST_LOCATION = 16;
+
 const DEFAULT_ZOOM_LEVEL = 16
 const MIN_ZOOM_LEVEL = 6;
 const POPUP_TEXT = "Your message will be published here!"
@@ -50,7 +54,6 @@ export default {
       myMap: null,
       tileLayer: null,
       pencilPointer: null,
-      pencilIcon: null,
       messageText: null,
       loading: false,
     };
@@ -65,11 +68,17 @@ export default {
 			  touchZoom:       'center'
         // zoomControl: false,
       });
-      this.myMap.setView([this.located.lat, this.located.lng], DEFAULT_ZOOM_LEVEL);
+      const mapCenter = this.located ? [this.located.lat, this.located.lng] : MAP_CENTER_NO_LOCATION_AVAIL;
+      const zoomLevel = this.located ? ZOOM_LEVEL_FIRST_LOCATION : ZOOM_LEVEL_NO_LOCATION_AVAIL;
+      this.myMap.setView(mapCenter, zoomLevel);
+    },
+    initTileLayer() {
       this.tileLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         minZoom: MIN_ZOOM_LEVEL,
         ext: 'png'
       }).addTo(this.myMap);
+    },
+    initPencilPointer() {
       this.pencilPointer = L.marker([this.located.lat, this.located.lng], {icon: this.pencilIcon})
         .bindPopup(L.popup({ closeButton: false }).setContent(POPUP_TEXT))
         .addTo(this.myMap);
@@ -109,15 +118,20 @@ export default {
   mounted() {
     this.pencilIcon = this.logged ? PENCIL_ICON_LOGGED_IN : PENCIL_ICON_LOGGED_OUT;
     this.initMap();
+    this.initTileLayer();
+    if (this.located) {
+      this.initPencilPointer();
+    }
   },  
   watch: {
     located: {
-      handler(newCoordinates, oldValue) {
-        console.log("update: newCoordinates detected! lat:" + newCoordinates.lat + "lng:" + newCoordinates.lng);
-        this.myMap.removeLayer(this.pencilPointer);
-        this.pencilPointer = L.marker([this.located.lat, this.located.lng], { icon: this.pencilIcon })
-          .bindPopup(L.popup({ closeButton: false }).setContent(POPUP_TEXT))
-          .addTo(this.myMap);
+      handler() {
+        console.log("update: newCoordinates detected! Now located at: lat:" + this.located);
+        if (this.pencilPointer == null) {
+          this.initPencilPointer();
+        } else {
+          this.pencilPointer.setLatLng([this.located.lat, this.located.lng]);
+        }
         this.myMap.setView([this.located.lat, this.located.lng]);
       },
       deep: true
