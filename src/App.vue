@@ -16,9 +16,7 @@ import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
 
-const POLLING_INTERVAL = 60000;
-// const DEFAULT_LAT = 44.148020;
-// const DEFAULT_LNG = 12.235375;
+const POLLING_INTERVAL = 120000;
 
 export default {
   components: {
@@ -32,34 +30,64 @@ export default {
       messagesAround:[]
     }
   },
+  methods: {
+    getFullMessages: function() {
+      axios.get(sessionStorage.urlHost + "/messages/full", {
+        params: {
+          lng: this.located.lng,
+          lat: this.located.lat
+        }
+      })
+      .then(response => {
+        this.messagesAround = response.data;
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log("Response");
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log("Request");
+          console.log(error.request);
+        } else {
+          console.log("Setting up");
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });  
+    },
+    updateLocationInServer: function() {
+      axios.put(sessionStorage.urlHost + "/users/location", {
+        lng: this.located.lng,
+        lat: this.located.lat
+      })
+      .then(response => {
+        console.log("coordinates updated in server")
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log("Response");
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log("Request");
+          console.log(error.request);
+        } else {
+          console.log("Setting up");
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
+    }
+  },
   created() {
     EventBus.$on("loggedIn", () => {
       this.logged = true;
       sessionStorage.logged = JSON.stringify(true);
       if (this.located) {
-        axios.put(sessionStorage.urlHost + "/users/location", {
-          lng: this.located.lng,
-          lat: this.located.lat
-        })
-        .then(response => {
-          console.log("coordinates updated in server")
-          this.getFullMessages();
-        })
-        .catch(error => {
-          if (error.response) {
-            console.log("Response");
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          } else if (error.request) {
-            console.log("Request");
-            console.log(error.request);
-          } else {
-            console.log("Setting up");
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
+        this.updateLocationInServer();
       }
     });
     EventBus.$on("loggedOut", () => {
@@ -67,51 +95,23 @@ export default {
       sessionStorage.logged = JSON.stringify(false);
     });
     EventBus.$on("requestFullMessages", () => {
-      // if (this.logged === true) {
+      if (this.located) {
         this.getFullMessages();
-      // }
+      }
     });
     if (navigator.geolocation) {
-      navigator.geolocation.watchPosition((position) => {
+      navigator.geolocation.watchPosition(position => {
         if (this.located && this.located.lat === position.coords.latitude && this.located.lng === position.coords.longitude) {
           console.log("Same position as before...");
         } else {
+          console.log("New position: " + this.located);
           this.located = { 
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-
-          // (DEBUGGING) Uncomment the following lines to simulate random movements
-          // this.located = { 
-          //   lat: position.coords.latitude,
-          //   lng: position.coords.longitude
-          // };
-          // console.log("Fake location: Lat"+this.located.lat + ",Lng:" + this.located.lng);
-
+          this.getFullMessages();
           if (this.logged) {
-            axios.put(sessionStorage.urlHost + "/users/location", {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-              })
-              .then(response => {
-                console.log("coordinates updated in server")
-                this.getFullMessages();
-              })
-              .catch(error => {
-                if (error.response) {
-                  console.log("Response");
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } else if (error.request) {
-                  console.log("Request");
-                  console.log(error.request);
-                } else {
-                  console.log("Setting up");
-                  console.log("Error", error.message);
-                }
-                console.log(error.config);
-              });
+            this.updateLocationInServer();
           }
         }
       }, function() {
@@ -122,37 +122,11 @@ export default {
     }
 
     // Polling for new messages if the user isn't moving
-    setInterval(function () {
-      if (this.logged === true) {
+    setInterval(() => {
+      if (this.located) {
         this.getFullMessages();
       }
-    }.bind(this), POLLING_INTERVAL); 
-  },
-  methods: {
-    getFullMessages: function() {
-      if (this.located) {
-        axios.get(sessionStorage.urlHost + "/messages/full")
-        .then(response => {
-          this.messagesAround = response.data;
-        }).catch(error => {
-          if (error.response) {
-            console.log("Response");
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          } else if (error.request) {
-            console.log("Request");
-            console.log(error.request);
-          } else {
-            console.log("Setting up");
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-      } else {
-        console.log("Cannot download full messages around you: unknown location");
-      }   
-    }
+    }, POLLING_INTERVAL); 
   }
 }
 </script>

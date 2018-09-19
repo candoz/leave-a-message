@@ -108,8 +108,8 @@ export default {
           }
           console.log(error.config);
         });
-        this.hideCommentsPopup(id);
         this.commentText = "";
+        this.hideCommentsPopup(id);
     },
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
@@ -133,14 +133,13 @@ export default {
       } else {
         likeUnlike = "/messages/like";
       }
-      axios
-        .put(sessionStorage.urlHost + likeUnlike, {messageId: id})
-        .then(response => {
-          EventBus.$emit("requestFullMessages");
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      axios.put(sessionStorage.urlHost + likeUnlike, {messageId: id})
+      .then(response => {
+        EventBus.$emit("requestFullMessages");
+      })
+      .catch(error => {
+        console.log(error);
+      });
     },
     checkIfLikedByMe(msg) {
       return msg.likes.includes(sessionStorage.myUserId);

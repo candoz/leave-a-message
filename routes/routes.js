@@ -263,9 +263,7 @@ module.exports = (function () {
                 if (!dbResAuthor.badges.includes(BADGE_TOP_CONTRIBUTOR)) {
                   dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(dbResAuthorId) }, { $addToSet: { badges: BADGE_TOP_CONTRIBUTOR } }, function(err, dbResBadges) {
                     if (err) return next(boom.badImplementation(err));
-                    if (dbResBadges.modifiedCount > 0) {
-                      if (LOG_SERVER_EVENTS) { console.log("Added " + BADGE_TOP_CONTRIBUTOR + " badge to user " + dbResAuthorId.author_id); }
-                    }
+                    if (LOG_SERVER_EVENTS) { console.log("Added " + BADGE_TOP_CONTRIBUTOR + " badge to user " + dbResAuthorId.author_id); }
                   });
                 }
 
@@ -313,7 +311,7 @@ module.exports = (function () {
               [ Number(req.query.cornerBottomLeft[0]) , Number(req.query.cornerBottomLeft[1]) ],
               [ Number(req.query.cornerUpperRight[0]) , Number(req.query.cornerUpperRight[1]) ]
             ]
-         }
+          }
         }
       })
       .toArray(function (err, dbResMessagesStripped) {
@@ -329,35 +327,11 @@ module.exports = (function () {
       });
   });
 
-  dbRoutes.get("/messages/full", function (req, res, next) {
-    if (req.session.userId == null) {
-      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
-      return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
-    }
-    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-      if (err) return next(boom.badImplementation(err));
-      if (!dbResLoggedUser.location) {
-        if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
-        return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
-      }
-      dbPoolConnection.collection("Messages")
-        .find({
-          "location": {
-            $near: {
-              $geometry: dbResLoggedUser.location,
-              $maxDistance: MAX_DISTANCE_FULL_MESSAGES
-            }
-          }
-        })
-        .toArray(function (err, dbResMessagesFull) {
-          if (err) return next(boom.badImplementation(err));
-          res.send(dbResMessagesFull);
-          if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
-        });
-    });
-  });
-
   // dbRoutes.get("/messages/full", function (req, res, next) {
+  //   if (req.session.userId == null) {
+  //     if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
+  //     return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
+  //   }
   //   dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
   //     if (err) return next(boom.badImplementation(err));
   //     if (!dbResLoggedUser.location) {
@@ -380,6 +354,31 @@ module.exports = (function () {
   //       });
   //   });
   // });
+
+  // Eventually (if needed for security) transform this GET into a POST to embed the coordinates in the body.
+  // See: https://stackoverflow.com/questions/29571284/for-restful-api-can-get-method-use-json-data
+  dbRoutes.get("/messages/full", function (req, res, next) {
+    dbPoolConnection.collection("Messages")
+      .find({
+        "location": {
+          $near: {
+            $geometry: {
+              type : "Point",
+              coordinates : [ 
+                Number(req.query.lng), 
+                Number(req.query.lat)
+              ]
+            },
+            $maxDistance: MAX_DISTANCE_FULL_MESSAGES
+          }
+        }
+      })
+      .toArray(function (err, dbResMessagesFull) {
+        if (err) return next(boom.badImplementation(err));
+        res.send(dbResMessagesFull);
+        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near (lat:" + req.body.lat + ", lng:" + req.body.lng); }
+      });
+  });
 
   dbRoutes.get("/messages/full/user", function (req, res, next) {
     if (req.session.userId == null) {

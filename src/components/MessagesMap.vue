@@ -209,25 +209,27 @@ export default {
     },
     getStripped(cornerSouthWest, cornerNorthEast) {
       axios.get(sessionStorage.urlHost + "/messages/stripped", {
-          params: {
-            cornerBottomLeft: [cornerSouthWest.lng, cornerSouthWest.lat],
-            cornerUpperRight: [cornerNorthEast.lng, cornerNorthEast.lat],
-          }
-        }).then(response => {
-          this.strippedMessages.length = 0;
-          for (let element of response.data) {
-            this.strippedMessages.push({
-              id : element._id,
-              author_nickname: element.author_nickname,
-              hashtags: element.hashtags,
-              likes: element.likes,
-              latLng: [element.location.coordinates[1], element.location.coordinates[0]],  //NB: lat and lng are inverted server side
-            });
-          }
-          this.updateStrippedLayer();
-        }).catch(error => {
-          console.log(error);
-        });
+        params: {
+          cornerBottomLeft: [cornerSouthWest.lng, cornerSouthWest.lat],
+          cornerUpperRight: [cornerNorthEast.lng, cornerNorthEast.lat]
+        }
+      })
+      .then(response => {
+        this.strippedMessages.length = 0;
+        for (let element of response.data) {
+          this.strippedMessages.push({
+            id : element._id,
+            author_nickname: element.author_nickname,
+            hashtags: element.hashtags,
+            likes: element.likes,
+            latLng: [element.location.coordinates[1], element.location.coordinates[0]],  //NB: lat and lng are inverted server side
+          });
+        }
+        this.updateStrippedLayer();
+      })
+      .catch(error => {
+        console.log(error);
+      });
     },
     selectFullMsg(msgId) {
       EventBus.$emit("clickedOnEnvelopeNearby", msgId);
