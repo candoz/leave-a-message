@@ -11,7 +11,7 @@
           <div class="edit">
             <a href="#">
               <input type="file" name="file" id="file" class="inputfile " @change="changeProfilePic">
-              <label for="file" class="fas fa-pencil-alt fa-2x logged-in"></label>
+              <label for="file" class="fas fa-camera fa-2x logged-in"></label>
             </a>
           </div>
         </div>
@@ -69,6 +69,9 @@ export default {
         badgesPic.push(badgeTuple);
       });
       return badgesPic;
+    },
+    nicknamePic: function() {
+      return this.nickname+"pic"
     }
   },
   methods: {
@@ -78,6 +81,7 @@ export default {
         this.nickname = response.data.nickname;
         this.name = response.data.name;
         this.badges = response.data.badges;
+        this.profilePic = localStorage.getItem(this.nicknamePic) || require("../assets/profile_pic.png")
         this.getUserMessages();
       }).catch(error => {
           console.log(error);
@@ -155,14 +159,16 @@ export default {
         });
     },
     changeProfilePic(e) {
-      var files = e.target.files || e.dataTransfer.files;
+      let files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
-      var image = new Image();
-      var reader = new FileReader();
-      var self = this;
+      let image = new Image();
+      let reader = new FileReader();
+      let self = this;
 
       reader.onload = (e) => {
+        localStorage.profilePic = e.target.result;
+        localStorage.setItem(this.nicknamePic, e.target.result);
         self.profilePic = e.target.result;
         //load to server? here
       };
