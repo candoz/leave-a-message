@@ -197,7 +197,7 @@ h4, h3
   color: $light-color-mod-two
 
 .highlighted
-  background-color: $tertiary-color
+  background-color: rgba(20, 167, 108, 0.15)  // primary color in Hex: #14a76c
 
 .logged-in
   color: $primary-color

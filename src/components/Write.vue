@@ -38,10 +38,10 @@ const POPUP_TEXT = "Your message will be published here!"
 const MILLIS_TO_PUBLISH = 2000;
 const HASHTAGS_REGEXP = new RegExp("(#[a-z\d-]+)");
 
-const PENGIL_ICON_WIDTH = 36;
-const PENGIL_ICON_HEIGHT = 37;
-const PENCIL_ICON_LOGGED_IN = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
-const PENCIL_ICON_LOGGED_OUT = L.divIcon({ className: "fas fa-pencil-alt fa-3x disabled", iconAnchor: [0, PENGIL_ICON_HEIGHT] });
+const PENCIL_ICON_WIDTH = 36;
+const PENCIL_ICON_HEIGHT = 37;
+const PENCIL_ICON_LOGGED_IN = L.divIcon({ className: "fas fa-pencil-alt fa-3x logged-in", iconAnchor: [0, PENCIL_ICON_HEIGHT] });
+const PENCIL_ICON_LOGGED_OUT = L.divIcon({ className: "fas fa-pencil-alt fa-3x disabled", iconAnchor: [0, PENCIL_ICON_HEIGHT] });
 
 export default {
   props: ["located", "logged"],
