@@ -8,7 +8,12 @@
         <p>{{ nickname }}</p>
         <div class="profile-pic-container">
           <img v-bind:src="profilePic" class="profile-pic">
-          <div class="edit"><a href="#" @click="changeProfilePic"><i class="fas fa-pencil-alt fa-2x logged-in"></i></a></div>
+          <div class="edit">
+            <a href="#">
+              <input type="file" name="file" id="file" class="inputfile " @change="changeProfilePic">
+              <label for="file" class="fas fa-pencil-alt fa-2x logged-in"></label>
+            </a>
+          </div>
         </div>
         <div class="badges-container">
           <div v-for="badge in badgesPic" :key=badge.badgeName >
@@ -149,9 +154,20 @@ export default {
           console.log(error.config);
         });
     },
-    changeProfilePic() {
-      this.profilePic = require('../assets/'+"beta_testing"+'.png');
-    }
+    changeProfilePic(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      var image = new Image();
+      var reader = new FileReader();
+      var self = this;
+
+      reader.onload = (e) => {
+        self.profilePic = e.target.result;
+        //load to server? here
+      };
+      reader.readAsDataURL(files[0]);
+    },
   },
   mounted() {
     this.initMap();
@@ -289,4 +305,14 @@ export default {
   display: none
   a
     color: #000
+  label
+    cursor: pointer
+
+.inputfile
+  width: 0.1px
+  height: 0.1px
+  opacity: 0
+  overflow: hidden
+  position: absolute
+  z-index: -1
 </style>
