@@ -259,12 +259,16 @@ module.exports = (function () {
             dbPoolConnection.collection("Users").findOneAndUpdate(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: 1 } }, { returnNewDocument: true }, function(err, dbResAuthor) {
               if (err) return next(boom.badImplementation(err));
               if (dbResAuthor.reputation >= TOTAL_LIKES_GOAL) {
-                dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(dbResAuthorId.author_id) }, { $addToSet: { badges: TOTAL_LIKES_GOAL } }, function(err) {
-                  if (err) return next(boom.badImplementation(err));
-                  if (dbResLikedBy.modifiedCount > 0) {
-                    if (LOG_SERVER_EVENTS) { console.log("Added " + TOTAL_LIKES_GOAL + " badge to user " + dbResAuthorId.author_id); }
-                  }
-                });
+
+                if (!dbResAuthor.badges.includes(BADGE_TOP_CONTRIBUTOR)) {
+                  dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(dbResAuthorId) }, { $addToSet: { badges: BADGE_TOP_CONTRIBUTOR } }, function(err, dbResBadges) {
+                    if (err) return next(boom.badImplementation(err));
+                    if (dbResBadges.modifiedCount > 0) {
+                      if (LOG_SERVER_EVENTS) { console.log("Added " + BADGE_TOP_CONTRIBUTOR + " badge to user " + dbResAuthorId.author_id); }
+                    }
+                  });
+                }
+
               }
             });
           });
