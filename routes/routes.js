@@ -14,8 +14,8 @@ const BADGE_BETA_TESTER = "beta_testing";
 const BADGE_EXPLORER = "explorer";
 const BADGE_TOP_CONTRIBUTOR = "top_contributor";
 
-const KM_COVERED_GOAL = 1000000;
-const TOTAL_LIKES_GOAL = 10000;
+const KM_COVERED_GOAL = 10000;
+const TOTAL_LIKES_GOAL = 1000;
 
 let dbPoolConnection;
 MongoClient.connect(URL, { poolSize: 10, useNewUrlParser: true }, function (err, db) {
@@ -133,7 +133,7 @@ module.exports = (function () {
       return next(boom.badRequest("Cannot update location, invalid lat value: " + newLat));
     }
 
-    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), {fields: {_id: 0, location: 1, km_covered: 1, badges: 1}}, function (err, dbResUserInfo) {
+    dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), { fields: {_id: 0, location: 1, km_covered: 1, badges: 1} }, function (err, dbResUserInfo) {
       if (err) return next(boom.badImplementation(err));
       let dataToUpdate = {
         location: {
@@ -145,7 +145,10 @@ module.exports = (function () {
       if (dbResUserInfo.location != null && Array.isArray(dbResUserInfo.location.coordinates) && dbResUserInfo.location.coordinates.length === 2) {
         const oldLat = dbResUserInfo.location.coordinates[1];
         const oldLng = dbResUserInfo.location.coordinates[0];
-        const kmCoveredUpdated = (dbResUserInfo.kmCovered || 0) + distance(oldLat, oldLng, newLat, newLng, "K");
+        
+        // const kmCoveredUpdated = (dbResUserInfo.km_covered || 0) + distance(oldLat, oldLng, newLat, newLng, "K");
+        const kmCoveredUpdated = (dbResUserInfo.km_covered || 0) + getDistanceFromLatLonInKm(oldLat, oldLng, newLat, newLng);
+        
         dataToUpdate.km_covered = kmCoveredUpdated;
         
         if (kmCoveredUpdated >= KM_COVERED_GOAL) {
@@ -322,35 +325,11 @@ module.exports = (function () {
       });
   });
 
-  // dbRoutes.get("/messages/full", function (req, res, next) {
-  //   if (req.session.userId == null) {
-  //     if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
-  //     return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
-  //   }
-  //   dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
-  //     if (err) return next(boom.badImplementation(err));
-  //     if (!dbResLoggedUser.location) {
-  //       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
-  //       return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
-  //     }
-  //     dbPoolConnection.collection("Messages")
-  //       .find({
-  //         "location": {
-  //           $near: {
-  //             $geometry: dbResLoggedUser.location,
-  //             $maxDistance: MAX_DISTANCE_FULL_MESSAGES
-  //           }
-  //         }
-  //       })
-  //       .toArray(function (err, dbResMessagesFull) {
-  //         if (err) return next(boom.badImplementation(err));
-  //         res.send(dbResMessagesFull);
-  //         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
-  //       });
-  //   });
-  // });
-
   dbRoutes.get("/messages/full", function (req, res, next) {
+    if (req.session.userId == null) {
+      if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
+      return next(boom.unauthorized("Cannot retrieve full messages if not logged-in"));
+    }
     dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
       if (err) return next(boom.badImplementation(err));
       if (!dbResLoggedUser.location) {
@@ -374,6 +353,30 @@ module.exports = (function () {
     });
   });
 
+  // dbRoutes.get("/messages/full", function (req, res, next) {
+  //   dbPoolConnection.collection("Users").findOne(new ObjectId(req.session.userId), function (err, dbResLoggedUser) {
+  //     if (err) return next(boom.badImplementation(err));
+  //     if (!dbResLoggedUser.location) {
+  //       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without having a defined location"); }
+  //       return next(boom.unauthorized("Cannot retrieve full messages around you: we don't know your location"));
+  //     }
+  //     dbPoolConnection.collection("Messages")
+  //       .find({
+  //         "location": {
+  //           $near: {
+  //             $geometry: dbResLoggedUser.location,
+  //             $maxDistance: MAX_DISTANCE_FULL_MESSAGES
+  //           }
+  //         }
+  //       })
+  //       .toArray(function (err, dbResMessagesFull) {
+  //         if (err) return next(boom.badImplementation(err));
+  //         res.send(dbResMessagesFull);
+  //         if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near user " + dbResLoggedUser.email); }
+  //       });
+  //   });
+  // });
+
   dbRoutes.get("/messages/full/user", function (req, res, next) {
     if (req.session.userId == null) {
       if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve his/her messages without being logged-in"); }
@@ -396,6 +399,28 @@ module.exports = (function () {
 
   return dbRoutes;
 })();
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:::                           Haversine formula                             :::
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
 
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
