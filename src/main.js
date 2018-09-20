@@ -15,6 +15,6 @@ new Vue({
   components: { App },
   template: '<App/>',
   created() {
-    sessionStorage.urlHost = "http://localhost:5000";//"https://leave-a-message.herokuapp.com";"http://localhost:5000"
+    sessionStorage.urlHost = "https://leave-a-message.herokuapp.com";//"https://leave-a-message.herokuapp.com";"http://localhost:5000"
   }
 })
