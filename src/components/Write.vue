@@ -218,10 +218,6 @@ textarea
   @extend %write-area
   width: 100%
   font-size: 105%
-  p
-    text-align: center
-    vertical-align: middle
-    font-family: $primary-font
 
 a
   text-decoration: none

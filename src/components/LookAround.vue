@@ -1,7 +1,7 @@
 <template>
 <div class="look-around-component">
   <messages-map class="messages-map-card" :logged="logged" :located="located" :messagesAround="messagesAround" :filter="filter"></messages-map>
-  <messages-list class="messages-list-card" :logged="logged" :messagesAround="messagesAround" :filter="filter"></messages-list>
+  <messages-list class="messages-list-card" :logged="logged" :located="located" :messagesAround="messagesAround"></messages-list>
 </div>
 </template>
 
@@ -20,9 +20,9 @@ export default {
   data() {
     return {
       filter: ""
-    };
+    }
   }
-};
+}
 </script>
 
 
@@ -43,7 +43,7 @@ export default {
   background: $light-color
   box-shadow: $shadow
   min-width: 180px
-  min-height: 180px
+  min-height: 150px
   border-radius: $radius
   margin: 0 1%
   padding: 1%

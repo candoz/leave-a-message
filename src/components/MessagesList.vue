@@ -1,8 +1,24 @@
 <template>
   <div>
-    <template v-if="logged === true" >
+    
+    <template v-if="!located">
+      <p>
+        trying to acquire current location ... 
+      </p>
+    </template>
+
+    <template v-if="located && !logged">
+        <p>
+          please
+          <router-link :to="'/login'" class="a-route-link" exact> login </router-link> <br />
+          to interact with the messages around you <br />
+          or to write new ones
+        </p>
+    </template>
+
+    <template v-if="located && logged">
       <h4>Messages nearby</h4>
-      <div v-if="messagesIsPresent === true" class="scrollable">
+      <div v-if="messagesIsPresent" class="scrollable">
         
         <div v-for="msg in messagesAround" :key=msg._id >
           
@@ -51,19 +67,10 @@
       <div v-else>
         <i class="fas fa-sad-cry fa-3x"></i>
         <p>Ops! There aren't messages around here. <br /> 
-          Do you want to <router-link :to="'/write'" class="a-login" exact> write </router-link> the first one?</p>
+          Do you want to <router-link :to="'/write'" class="a-route-link" exact> write </router-link> the first one?</p>
       </div>
     </template>
-    
-    <div v-else>
-      <h4>Messages nearby</h4>
-      <p class="to-open-message">
-        <router-link :to="'/login'" class="a-login" exact> login </router-link>
-        or
-        <router-link :to="'/signup'" class="a-signup" exact> signup </router-link>
-        to see them
-      </p>
-    </div>
+
   </div>
 </template>
 
@@ -74,7 +81,7 @@ const axios = require("axios");
 const MILLIS_TO_STAY_HIGHLIGHTED_FOR = 5000;
 
 export default {
-  props: ["messagesAround", "logged"],
+  props: ["messagesAround", "logged", "located"],
   data() {
     return {
       commentText: "",
@@ -180,7 +187,7 @@ p
 a
   text-decoration: none
 
-.a-login
+.a-route-link
   color: $primary-color
 
 .a-signup
@@ -285,10 +292,6 @@ textarea
   padding: 15px
   box-sizing: border-box
   font-size: 14px
-
-.to-open-message
-  color: #b3b3b3
-  font-size: 85%
 
 .fa-times-circle
   position: absolute

@@ -104,11 +104,11 @@ export default {
         if (this.located && this.located.lat === position.coords.latitude && this.located.lng === position.coords.longitude) {
           console.log("Same position as before...");
         } else {
-          console.log("New position: " + this.located);
           this.located = { 
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
+          console.log("New position: " + this.located);
           this.getFullMessages();
           if (this.logged) {
             this.updateLocationInServer();
