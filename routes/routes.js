@@ -231,9 +231,10 @@ module.exports = (function () {
           } 
         }
       };
-      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, newComment, function(err) {
+      dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, newComment, function(err, dbResUpdate) {
         if (err) return next(boom.badImplementation(err));
-        console.log(dbResUser.nickname + " added a comment added to msg with ID: " + req.body.messageId);
+        if (LOG_SERVER_EVENTS) { console.log(dbResUser.nickname + " added a comment added to msg with ID: " + req.body.messageId); }
+        res.send(dbResUpdate);
       });
     });
   });
