@@ -116,7 +116,8 @@ export default {
         }
       }, function() {
         noGeolocation('Error: The Geolocation service failed.');
-      }, { enableHighAccuracy: true });
+      // }, { enableHighAccuracy: true });
+      }, { enableHighAccuracy: false });
     } else {
       alert("Geolocation not supported by this browser.");
     }
