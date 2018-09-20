@@ -233,7 +233,8 @@ a
 .comments-window
   display: none
   background: $light-color
-  max-height: 80vh
+  min-height: 250px
+  max-height: 85vh
   width: 480px
   margin: auto
   padding: 1%
@@ -241,12 +242,11 @@ a
   z-index: 1
   flex-direction: column
   @media only screen and (max-width: $media-width-first)
-    max-width: 80vw
-    height: 60%
+    max-width: 85vw
   .comments-list
     flex: 1
     overflow-y: auto
-    margin-bottom: 13px
+    margin-bottom: 6px
     .p
       font-family: $secondary-font
       padding: 6px
@@ -281,7 +281,7 @@ textarea
   background: #f2f2f2
   width: 100%
   border: 0
-  margin-bottom: 14px
+  margin-bottom: 6px
   padding: 15px
   box-sizing: border-box
   font-size: 14px
@@ -292,12 +292,12 @@ textarea
 
 .fa-times-circle
   position: absolute
-  top: 11px
-  right: 11px
+  top: 8px
+  right: 8px
   cursor: pointer
   font-size: 24px
   color: $secondary-color
-  transition: color .5s
+  transition: color .3s
   &:hover
     color: $secondary-color-mod
 

@@ -201,7 +201,7 @@ export default {
       return result.join(" ");
     },
     watchMapMovement() {
-      this.myMap.on("moveend", (event) => {  // "move" instead of "moveend" for more responsiveness, but also more server requests !
+      this.myMap.on("move", (event) => {  // "move" instead of "moveend" for more responsiveness, but also more server requests !
         let cornerSouthWest = event.target.getBounds().getSouthWest();
         let cornerNorthEast = event.target.getBounds().getNorthEast();
         this.getStripped(cornerSouthWest, cornerNorthEast);
