@@ -95,28 +95,32 @@ export default {
       EventBus.$emit("selectedFullMessageFromList", id);
     },
     addComment(id) {
-      axios
-        .post(sessionStorage.urlHost + "/messages/comment", {
-          text: this.commentText,
-          messageId: id
-        })
-        .then(response => {
-          console.log(response);
-          EventBus.$emit("requestFullMessages");
-        })
-        .catch(error => {
-          if (error.response) {
-            console.log("Response");
-          } else if (error.request) {
-            console.log("Richiesta");
-          } else {
-            console.log("Setting up");
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-        this.commentText = "";
-        this.hideCommentsPopup(id);
+      if(this.commentText == "") {
+        alert("Can't send an emtpy comment.");
+      } else {
+        axios
+          .post(sessionStorage.urlHost + "/messages/comment", {
+            text: this.commentText,
+            messageId: id
+          })
+          .then(response => {
+            console.log(response);
+            EventBus.$emit("requestFullMessages");
+          })
+          .catch(error => {
+            if (error.response) {
+              console.log("Response");
+            } else if (error.request) {
+              console.log("Richiesta");
+            } else {
+              console.log("Setting up");
+              console.log("Error", error.message);
+            }
+            console.log(error.config);
+          });
+          this.commentText = "";
+          //this.hideCommentsPopup(id);
+      }
     },
     showCommentsPopup(id) {
       let commentsPopup = this.$refs["comment-section-"+id][0];
