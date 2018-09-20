@@ -44,7 +44,7 @@
               <h3>Comments</h3>
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
               <div class="comments-list">
-                <div v-for="comment in msg.comments" :key=comment._id style="text-align:left">
+                <div v-for="comment in msg.comments" :key=comment._id class="single-comment">
                   <p><b>{{ comment.author_nickname }}</b> {{ comment.text }}</p>
                 </div>
               </div>
@@ -217,16 +217,19 @@ a
     background-color: $light-color-mod
   p
     margin: 0
-    padding: 10px
-    font-size: 13px
+    padding: 2px 5px 0 0
     font-family: $secondary-font
     text-align: left
   .message-text
+    font-size: 13px
+    margin: 8px 0 0 0
     cursor: pointer
     transition: color .5s
     &:hover
       color: $primary-color
   .bottom-text
+    font-size: 13px
+    margin: 6px 0 8px 0
     display: flex
     justify-content: space-between
 
@@ -254,9 +257,11 @@ a
     flex: 1
     overflow-y: auto
     margin-bottom: 6px
-    .p
-      font-family: $secondary-font
-      padding: 6px
+
+.single-comment
+  text-align: left
+  font-size: 14px
+  padding: 8px 4px 0px 0px
 
 .centered-screen
   position: fixed
