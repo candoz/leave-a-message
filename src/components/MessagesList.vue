@@ -128,7 +128,6 @@ export default {
             console.log(error.config);
           });
           this.commentText = "";
-          //this.hideCommentsPopup(id);
       }
     },
     showCommentsPopup(id) {
@@ -224,8 +223,9 @@ a
   content: "\2212"
 
 .message-panel
-  transition: font-size 0.3s ease, background-color 0.3s ease
+  transition: background-color 0.4s ease
   border-top: 1px solid #ccc
+  padding: 0 0 12px 0
   &:hover
     background-color: $light-color-mod
   p
@@ -234,7 +234,7 @@ a
     font-family: $secondary-font
     text-align: left
   .message-text
-    font-size: 13px
+    font-size: 14px
     margin: 8px 0 0 0
     cursor: pointer
     transition: color .5s
@@ -242,7 +242,7 @@ a
       color: $primary-color
   .bottom-text
     font-size: 13px
-    margin: 6px 0 8px 0
+    margin: 6px 0 0 0
     display: flex
     justify-content: space-between
 
