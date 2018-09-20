@@ -43,20 +43,29 @@
             <div class="comments-window centered-screen" :ref="'comment-section-'+msg._id">
               <h3>Comments</h3>
               <i class="far fa-times-circle" @click="hideCommentsPopup(msg._id)"></i>
+              
               <div class="comments-list">
-                <div v-for="comment in msg.comments" :key=comment._id class="single-comment">
-                  <p><b>{{ comment.author_nickname }}</b> {{ comment.text }}</p>
-                </div>
+                <template v-if="msg.comments.length === 0" >
+                  <br>
+                  <p><i>There aren't any comments yet...</i></p>
+                </template>
+                <template>
+                  <div v-for="comment in msg.comments" :key=comment._id class="single-comment">
+                    <p><b>{{ comment.author_nickname }}</b> {{ comment.text }}</p>
+                  </div>
+                </template>
               </div>
+
               <form v-on:submit.prevent id="write-form" @submit.prevent="addComment(msg._id)">
                 <template v-if="msg.comments.length === 0" >
-                  <textarea form="write-form" v-model="commentText" placeholder="There aren't any comments yet... Write here the first one"></textarea>
+                  <textarea form="write-form" v-model="commentText" placeholder="Write here the first one"></textarea>
                 </template>
                 <template v-else>
                   <textarea form="write-form" v-model="commentText" placeholder="Write here your comment"></textarea>
                 </template>
                 <button type="submit" class="">Publish comment</button>
               </form>
+
             </div>
           </div>
           <a href="#" class="close-popup" :ref="'close-popup-'+msg._id" @click="hideCommentsPopup(msg._id)"></a>
@@ -245,7 +254,7 @@ a
   display: inline-block
 
 .comments-window
-  display: none
+  display: none  // for now...
   background: $light-color
   min-height: 250px
   max-height: 85vh
@@ -260,7 +269,7 @@ a
   .comments-list
     flex: 1
     overflow-y: auto
-    margin-bottom: 6px
+    margin-bottom: 8px
 
 .single-comment
   text-align: left

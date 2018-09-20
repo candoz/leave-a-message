@@ -8,7 +8,7 @@ const SALT_ROUNDS = 10;
 const MAX_DISTANCE_FULL_MESSAGES = 5000; // 5 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 const LOG_CLIENT_ERRORS = true;
-const LOG_SERVER_EVENTS = true;
+const LOG_SERVER_EVENTS = false;
 
 const BADGE_BETA_TESTER = "beta_testing";
 const BADGE_EXPLORER = "explorer";
@@ -328,6 +328,7 @@ module.exports = (function () {
       });
   });
 
+  //// Old "GET full messages" implementation (with required login):
   // dbRoutes.get("/messages/full", function (req, res, next) {
   //   if (req.session.userId == null) {
   //     if (LOG_CLIENT_ERRORS) { console.log("Someone tried to retrieve full messages around him/her without being logged-in"); }
@@ -356,7 +357,7 @@ module.exports = (function () {
   //   });
   // });
 
-  // Eventually (if needed for security) transform this GET into a POST to embed the coordinates in the body.
+  // Eventually (if needed for security) transform this GET into a POST/PUT to embed the coordinates in the body.
   // See: https://stackoverflow.com/questions/29571284/for-restful-api-can-get-method-use-json-data
   dbRoutes.get("/messages/full", function (req, res, next) {
     dbPoolConnection.collection("Messages")
@@ -377,7 +378,7 @@ module.exports = (function () {
       .toArray(function (err, dbResMessagesFull) {
         if (err) return next(boom.badImplementation(err));
         res.send(dbResMessagesFull);
-        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near (lat:" + req.query.lat + ", lng:" + req.query.lng) + ")"; }
+        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near (lat:" + req.query.lat + ", lng:" + req.query.lng + ")"); }
       });
   });
 
