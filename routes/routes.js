@@ -8,7 +8,7 @@ const SALT_ROUNDS = 10;
 const MAX_DISTANCE_FULL_MESSAGES = 5000; // 5 Km radius
 const HASHTAG_REGEX = /(#[a-zA-Z\d]+)/g;
 const LOG_CLIENT_ERRORS = true;
-const LOG_SERVER_EVENTS = false;
+const LOG_SERVER_EVENTS = true;
 
 const BADGE_BETA_TESTER = "beta_testing";
 const BADGE_EXPLORER = "explorer";
@@ -233,7 +233,7 @@ module.exports = (function () {
       };
       dbPoolConnection.collection("Messages").updateOne({ _id: new ObjectId(req.body.messageId) }, newComment, function(err) {
         if (err) return next(boom.badImplementation(err));
-        console.log("Comment added to " + req.body.messageId + " " + dbResUser.nickname);
+        console.log(dbResUser.nickname + " added a comment added to msg with ID: " + req.body.messageId);
       });
     });
   });
@@ -256,12 +256,12 @@ module.exports = (function () {
           if (LOG_SERVER_EVENTS) { console.log("Like added for message " + req.body.messageId); }
           dbPoolConnection.collection("Messages").findOne(new ObjectId(req.body.messageId), { fields: { _id: 0, author_id: 1 } }, function (err, dbResAuthorId) {
             if (err) return next(boom.badImplementation(err));
-            dbPoolConnection.collection("Users").findOneAndUpdate(new ObjectId(dbResAuthorId.author_id), { $inc: { reputation: 1 } }, { returnNewDocument: true }, function(err, dbResAuthor) {
+            dbPoolConnection.collection("Users").findOneAndUpdate({ _id: new ObjectId(dbResAuthorId.author_id) }, { $inc: { reputation: 1 } }, { returnNewDocument: true }, function(err, dbResAuthor) {
               if (err) return next(boom.badImplementation(err));
               if (dbResAuthor.reputation >= TOTAL_LIKES_GOAL) {
 
                 if (!dbResAuthor.badges.includes(BADGE_TOP_CONTRIBUTOR)) {
-                  dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(dbResAuthorId) }, { $addToSet: { badges: BADGE_TOP_CONTRIBUTOR } }, function(err, dbResBadges) {
+                  dbPoolConnection.collection("Users").updateOne({ _id: new ObjectId(dbResAuthorId.author_id) }, { $addToSet: { badges: BADGE_TOP_CONTRIBUTOR } }, function(err) {
                     if (err) return next(boom.badImplementation(err));
                     if (LOG_SERVER_EVENTS) { console.log("Added " + BADGE_TOP_CONTRIBUTOR + " badge to user " + dbResAuthorId.author_id); }
                   });
@@ -376,7 +376,7 @@ module.exports = (function () {
       .toArray(function (err, dbResMessagesFull) {
         if (err) return next(boom.badImplementation(err));
         res.send(dbResMessagesFull);
-        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near (lat:" + req.body.lat + ", lng:" + req.body.lng); }
+        if (LOG_SERVER_EVENTS) { console.log("Sent " + dbResMessagesFull.length + " full message/s near (lat:" + req.query.lat + ", lng:" + req.query.lng) + ")"; }
       });
   });
 
