@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""/>
+    
     <form v-on:submit.prevent id="write-form" class="write-card" @submit.prevent="writeMessage">
       
       <div v-if="!logged" class="cannot-write-motivation">
@@ -21,10 +22,15 @@
       
       <button :disabled="loading || !logged || !located" type="submit" class="">Publish message</button>
     </form>
-    <div class="lds-facebook" v-if="loading"><div></div><div></div><div></div></div>
+
+    <div class="lds-facebook" v-if="loading">
+      <div></div><div></div><div></div>
+    </div>
+    
     <div class="map-card">
       <div id="map"></div>
     </div>
+
   </div>
 </template>
 
@@ -245,6 +251,8 @@ button
   position: relative
   width: 64px
   height: 64px
+  @media screen and (max-width: $media-width-first)
+    align-self: center
   div
     display: inline-block
     position: absolute
