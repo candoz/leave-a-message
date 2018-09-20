@@ -218,7 +218,7 @@ a
   p
     margin: 0
     padding: 10px
-    font-size: 85%
+    font-size: 13px
     font-family: $secondary-font
     text-align: left
   .message-text

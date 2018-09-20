@@ -171,7 +171,7 @@ h4, h3
   color: $light-color-mod-two
 
 .highlighted
-  background-color: rgba(20, 167, 108, 0.15)  // primary color in Hex: #14a76c
+  background-color: rgba(20, 167, 108, 0.2)  // primary color in Hex: #14a76c
 
 .logged-in
   color: $primary-color
@@ -201,10 +201,10 @@ h4, h3
     margin-top: 10px !important
     display: flex
     justify-content: space-between
-  .fa-comment
+  .fa-comment, .fa-heart
     cursor: auto
-  .fa-heart
-    cursor: auto
+    &:hover
+      color: $dark-color
 
 .stripped-popup
   color: $light-color

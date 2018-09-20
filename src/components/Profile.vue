@@ -237,7 +237,8 @@ export default {
       box-shadow: $shadow
 
 .profile-pic
-  width: 175px
+  max-width: 175px
+  max-height: 175px
 
 .badges-container
   width: 70%
