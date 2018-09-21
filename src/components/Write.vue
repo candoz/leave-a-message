@@ -159,7 +159,7 @@ export default {
     padding: 4vh 0
 
 %card
-  flex-grow: 1
+  flex: 1
   background: $light-color
   box-shadow: $shadow
   min-width: 250px
@@ -173,13 +173,13 @@ export default {
     width: 90%
     margin: 0
     padding: 2%
-    min-height: 200px
 
 .map-card
   @extend %card
   @media screen and (max-width: $media-width-first)
     flex-basis: 40vh
     margin-top: 3vh
+    min-height: 200px
 
 #map
   z-index: 0
@@ -190,10 +190,10 @@ export default {
   display: flex
   flex-direction: column
   @media screen and (max-width: $media-width-first)
-    flex-basis: 40vh
+    flex-basis: 35vh
+    min-height: 180px
 
 form
-  @extend %card
   flex-grow: 1
   text-align: center
   display: flex
