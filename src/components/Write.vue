@@ -202,7 +202,7 @@ form
 %write-area
   flex-grow: 1
   background-color: $light-color-mod
-  margin: 0 0 12px
+  margin: 0 0 2.5% 0
   padding: 12px
   border: 0
   box-sizing: border-box
