@@ -54,6 +54,7 @@ export default {
     align-self: center
     width: 90%
     margin: 0
+    padding: 2%
   
 .messages-map-card
   @extend %card

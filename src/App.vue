@@ -16,7 +16,10 @@ import AppBody from "./components/AppBody.vue"
 import { EventBus } from "./main.js" 
 const axios = require("axios");
 
-const POLLING_INTERVAL = 120000;
+const POLLING_FULL_MESSAGES_MILLIS = 120000;
+const OLDEST_CACHED_POSITION_MILLIS = 1800000;
+const HIGH_ACCURACY = false;
+
 
 export default {
   components: {
@@ -116,8 +119,11 @@ export default {
         }
       }, function() {
         noGeolocation('Error: The Geolocation service failed.');
-      // }, { enableHighAccuracy: true });
-      }, { enableHighAccuracy: false });
+      }, { 
+        enableHighAccuracy: HIGH_ACCURACY,
+        maximumAge: OLDEST_CACHED_POSITION_MILLIS
+      }
+      );
     } else {
       alert("Geolocation not supported by this browser.");
     }
@@ -127,7 +133,7 @@ export default {
       if (this.located) {
         this.getFullMessages();
       }
-    }, POLLING_INTERVAL); 
+    }, POLLING_FULL_MESSAGES_MILLIS); 
   }
 }
 </script>

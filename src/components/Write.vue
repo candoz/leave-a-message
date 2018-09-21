@@ -180,7 +180,6 @@ export default {
   @media screen and (max-width: $media-width-first)
     flex-basis: 40vh
     margin-top: 3vh
-    height: auto
 
 #map
   z-index: 0

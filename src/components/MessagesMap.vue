@@ -321,7 +321,7 @@ export default {
   flex: 1
 
 .filter-input
-  margin-top: 13px
+  margin-top: 2%
   input
     font-family: $secondary-font
     width: 100%
