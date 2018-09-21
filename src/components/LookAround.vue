@@ -30,10 +30,10 @@ export default {
 @import './vars.sass'
 
 .look-around-component
+  min-height: 100%
   padding: 4vh 1%
   display: flex
   align-items: flex-start
-  min-height: 100vh
   @media screen and (max-width: $media-width-first)
     flex-direction: column
     padding: 4vh 0
@@ -62,7 +62,7 @@ export default {
   height: 83vh
   max-width: 800px
   @media screen and (max-width: $media-width-first)
-    flex-basis: 70vh
+    flex-basis: 60vh
     height: auto
 
 .messages-list-card

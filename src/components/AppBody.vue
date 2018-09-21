@@ -14,12 +14,9 @@ export default {
 
 <style lang="sass" scoped>
 @import './vars.sass'
-
 .app-body
-
-  background-color: $primary-color
-  width: 100%
   min-height: 100%  // do not change!!
+  width: 100%
+  background-color: $primary-color
   margin-top: $margin-for-navbar
-
 </style>

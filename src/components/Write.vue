@@ -168,6 +168,8 @@ export default {
   border-radius: $radius
   margin: 0 1%
   padding: 1%
+  display: flex
+  flex-direction: column
   @media screen and (max-width: $media-width-first)
     align-self: center
     width: 90%
@@ -183,12 +185,10 @@ export default {
 
 #map
   z-index: 0
-  height: 100%
+  flex: 1
 
 .write-card
   @extend %card
-  display: flex
-  flex-direction: column
   @media screen and (max-width: $media-width-first)
     flex-basis: 35vh
     min-height: 180px
