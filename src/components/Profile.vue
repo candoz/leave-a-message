@@ -280,6 +280,7 @@ export default {
     position: absolute
     z-index: 1000
     left: 50%
+    top: 50%
     margin-left: -60px
     opacity: 0
     transition: opacity 0.3s
