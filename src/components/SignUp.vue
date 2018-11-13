@@ -35,7 +35,7 @@ export default {
       let self = this;
       axios
         .post(sessionStorage.urlHost + "/users", {
-          email: this.email,
+          email: this.email.toLowerCase(),
           password: this.password,
           nickname: this.nickname,
           name : this.name

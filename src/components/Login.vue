@@ -31,7 +31,7 @@ export default {
     doLogin(event) {
       axios
         .put(sessionStorage.urlHost + "/login", {
-          email: this.email,
+          email: this.email.toLowerCase(),
           password: this.password
         })
         .then(response => {
