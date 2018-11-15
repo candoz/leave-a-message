@@ -14,7 +14,7 @@ const BADGE_BETA_TESTER = "beta_testing";
 const BADGE_EXPLORER = "explorer";
 const BADGE_TOP_CONTRIBUTOR = "top_contributor";
 
-const KM_COVERED_GOAL = 10000;
+const KM_COVERED_GOAL = 1000;
 const TOTAL_LIKES_GOAL = 1000;
 
 let dbPoolConnection;
