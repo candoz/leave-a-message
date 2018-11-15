@@ -51,7 +51,7 @@ export default {
     return {
       nickname: "nickname",
       name: "Name Surname",
-      badges: [ "beta_testing", "certified", "the_explorer", "top_contributor", "one_year_club" ], //badges: [ "beta-testing", "certified"],  "the-explorer", "top-contributor", "one-year-club"],
+      badges: [ "beta_testing" ], // "certified", "the_explorer", "top_contributor", "one_year_club"],
       badgesDescription: BadgesDescription,
       profilePic: require("../assets/profile_pic.png"),
       userMessages: [],  // not mandatory...

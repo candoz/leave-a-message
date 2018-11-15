@@ -11,7 +11,7 @@ const LOG_CLIENT_ERRORS = true;
 const LOG_SERVER_EVENTS = false;
 
 const BADGE_BETA_TESTER = "beta_testing";
-const BADGE_EXPLORER = "explorer";
+const BADGE_EXPLORER = "the_explorer";
 const BADGE_TOP_CONTRIBUTOR = "top_contributor";
 
 const KM_COVERED_GOAL = 1000;
