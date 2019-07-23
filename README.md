@@ -1,7 +1,6 @@
 # Leave a Message
-
-A location-based textual social network.  
-*Leave a Message* is a Single Page Application where the user can leave, comment and like text messages around the world.  
+ 
+A web application where the user can leave, comment and like text messages around the world.  
 
 ## Motivation
 
