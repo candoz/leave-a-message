@@ -1,6 +1,6 @@
-# leave-a-message
+# Leave a Message
 
-> A Vue.js project
+A location-based textual social network.
 
 ## Build Setup
 
