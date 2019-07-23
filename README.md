@@ -1,6 +1,19 @@
 # Leave a Message
 
-A location-based textual social network.
+A location-based textual social network.  
+*Leave a Message* is a Single Page Application where the user can leave, comment and like text messages around the world.  
+
+## Motivation
+
+*Leave a Message* was born as a prototype to experiment with the Vue.js framework and HTML5 API for geolocation. 
+Particular attention has been paid to the robustness of the application, to the *user experience*, and to the GUI following the *mobile first* and the *responsive design* principles.  
+It represents the final project for the *Web Services and Applications* course:  
+https://www.unibo.it/en/teaching/course-unit-catalogue/course-unit/2018/412604
+
+## Presentation
+
+A brief presentation of the project in Italian language can be found here:  
+https://github.com/candoz/leave-a-message/blob/master/Presentazione_ASW_leave_a_message.pdf
 
 ## Build Setup
 
