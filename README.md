@@ -1,10 +1,10 @@
 # Leave a Message
  
-A web application where the user can leave, comment and like text messages around the world.  
+A web application where the user can leave, comment and like text messages all around the world.  
 
 ## Motivation
 
-*Leave a Message* was born as a prototype to experiment with the Vue.js framework and HTML5 API for geolocation. 
+*Leave a Message* was born as a prototype to experiment with the Vue.js framework and HTML5 API for geolocation.  
 Particular attention has been paid to the robustness of the application, to the *user experience*, and to the GUI following the *mobile first* and the *responsive design* principles.  
 It represents the final project for the *Web Services and Applications* course:  
 https://www.unibo.it/en/teaching/course-unit-catalogue/course-unit/2018/412604
